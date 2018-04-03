@@ -68,7 +68,7 @@ return [
         ],
 
         'testing' => [
-            'driver'    => 'psql',
+            'driver'    => 'pgsql',
             'host'      => env('DB_TEST_HOST', '127.0.0.1'),
             'port'      => env('DB_TEST_PORT', '5432'),
             'database'  => env('DB_TEST_DATABASE', 'travis_ci_test'),
