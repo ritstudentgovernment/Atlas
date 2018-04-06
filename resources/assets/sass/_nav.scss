@@ -1,0 +1,30 @@
+
+@import "variables";
+
+#naps-header{
+
+  color: $dark;
+  background-color: $bright;
+  border-bottom: 1px solid #ccc;
+
+  .wrapper{
+
+    width: calc(100% - 2em);
+    margin: 0 auto;
+
+    #logo{
+
+      overflow: hidden;
+
+      img{
+
+        height: 30px;
+
+      }
+
+    }
+
+  }
+
+}
+

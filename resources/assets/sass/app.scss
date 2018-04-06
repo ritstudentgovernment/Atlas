@@ -1,14 +1,104 @@
 
 // Fonts
-@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,500,700|Raleway:300,400|Slabo+27px");
 
 // Variables
 @import "variables";
 
-// Bootstrap
-@import '~bootstrap/scss/bootstrap';
+// Organized styles
+@import "nav";
+@import "formatting_classes";
 
-.navbar-laravel {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+.uk-icon-link{
+
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: center;
+  color: $dark;
+
+}
+
+#user-menu button{
+  margin-left: 1em;
+  font-weight: 600;
+}
+#user-menu #account-dropdown{
+  position: absolute;
+  top: 70px;
+  left: 0;
+  padding: 10px;
+
+}
+.large-header #header-top{
+  line-height: 70px;
+}
+.small-header #sg-nav{
+  height: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.small-header #header-top{
+  line-height: 50px;
+  overflow: hidden;
+}
+.small-header #tags{
+  padding: 10px 0;
+}
+.small-header #tags h5{
+  display: none;
+}
+.small-header #logo{
+  height: 60px;
+}
+.small-header #logo img{
+  margin-top: 10px;
+}
+.header-scrolled{
+  border-bottom: 1px solid #ccc;
+  @include shadow(5px, #ccc);
+}
+#logo span{
+  display: inline-block;
+  width: auto;
+}
+#menu-content{
+  margin-top: -5px;
+}
+#menu-icon{
+  height: 40px;
+  line-height: 50px;
+  padding: 0;
+}
+.large-header #menu{
+  padding-top: 7px;
+  height: 63px;
+}
+#about{
+  margin-top: 3px;
+}
+.small-header #menu{
+  padding-top: 12px;
+  height: 45px;
+}
+.small-header #menu-content {
+  margin-top: -13px;
+}
+
+nav{
+
+  padding: 10px;
+
+}
+
+nav .padding-right{
+
+  padding-right: 6px;
+
+}
+
+nav .logo{
+
+  height: 50px;
+  margin-top: 10px;
+
 }
