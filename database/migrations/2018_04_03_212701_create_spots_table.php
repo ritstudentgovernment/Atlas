@@ -21,7 +21,7 @@ class CreateSpotsTable extends Migration
             $table->boolean('approved')->default(false);
 
             $table->integer('type_id')->unsigned()->index();
-            $table->foreign('type_id')->references('id')->on('types');
+            $table->foreign('type_id')->references('id')->on('spot_types');
 
             $table->timestamps();
         });
