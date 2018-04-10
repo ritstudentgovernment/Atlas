@@ -18,10 +18,14 @@ class CreateSpotsTable extends Migration
             $table->string('title');
             $table->integer('quietLevel');
             $table->text('notes')->nullable();
-            $table->boolean('approved')->default(false);
+
+            $table->integer('status')->default(0); // Status: 0 - under review, 1 - public, 2 - designated
 
             $table->integer('type_id')->unsigned()->index();
             $table->foreign('type_id')->references('id')->on('spot_types');
+
+            $table->float("lat");
+            $table->float("lng");
 
             $table->timestamps();
         });

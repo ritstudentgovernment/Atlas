@@ -6,5 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class SpotType extends Model
 {
-    //
+
+    protected $hidden  = ['id', 'category_id', 'created_at', 'updated_at'];
+    protected $appends = ['category'];
+
+    public function getCategoryAttribute() {
+
+        $type = $this->category()->getResults();
+
+        return $type;
+
+    }
+
+    public function category(){
+
+        return $this->belongsTo(SpotCategory::class);
+
+    }
+
 }

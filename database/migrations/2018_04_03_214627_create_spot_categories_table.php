@@ -13,10 +13,11 @@ class CreateSpotCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('categories', function (Blueprint $table) {
+
+        Schema::create('spot_categories', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('colorHex');
+            $table->string('icon_prefix');
             $table->text("description");
             $table->timestamps();
         });
@@ -31,6 +32,7 @@ class CreateSpotCategoriesTable extends Migration
     public function down()
     {
 
+        Schema::dropIfExists('spot_categories');
         Schema::dropIfExists('categories');
 
     }

@@ -16,8 +16,8 @@ class CreateSpotTypesTable extends Migration
         Schema::create('spot_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->integer('parent_category')->unsigned()->index();
-            $table->foreign('parent_category')->references('id')->on('categories');
+            $table->integer('category_id')->unsigned()->index();
+            $table->foreign('category_id')->references('id')->on('spot_categories');
             $table->timestamps();
         });
     }

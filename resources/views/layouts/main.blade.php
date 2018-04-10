@@ -15,13 +15,15 @@
 
 @include("includes.nav")
 
-<div id="wrapper">
+<main id="app">
 
     @yield("body")
 
-</div>
+</main>
 
 @include("includes.footer")
+
+@yield("scripts")
 
 </body>
 </html>
