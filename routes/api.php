@@ -13,6 +13,12 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
+Route::get('/spots','SpotController@index');
+Route::get('/spots/{spot_id}','SpotController@get');
+Route::post('/spots/create','SpotController@store');
+Route::post('/spots/update/{spot_id}','SpotController@update');
+
+Route::get('/admin/users','UserController@index')->middleware('permission:administer');
+Route::post('/admin/users/promote/{id}/reviewer','UserController@promoteReviewer')->middleware('permission:administer');
+Route::post('/admin/users/promote/{id}/admin','UserController@promoteAdmin')->middleware('permission:administer');

@@ -17,6 +17,10 @@
   height: 30px;
 }
 
+#naps-header .wrapper a {
+  color: #0f0f0f;
+}
+
 /* -- Mixins -- */
 
 /* -- Global Classes -- */

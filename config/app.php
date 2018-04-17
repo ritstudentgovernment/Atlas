@@ -161,6 +161,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         Folklore\Image\ImageServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+        StudentAffairsUwm\Shibboleth\ShibbolethServiceProvider::class,
+        StudentAffairsUwm\Shibboleth\ShibalikeServiceProvider::class,
 
     ],
 

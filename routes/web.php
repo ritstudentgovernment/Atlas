@@ -45,3 +45,6 @@ Route::get('splash', function () {
     return view('splash');
 
 });
+
+Route::redirect('/login', '/shibboleth-login')->name('login');
+Route::redirect('/logout', '/shibboleth-logout')->name('logout');

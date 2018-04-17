@@ -16,16 +16,14 @@ class SpotCategoryTableSeeder extends Seeder
 
         DB::table('spot_categories')->insert([
 
-            'name' => "Nap Spot",
-            'icon_prefix' => "naps",
+            'name' => "Nap",
             'description' => "A nap spot is a place on campus you can rest your eyes at."
 
         ]);
 
         DB::table('spot_categories')->insert([
 
-            'name' => "Energy Spot",
-            'icon_prefix' => "energy",
+            'name' => "Energy",
             'description' => "An energy spot is a place on campus you can recharge."
 
         ]);

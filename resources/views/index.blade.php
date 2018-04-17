@@ -12,112 +12,161 @@
 
 @section("body")
 
-    <div id="map"></div>
+    <div id="map">
+
+        <div id="legend"></div>
+        <div id="napMap"></div>
+        <button id="new-nap" class="cursor circle material-hover transition">
+            <span class="material-icon-container"><i class="material-icons">add</i></span>
+        </button>
+
+    </div>
 
 @endsection
-<script>
 
-    var markers = [],
-        spots = <?= json_encode($spots) ?>,
-        icons = {},
-        iconBase = "/images/",
-        iconPrefixes = <?= json_encode($pin_icon_prefixes) ?>,
-        iconTypes = [
-            "Designated",
-            "Public",
-            "Under Review"
-        ];
+@section("scripts")
 
-    // Generate icons map from given prefixes
-    for(var iconPrefixIndex in iconPrefixes){
+    <script>
 
-        var iconPrefix = iconPrefixes[iconPrefixIndex];
-        for(var iconTypeIndex in iconTypes) {
+        var markers = [],
+            icons = {},
+            openInfoWindow = false,
+            spots = <?= json_encode($spots) ?>;
 
-            var iconType = iconTypes[iconTypeIndex];
+        function restrictMapMovement(){
 
-            var iconIdentifier =
-                iconPrefix.toLowerCase().replace(/ /g, '_')
-                + "_" +
-                iconType.toLowerCase().replace(/ /g, '_');
+            var lastValidCenter = map.getCenter();
+            var allowedBounds = new google.maps.LatLngBounds(
 
-            icons[iconIdentifier] = {
+                new google.maps.LatLng(43.08138,-77.68277),
+                new google.maps.LatLng(43.087664,-77.666849)
 
-                name: capitalizeFirstLetter(iconPrefix) + " " + iconType,
-                icon: iconBase + iconIdentifier + "_marker.png"
+            );
+            google.maps.event.addListener(map, 'center_changed', function() {
 
-            }
+                if (allowedBounds.contains(map.getCenter())) {
+
+                    lastValidCenter = map.getCenter();
+                    return;
+
+                }
+                map.panTo(lastValidCenter);
+
+            });
+            map.setOptions({ minZoom: 15, maxZoom: 20 });
 
         }
 
-    }
+        function getIconForSpot(spot){
 
-    function capitalizeFirstLetter(string) {
+            var baseIconDirectory = "images/spots";
+            var iconCategory = spot.type.category.name;
+            var icon_directory = iconCategory.toLowerCase().trim();
+            var classification = spot.classification;
+            var icon = classification+".png";
+            var url = baseIconDirectory+"/"+icon_directory+"/"+icon;
 
-        return string.charAt(0).toUpperCase() + string.slice(1);
+            if(!icons.hasOwnProperty(iconCategory)) icons[iconCategory] = {};
+            if(!icons[iconCategory].hasOwnProperty(url)){
 
-    }
-
-    function restrictMapMovement(){
-
-        var lastValidCenter = map.getCenter();
-        var allowedBounds = new google.maps.LatLngBounds(
-
-            new google.maps.LatLng(43.08138,-77.68277),
-            new google.maps.LatLng(43.087664,-77.666849)
-
-        );
-        google.maps.event.addListener(map, 'center_changed', function() {
-
-            if (allowedBounds.contains(map.getCenter())) {
-
-                lastValidCenter = map.getCenter();
-                return;
+                icons[iconCategory][url] = classification === "review" ? "Under Review" : classification;
 
             }
-            map.panTo(lastValidCenter);
 
-        });
+            return {
+                url: url,
+                size: new google.maps.Size(30, 35),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(15, 35),
+                scaledSize: new google.maps.Size(30, 35)
+            };
 
-    }
+        }
 
-    function dropSpots(){
+        function addClickHandler(marker, spot){
 
-        for(var spotIndex in spots){
+            var infowindow = new google.maps.InfoWindow({
 
-            var spot = spots[spotIndex];
-            markers.push(
+                content: spot.type.category.description
 
-                new google.maps.Marker({
+            });
+
+            marker.addListener('click', function() {
+
+                if(openInfoWindow)openInfoWindow.close();
+
+                window.map.setZoom(16);
+                window.map.panTo(marker.getPosition());
+
+                infowindow.open(marker.get('map'), marker);
+                openInfoWindow = infowindow;
+
+            });
+
+        }
+
+        function dropSpots(){
+
+            for(var spotIndex in spots){
+
+                var spot = spots[spotIndex];
+                var marker = new google.maps.Marker({
 
                     position: {lat: Number(spot.lat), lng:Number(spot.lng)},
                     animation: google.maps.Animation.DROP,
-                    map: window.map
+                    map: window.map,
+                    icon: getIconForSpot(spot),
+                    title: spot.name
 
-                })
+                });
 
-            );
+                addClickHandler(marker, spot);
+
+                markers.push(marker);
+
+            }
 
         }
 
-    }
+        function buildLegend(){
 
-    function initMap() {
+            var legend = document.getElementById('legend');
+            for (var classificationKey in icons) {
 
-        // Instantiate Google Maps on the page
-        window.map = new google.maps.Map(document.getElementById('map'), {
+                var classificationIcons = icons[classificationKey];
+                var classificationSection = document.createElement('div');
+                classificationSection.className = 'legendSection';
+                classificationSection.innerHTML = '<h3>'+classificationKey+' Spot</h3>';
+                for(var iconUrl in classificationIcons){
 
-            center: <?= json_encode($map["center"]) ?>,
-            zoom: 16
+                    var legendRow = document.createElement('div');
+                    var name = classificationIcons[iconUrl];
+                    legendRow.innerHTML = '<img src="' + iconUrl + '"> ' + name;
+                    classificationSection.appendChild(legendRow);
 
-        });
+                }
+                legend.appendChild(classificationSection);
 
-        dropSpots();
-        restrictMapMovement();
+            }
 
-    }
+        }
 
-</script>
+        function initMap() {
 
-@section("scripts")
+            // Instantiate Google Maps on the page
+            window.map = new google.maps.Map(document.getElementById('napMap'), {
+
+                center: <?= json_encode($map["center"]) ?>,
+                zoom: 16
+
+            });
+
+            restrictMapMovement();
+            dropSpots();
+            buildLegend();
+
+        }
+
+    </script>
+
 @endsection

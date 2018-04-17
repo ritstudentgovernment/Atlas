@@ -19,7 +19,7 @@ class CreateSpotsTable extends Migration
             $table->integer('quietLevel');
             $table->text('notes')->nullable();
 
-            $table->integer('status')->default(0); // Status: 0 - under review, 1 - public, 2 - designated
+            $table->integer('status')->default(0); // Status: 0 - review, 1 - public, 2 - designated
 
             $table->integer('type_id')->unsigned()->index();
             $table->foreign('type_id')->references('id')->on('spot_types');

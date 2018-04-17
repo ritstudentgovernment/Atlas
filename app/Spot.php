@@ -7,8 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 class Spot extends Model
 {
 
-    protected $hidden  = ['type_id', 'id', 'created_at', 'updated_at'];
-    protected $appends = ['type'];
+    protected $appends = ['type', 'classification'];
+    protected $hidden  = ['type_id', 'id', 'status','created_at', 'updated_at'];
+    protected $fillable = ['title', 'quietLevel', 'notes', 'type_id', 'lat', 'lng'];
+
+    public function getClassificationAttribute() {
+
+        $classifications = [
+
+            0 => "review",
+            1 => "public",
+            2 => "designated"
+
+        ];
+
+        return array_key_exists($this->status, $classifications) ? $classifications[$this->status] : "review";
+
+    }
 
     public function getTypeAttribute() {
 
