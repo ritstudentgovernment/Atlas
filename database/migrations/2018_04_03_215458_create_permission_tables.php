@@ -9,7 +9,7 @@ class CreatePermissionTables extends Migration
 
     private function modelHasSchema($permissionOrRole, $tableNames){
 
-        Schema::create($tableNames['model_has_'.$permissionOrRole], function (Blueprint $table) use ($tableNames, $permissionOrRole) {
+        Schema::create($tableNames['model_has_'.$permissionOrRole."s"], function (Blueprint $table) use ($tableNames, $permissionOrRole) {
             $table->integer($permissionOrRole.'_id')->unsigned();
             $table->morphs('model');
 
