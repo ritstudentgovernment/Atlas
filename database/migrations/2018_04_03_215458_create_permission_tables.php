@@ -25,7 +25,7 @@ class CreatePermissionTables extends Migration
 
     private function basicSchema($permissionOrRole, $tableNames){
 
-        Schema::create($tableNames[$permissionOrRole], function (Blueprint $table) {
+        Schema::create($tableNames[$permissionOrRole."s"], function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('guard_name');
