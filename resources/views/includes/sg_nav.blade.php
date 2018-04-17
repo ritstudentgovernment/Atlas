@@ -1,200 +1,13 @@
-
-<style>
-
-    #sg-global-nav{
-
-        overflow: hidden;
-        height: 30px;
-        padding:0;
-
-    }
-    .dropbtn {
-        position: relative;
-        background-color: #ff7700;
-        color: white;
-        font-size: 12px;
-        padding-right: 20px;
-        border: none;
-        font-weight: bold;
-        cursor: pointer;
-        outline: 0;
-        padding-bottom: 5px;
-        padding-top: 5px;
-    }
-
-    .dropbtn-mobile {
-        background-color: #ff7700;
-        color: white;
-        font-size: 12px;
-        padding-right: 5%;
-        border: none;
-        font-weight: bold;
-        cursor: pointer;
-        outline: 0;
-        height: 30px;
-    }
-
-    .dropdown-left {
-        text-align: left;
-        position: fixed;
-        display: inline-block;
-        width: 50%;
-        z-index: 99;
-        height: 30px;
-        padding-left: 5%;
-        margin-right: 50%;
-        font-family: "Montserrat";
-        padding-top: 2px;
-    }
-
-    .dropdown-right-main {
-        z-index: 99;
-        height: 30px;
-        padding-right: 5%;
-        font-family: "Montserrat";
-        text-align: right;
-    }
-
-
-    .dropdown-right-mobile {
-        display: none;
-        position: fixed;
-        width: 50%;
-        z-index: 99;
-        height: 30px;
-        /*padding-right: 75px;*/
-        margin-left: 50%;
-        font-family: "Montserrat";
-        text-align: right;
-    }
-
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        right: 0;
-        background-color: #f9f9f9;
-        min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        z-index: 1;
-        font-size: 12px;
-        border-top: 8px;
-        border-top-style: solid;
-        border-top-color: #ff7700;
-        margin-top: 5px;
-        font-family: "Montserrat";
-        text-align: left;
-    }
-
-    .dropdown-content a {
-        color: black;
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
-        font-family: "Montserrat";
-    }
-
-    .dropdown-content-mobile p {
-        color: black;
-        padding: 8px 12px;
-        text-decoration: none;
-        display: block;
-        font-family: "Montserrat";
-        margin-bottom: 0px;
-        background-color: lightgrey;
-    }
-
-    .dropdown-content a:hover
-    {
-        color: grey;
-    }
-
-    .dropdown-content-mobile a
-    {
-        color: black;
-        padding: 0px 8px;
-        text-decoration: none;
-        display: block;
-        font-family: "Montserrat";
-    }
-
-    .dropdown-content-mobile a:hover
-    {
-        color: grey;
-    }
-
-    .dropdown-content-mobile
-    {
-        display: none;
-        position: absolute;
-        background-color: #f9f9f9;
-        min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        z-index: 1;
-        font-size: 12px;
-        border-top-style: solid;
-        border-top-color: #ff7700;
-        font-family: "Montserrat";
-        text-align: left;
-        right:10px;
-        padding-bottom:10px;
-    }
-
-    .dropdown-left a {
-        background-color: #ff7700;
-        font-weight: bold;
-        color: white;
-        font-size: 12px;
-        border: none;
-        cursor: pointer;
-        font-family: "Montserrat";
-        height: 20px;
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .dropdown-left a:hover {
-        text-decoration: none;
-    }
-
-
-    .header-top{
-        height: 30px;
-        background-color: #ff7700;
-        z-index: 1001;
-        position: fixed;
-        top:0;
-        left:0;
-        right:0;
-    }
-    html,body{
-        position: relative;
-    }
-
-    .show {display:block;}
-
-    @media screen and (max-width: 992px)
-    {
-        .dropdown-right-main
-        {
-            display: none;
-        }
-        .dropdown-right-mobile{
-            display: inline-block;;
-        }
-    }
-
-</style>
+<style>.dropbtn,.dropbtn-mobile{background-color:#f70;color:#fff;font-size:12px;border:none;outline:0}.dropbtn,.dropbtn-mobile,.dropdown-left a{font-weight:700;cursor:pointer}#sg-global-nav{overflow:hidden;height:30px;padding:0}.dropbtn{position:relative;padding-right:20px;padding-bottom:5px;padding-top:5px}.dropbtn-mobile,.dropdown-right-main{padding-right:5%}.dropbtn-mobile{height:30px}.dropdown-left{text-align:left;position:fixed;display:inline-block;width:50%;z-index:99;height:30px;padding-left:5%;margin-right:50%;font-family:Montserrat;padding-top:2px}.dropdown-right-main,.dropdown-right-mobile{z-index:99;height:30px;font-family:Montserrat;text-align:right}.dropdown-right-mobile{display:none;position:fixed;width:50%;margin-left:50%}.dropdown-content,.dropdown-content-mobile{position:absolute;min-width:160px;box-shadow:0 8px 16px 0 rgba(0,0,0,.2);z-index:1;text-align:left;font-size:12px}.dropdown-content{display:none;right:0;background-color:#f9f9f9;border-top:8px;border-top-style:solid;border-top-color:#f70;margin-top:5px;font-family:Montserrat}.dropdown-content a,.dropdown-content-mobile a,.dropdown-content-mobile p{display:block;font-family:Montserrat;text-decoration:none}.dropdown-content a{color:#000;padding:12px 16px}.dropdown-content-mobile p{color:#000;padding:8px 12px;margin-bottom:0;background-color:#d3d3d3}.dropdown-content a:hover{color:grey}.dropdown-content-mobile a{color:#000;padding:0 8px}.dropdown-content-mobile a:hover{color:grey}.dropdown-content-mobile{display:none;background-color:#f9f9f9;border-top-style:solid;border-top-color:#f70;font-family:Montserrat;right:10px;padding-bottom:10px}.dropdown-left a{background-color:#f70;color:#fff;font-size:12px;border:none;font-family:Montserrat;height:20px;text-align:center;margin-top:20px}.dropdown-left a:hover{text-decoration:none}.header-top{height:30px;background-color:#f70;z-index:1001;position:fixed;top:0;left:0;right:0}body,html{position:relative}.show{display:block}@media screen and (max-width:992px){.dropdown-right-main{display:none}.dropdown-right-mobile{display:inline-block}}</style>
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 
 <nav id="sg-global-nav">
     <div class = "header-top">
-
         <div class="dropdown-left">
             <a href="https://sg.rit.edu/">RIT Student Government</a>
         </div>
-
         <div class="dropdown-right-main">
             <button id="1" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn">
                 About
@@ -208,7 +21,6 @@
                     <a href="https://sg.rit.edu/awards/">Awards</a>
                 </div>
             </button>
-
             <button id="2" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn">Services
                 <i class="material-icons" style="font-size:12px;font-weight: bold;">keyboard_arrow_down</i>
                 <div id="myDropdown2" class="dropdown-content">
@@ -223,7 +35,6 @@
                     <a href="https://sg.rit.edu/breakbus/">Bike Share</a>
                 </div>
             </button>
-
             <button id="3" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn">Resources
                 <i class="material-icons" style="font-size:12px;font-weight: bold;">keyboard_arrow_down</i>
                 <div id="myDropdown3" class="dropdown-content">
@@ -232,7 +43,6 @@
                     <a href="https://sg.rit.edu/resources/sg-logos/">SG Logos</a>
                 </div>
             </button>
-
             <button id="4" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn">Get Involved
                 <i class="material-icons" style="font-size:12px;font-weight: bold;">keyboard_arrow_down</i>
                 <div id="myDropdown4" class="dropdown-content">
@@ -242,11 +52,9 @@
                 </div>
             </button>
         </div>
-
         <div class="dropdown-right-mobile">
             <button id="10" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn-mobile">
                 <i class="material-icons">dehaze</i>
-
                 <div id="myDropdown10" class="dropdown-content-mobile">
 
                     <p>About</p>
@@ -277,11 +85,10 @@
                     <a href="https://sg.rit.edu/spirit/">Project SpiRIT</a>
                     <a href="https://sg.rit.edu/get-involved/events-calendar/">Event Calendar</a>
                     <a href="https://sg.rit.edu/get-involved/">Opportunities</a>
+
                 </div>
             </button>
-
         </div>
-
     </div>
 </nav>
 
