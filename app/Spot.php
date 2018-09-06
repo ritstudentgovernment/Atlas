@@ -9,7 +9,13 @@ class Spot extends Model
 
     protected $appends = ['type', 'classification'];
     protected $hidden  = ['type_id', 'id', 'status','created_at', 'updated_at'];
-    protected $fillable = ['title', 'quietLevel', 'notes', 'type_id', 'lat', 'lng'];
+    protected $fillable = ['title', 'quietLevel', 'notes', 'type_id', 'user_id', 'lat', 'lng'];
+
+    public function author(){
+
+        return $this->belongsTo(User::class);
+
+    }
 
     public function getClassificationAttribute() {
 
@@ -20,7 +26,6 @@ class Spot extends Model
             2 => "designated"
 
         ];
-
         return array_key_exists($this->status, $classifications) ? $classifications[$this->status] : "review";
 
     }
@@ -28,7 +33,6 @@ class Spot extends Model
     public function getTypeAttribute() {
 
         $type = $this->type()->getResults();
-
         return $type;
 
     }

@@ -8,6 +8,7 @@ class SpotCategory extends Model
 {
 
     protected $hidden  = ['id', 'created_at', 'updated_at'];
+    protected $fillable = ['name','description','colorCode'];
 
     public function types(){
 

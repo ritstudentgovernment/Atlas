@@ -18,6 +18,7 @@ class CreateSpotCategoriesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->text("description");
+            $table->text('colorCode');
             $table->timestamps();
         });
 

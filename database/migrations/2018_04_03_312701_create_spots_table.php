@@ -24,8 +24,12 @@ class CreateSpotsTable extends Migration
             $table->integer('type_id')->unsigned()->index();
             $table->foreign('type_id')->references('id')->on('spot_types');
 
+            $table->integer('user_id')->unsigned()->index();
+            $table->foreign('user_id')->references('id')->on('users');
+
             $table->float("lat");
             $table->float("lng");
+            $table->string('building');
 
             $table->timestamps();
         });

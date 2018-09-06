@@ -2,6 +2,7 @@
 
 use Faker\Generator as Faker;
 use App\SpotType as Type;
+use App\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,7 @@ $factory->define(App\Spot::class, function (Faker $faker) {
         'notes'      => $faker->text(100),
         'status'     => $faker->numberBetween(0, 2),
         'type_id'    => $faker->numberBetween(1, sizeof($types)),
+        'user_id'    => User::inRandomOrder()->first()->id,
         "lat"    => $faker->randomFloat(5, $center_lat - $lat_range, $center_lat + $lat_range),
         "lng"    => $faker->randomFloat(5, $center_lng - $lng_range, $center_lng + $lng_range)
     ];

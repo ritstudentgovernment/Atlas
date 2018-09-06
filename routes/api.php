@@ -1,7 +1,5 @@
  <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,12 +11,15 @@ use Illuminate\Http\Request;
 |
 */
 
-
-Route::get('/spots','SpotController@index');
+Route::get('/spots/categories','SpotCategoryController@get');
 Route::get('/spots/{spot_id}','SpotController@get');
-Route::post('/spots/create','SpotController@store');
-Route::post('/spots/update/{spot_id}','SpotController@update');
+Route::get('/spots','SpotController@get');
 
-Route::get('/admin/users','UserController@index')->middleware('permission:administer');
-Route::post('/admin/users/promote/{id}/reviewer','UserController@promoteReviewer')->middleware('permission:administer');
-Route::post('/admin/users/promote/{id}/admin','UserController@promoteAdmin')->middleware('permission:administer');
+Route::post('/spots/approve/{spot_id}','SpotController@update')->middleware('permission:approve spots');
+Route::post('/spots/create','SpotController@store')->middleware('permission:add spot');
+
+Route::group(['middleware' => ['permission:administer']], function () {
+    Route::get('/admin/users','UserController@index');
+    Route::post('/admin/users/promote/{user}/reviewer','UserController@promoteReviewer');
+    Route::post('/admin/users/promote/{user}/admin','UserController@promoteAdmin');
+});

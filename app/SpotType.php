@@ -12,9 +12,7 @@ class SpotType extends Model
 
     public function getCategoryAttribute() {
 
-        $type = $this->category()->getResults();
-
-        return $type;
+        return $this->category()->getResults();
 
     }
 

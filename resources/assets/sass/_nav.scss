@@ -1,22 +1,23 @@
 
 @import "variables";
 
-#naps-header{
+#naps-header {
 
   color: $dark;
   background-color: $bright;
   border-bottom: 1px solid #ccc;
 
-  .wrapper{
+  .wrapper {
 
     width: calc(100% - 2em);
+    min-height: 30px;
     margin: 0 auto;
 
-    #logo{
+    #logo, #left-logo {
 
       overflow: hidden;
 
-      img{
+      img {
 
         height: 30px;
 
@@ -24,11 +25,33 @@
 
     }
 
-    a{
+    #left-logo, #mobile-menu-button {
+
+      display: none;
+
+    }
+
+    a {
 
       color:$dark;
 
     }
+	
+	@media screen and (max-width: $mobile-breakpoint) {
+
+      #logo, a:not(#left-logo) {
+
+        display: none;
+
+      }
+
+      #left-logo {
+
+        display: block;
+
+      }
+
+	}
 
   }
 
