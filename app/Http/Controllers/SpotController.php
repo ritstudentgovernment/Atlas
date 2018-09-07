@@ -65,7 +65,7 @@ class SpotController extends Controller
         $lat_range  = (float)env("GOOGLE_MAPS_LAT_CHANGE");
         $lng_range  = (float)env("GOOGLE_MAPS_LNG_CHANGE");
 
-        return view('index', [
+        return view('pages.home', [
 
             "map" => [
                 "api_key" => env("GOOGLE_MAPS_API_KEY"),

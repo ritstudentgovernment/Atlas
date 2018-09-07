@@ -29,7 +29,7 @@
   color: #0f0f0f;
 }
 
-@media screen and (max-width: 620px) {
+@media screen and (max-width: 640px) {
   #naps-header .wrapper #logo,
   #naps-header .wrapper a:not(#left-logo) {
     display: none;
@@ -335,6 +335,11 @@
 
 .material-icons.md-48 {
   font-size: 48px;
+}
+
+body,
+html {
+  background-color: #f0f0f0;
 }
 
 .uk-icon-link {

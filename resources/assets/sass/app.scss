@@ -9,6 +9,12 @@
 @import "nav";
 @import "formatting_classes";
 
+body, html {
+
+  background-color: $body-bg;
+
+}
+
 .uk-icon-link{
 
   display: inline-flex;

@@ -12,12 +12,8 @@
 */
 
 Route::get('/', 'SpotController@index');
-
-Route::get('splash', function () {
-
-    return view('splash');
-
-});
+Route::get('/about', function () { return view('pages.about'); });
+Route::get('splash', function () { return view('pages.splash'); });
 
 Route::redirect('/login', '/shibboleth-login')->name('login');
 Route::redirect('/logout', '/shibboleth-logout')->name('logout');
