@@ -5,8 +5,8 @@
     <nav class="wrapper relative" uk-navbar>
 
         <div class="uk-navbar-left">
-            <a href="/" class="uk-icon-link padding-left"><span uk-icon="icon: info" class="padding-right"></span>About</a>
-            <a id="left-logo" href="/" title="Home | Naps - RIT Student Government">
+            <a href="{{ route('about') }}" class="uk-icon-link padding-left"><span uk-icon="icon: info" class="padding-right"></span>About</a>
+            <a id="left-logo" href="{{ route('home') }}" title="Home | Naps - RIT Student Government">
                 <img src="https://naps.rit.edu/logo.svg" alt="naps logo">
             </a>
         </div>

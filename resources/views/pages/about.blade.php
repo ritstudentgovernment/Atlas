@@ -37,7 +37,19 @@
                             Once you add a Nap Spot, you will see it represented by a brown marker, this means that your spot is waiting to be reviewed by one of our moderators and will only be visible to you. Once your Nap spot gets reviewed, you will receive an email and your Nap Spot will turn into an orange marker, meaning that its public and visible to the entire Naps community.
                         </p>
                     </li>
-                    <li>Policies</li>
+                    <li>
+                        <blockquote>
+                            <p>"Since free and civil discourse is at the heart of a university community, users should communicate in a manner that advances the cause of learning and mutual understanding."</p>
+                            <footer>RIT Code of Conduct for Computer and Network Use</footer>
+                        </blockquote>
+                        <p>
+                            Use of this site falls under the <a href="http://www.rit.edu/computerconduct/">RIT Code of Conduct for Computer and Network Use</a>.
+                            <br />
+                            Student Government reserves the right to remove any evaluation or user at any time for violating the Code of Conduct. This includes, but is not limited to, creating an intimidating, hostile or abusive environment for any member of the RIT community, or posting of any obscene, defamatory, threatening, or otherwise harassing evaluations.
+                            <br />
+                            Please exercise good judgment when using this service.
+                        </p>
+                    </li>
                     <li>Privacy</li>
                     <li>Technology</li>
                 </ul>
