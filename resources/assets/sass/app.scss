@@ -15,6 +15,26 @@ body, html {
 
 }
 
+a, a:hover {
+
+  color: $highlight;
+
+  &:hover {
+
+    border-bottom-color: $highlight;
+
+  }
+
+}
+
+blockquote {
+
+  background: #fafafa;
+  padding: 5px 0 10px 10px;
+  border-left: 5px solid #ddd;
+
+}
+
 .uk-icon-link{
 
   display: inline-flex;

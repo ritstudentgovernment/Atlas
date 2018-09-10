@@ -15,22 +15,22 @@
             <div id="about-tab-nav">
                 <div class="center">
                     <ul class="uk-child-width-expand" uk-tab="connect: #about-content-switcher">
-                        <li class="uk-active"><a>About</a></li>
-                        <li><a>Policies</a></li>
-                        <li><a>Privacy</a></li>
-                        <li><a>Technology</a></li>
+                        <li class="tab-about uk-active"><a>About</a></li>
+                        <li class="tab-policies"><a>Policies</a></li>
+                        <li class="tab-privacy"><a>Privacy</a></li>
+                        <li class="tab-technology"><a>Technology</a></li>
                     </ul>
                 </div>
             </div>
             <div id="about-content">
                 <ul id="about-content-switcher" class="uk-switcher">
                     <li>
-                        <h5>What is Naps?</h5>
+                        <h4>What is Naps?</h4>
                         <p>
                             RIT Nap Spot Map is a mapping tool to mark the best places to take naps on campus. The content of this application is provided by RIT students and moderated by the RIT Student Government.
                         </p>
 
-                        <h5>How can I contribute?</h5>
+                        <h4>How can I contribute?</h4>
                         <p>
                             In RIT Nap Spot Map everyone can be a Naps guru! To contribute, click in Add an Entry, select a place were you regularly Nap on campus, fill in the extra information and add it to the map.
                             <br />
@@ -42,13 +42,9 @@
                             <p>"Since free and civil discourse is at the heart of a university community, users should communicate in a manner that advances the cause of learning and mutual understanding."</p>
                             <footer>RIT Code of Conduct for Computer and Network Use</footer>
                         </blockquote>
-                        <p>
-                            Use of this site falls under the <a href="http://www.rit.edu/computerconduct/">RIT Code of Conduct for Computer and Network Use</a>.
-                            <br />
-                            Student Government reserves the right to remove any evaluation or user at any time for violating the Code of Conduct. This includes, but is not limited to, creating an intimidating, hostile or abusive environment for any member of the RIT community, or posting of any obscene, defamatory, threatening, or otherwise harassing evaluations.
-                            <br />
-                            Please exercise good judgment when using this service.
-                        </p>
+                        <p>Use of this site falls under the <a href="http://www.rit.edu/computerconduct/">RIT Code of Conduct for Computer and Network Use</a>.</p>
+                        <p>Student Government reserves the right to remove any evaluation or user at any time for violating the Code of Conduct. This includes, but is not limited to, creating an intimidating, hostile or abusive environment for any member of the RIT community, or posting of any obscene, defamatory, threatening, or otherwise harassing evaluations.</p>
+                        <p>Please exercise good judgment when using this service.</p>
                     </li>
                     <li>Privacy</li>
                     <li>Technology</li>
@@ -57,5 +53,46 @@
             </div>
         </div>
     </div>
+
+@endsection
+
+@section("scripts")
+
+    <script>
+
+        function addEventListeners() {
+
+            var tabNav = $('#about-tab-nav');
+            tabNav.find('li a').click(function(){
+
+                var tab = $(this).html();
+                var link = tab.replace(' ', '-').toLowerCase();
+                $.urlParam('tab', link);
+
+            });
+
+        }
+
+        function determineTab() {
+
+            let tab = $.urlParam('tab');
+
+            if (tab) {
+
+                $('#about-tab-nav').find('.uk-active').removeClass('uk-active');
+                $('.tab-' + tab).addClass('uk-active');
+
+            }
+
+        }
+
+        $(window).ready(function(){
+
+            determineTab();
+            addEventListeners();
+
+        });
+
+    </script>
 
 @endsection
