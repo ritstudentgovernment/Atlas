@@ -46,8 +46,33 @@
                         <p>Student Government reserves the right to remove any evaluation or user at any time for violating the Code of Conduct. This includes, but is not limited to, creating an intimidating, hostile or abusive environment for any member of the RIT community, or posting of any obscene, defamatory, threatening, or otherwise harassing evaluations.</p>
                         <p>Please exercise good judgment when using this service.</p>
                     </li>
-                    <li>Privacy</li>
-                    <li>Technology</li>
+                    <li>
+                        <p>RIT Student Government takes your privacy seriously.</p>
+                        <h4>Access to Naps Data</h4>
+                        <p>In order to provide a great nap mapping experience, while respecting the needs of RIT's nap spots, the following protections are in place for nap spot data:</p>
+                        <ul>
+                            <li>Nap spots may not access any nap spot data.</li>
+                            <li>The names of the nap spot mappers are kept anonymous.</li>
+                        </ul>
+                        <h4>Automated Emails</h4>
+                        <p>For the purposes of reminding students to map nap spots, Naps automatically retrieves a list of all University-affiliated nap spots and their location. Naps does not take advantage of any privileged information sources. All of the information used by Naps is available to any member of the RIT community.</p>
+                        <h4>Nap Spot Verification</h4>
+                        <p>In order to protect the integrity of our data, the status of each nap spot is automatically verified by the system. Our system is only accessing publicly available nap spot information. Information automatically collected through this system is only used for the purposes of verifying nap spots, sending reminders and development of the system.</p>
+                    </li>
+                    <li>
+                        <h4>Innovative Open Technology</h4>
+                        <p>Innovative technology is at the heart of Student Government's Services offerings. By using the newest and most effective technologies, we save time and money, while delivering world-class software.</p>
+                        <h4>Commitment to Open Source</h4>
+                        <p>Like PawPrints, the RIT Bikeshare website, RITPedia and SG Sites, Naps relies on Open Source Software to deliver the high-quality experience Tigers have come to expect. Student Government has made a commitment to give back by contributing all of our software to the FOSS community. Find us on <a href="https://github.com/ritstudentgovernment/laravel-naps">GitHub</a>.</p>
+                        <h4>Pioneering Advanced Technologies</h4>
+                        <p>Naps relies on the following advanced technologies to deliver a cutting-edge high performance experience to students. See below for a partial list:</p>
+                        <ul>
+                            <li>Laravel</li>
+                            <li>Google Maps</li>
+                            <li>UIKit</li>
+                            <li>Vue JS</li>
+                        </ul>
+                    </li>
                 </ul>
                 <hr class="uk-divider-icon" />
             </div>
