@@ -1,11 +1,11 @@
 
 // Colors
-$body-bg: #f5f5f5;
-
 $dark: #0f0f0f;
 $light: #f0f0f0;
-$bright: #fff;
-$highlight: #f70;
+$bright: #ffffff;
+$highlight: #ff7700;
+
+$body-bg: $light;
 
 // Typography
 $font-title: "Montserrat", Arial;
@@ -13,5 +13,4 @@ $font-subtitle: "Slabo", "Montserrat", Arial;
 $font-body: "Raleway", "Slabo", sans-serif;
 
 // General Variables
-$mobile-breakpoint: 620px;
-
+$mobile-breakpoint: 640px;

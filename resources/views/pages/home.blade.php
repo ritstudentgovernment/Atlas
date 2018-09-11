@@ -4,7 +4,7 @@
 
 @section('page_head')
 
-    <link rel="stylesheet" href="{{ mix('/css/index.css') }}">
+    <link rel="stylesheet" href="{{ mix('/css/home.css') }}">
 
 @endsection
 

@@ -1,6 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Montserrat:400,500,700|Raleway:300,400|Slabo+27px);#naps-header {
   color: #0f0f0f;
-  background-color: #fff;
+  background-color: #ffffff;
   border-bottom: 1px solid #ccc;
 }
 
@@ -29,7 +29,7 @@
   color: #0f0f0f;
 }
 
-@media screen and (max-width: 620px) {
+@media screen and (max-width: 640px) {
   #naps-header .wrapper #logo,
   #naps-header .wrapper a:not(#left-logo) {
     display: none;
@@ -163,9 +163,9 @@
   border-radius: 3px;
   font-family: "Montserrat", Arial;
   font-size: 0.7em;
-  background-color: #f70;
+  background-color: #ff7700;
   color: #f0f0f0;
-  border: 1px solid #f70;
+  border: 1px solid #ff7700;
   margin-right: 5px;
   text-transform: uppercase;
 }
@@ -180,8 +180,8 @@
 }
 
 .material-button.minimal {
-  background-color: #fff;
-  border: 1px solid #fff;
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
   color: #0f0f0f;
 }
 
@@ -304,7 +304,7 @@
 }
 
 .white-background {
-  background-color: #fff;
+  background-color: #ffffff;
 }
 
 .material-icon-container {
@@ -335,6 +335,27 @@
 
 .material-icons.md-48 {
   font-size: 48px;
+}
+
+body,
+html {
+  background-color: #f0f0f0;
+}
+
+a,
+a:hover {
+  color: #ff7700;
+}
+
+a:hover,
+a:hover:hover {
+  border-bottom-color: #ff7700;
+}
+
+blockquote {
+  background: #fafafa;
+  padding: 5px 0 10px 10px;
+  border-left: 5px solid #ddd;
 }
 
 .uk-icon-link {

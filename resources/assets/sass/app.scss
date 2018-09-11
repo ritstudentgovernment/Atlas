@@ -9,6 +9,32 @@
 @import "nav";
 @import "formatting_classes";
 
+body, html {
+
+  background-color: $body-bg;
+
+}
+
+a, a:hover {
+
+  color: $highlight;
+
+  &:hover {
+
+    border-bottom-color: $highlight;
+
+  }
+
+}
+
+blockquote {
+
+  background: #fafafa;
+  padding: 5px 0 10px 10px;
+  border-left: 5px solid #ddd;
+
+}
+
 .uk-icon-link{
 
   display: inline-flex;
