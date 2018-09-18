@@ -98,7 +98,7 @@ class SpotController extends Controller
             'notes'     => 'required',
             'type_id'   => 'required|numeric',
             'lat'       => 'required|numeric',
-            'lng'       => 'required|numeric',
+            'lng'       => 'required|numeric'
         );
 
         $validator = Validator::make(Input::all(), $rules);
@@ -112,10 +112,30 @@ class SpotController extends Controller
             'type_id'   => $request->input('type_id'),
             'lat'       => $request->input('lat'),
             'lng'       => $request->input('lng'),
+            'status'    => $request->user()->can('approve spots') ? 2 : 0
 
         ]);
 
         return $spot;
+
+    }
+
+    /**
+     * Endpoint hit to approve a nap spot.
+     *
+     * @param Request $request the http request
+     * @param Spot $spot the spot to try and approve
+     * @return boolean Whether the operation would logically succeed or not
+     */
+    public function approve(Request $request, Spot $spot){
+
+        // return false if the user is not authorized to approve spots or the status is not 0.
+        if ($spot->status != 0 || !$request->user()->can('approve spots')) return false;
+
+        $spot->status = 1;
+        $spot->save();
+
+        return true;
 
     }
 

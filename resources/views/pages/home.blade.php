@@ -5,6 +5,7 @@
 @section('page_head')
 
     <link rel="stylesheet" href="{{ mix('/css/home.css') }}">
+    <script src="{{ mix('js/home.js') }}"></script>
 
 @endsection
 
@@ -29,7 +30,150 @@
 
     <script>
 
-        var markers = [],
+        function Position(){
+
+
+
+        }
+
+        function Type(){
+
+
+
+        }
+
+        function Descriptor(){
+
+
+
+        }
+
+        function Classification(){
+
+
+
+        }
+
+        function Category(){
+
+
+
+        }
+
+        function Spot(data){
+
+            this.data = data;
+            this.icon = null;
+
+            this.buildIcon = function(canvasBuilder){
+
+                if (canvasBuilder instanceof CanvasBuilder) {
+
+                    let icon = "T";
+                    let color = "ff7700";
+                    let image = canvasBuilder.makeImage(icon, color);
+
+                    this.icon = {
+                        image: image,
+                        title: data.classification,
+                        category: data.type.category.name
+                    };
+
+                    return this.icon;
+
+                }
+
+                return false;
+
+            };
+
+            this.drop = function(){
+
+
+
+            }
+
+        }
+
+        function Builder(){
+
+            this.spots = [];
+            this.legend = {};
+            let reference = this;
+
+            function instantiateSpots(json){
+
+                let canvasBuilder = new CanvasBuilder();
+                canvasBuilder.initialize();
+
+                json.forEach(function(spotData){
+
+                    let spot = new Spot(spotData);
+                    let icon = spot.buildIcon(canvasBuilder);
+
+                    // Add the spot to the list of spots in the builder instance
+                    reference.spots.push(spot);
+
+                    // Build the virtual legend map (with no duplicates)
+                    reference.legend[icon.category] = reference.legend[icon.category] ? reference.legend[icon.category] : {};
+
+                    if (!reference.legend[icon.category].hasOwnProperty(icon.title)) {
+
+                        reference.legend[icon.category][icon.title] = icon.image;
+
+                    }
+
+                });
+
+            }
+
+            this.buildLegend = function(){
+
+                let legend = document.getElementById('legend');
+
+                for (let categoryKey in this.legend) {
+
+                    let categoryIcons = this.legend[categoryKey];
+                    let categorySection = document.createElement('div');
+                    let sortedCategoryIcons = Object.keys(categoryIcons).sort();
+
+                    categorySection.className = 'legendSection';
+                    categorySection.innerHTML = '<h3>'+categoryKey+' Spot</h3>';
+
+                    for (let sortedIconKey in sortedCategoryIcons) {
+
+                        let iconKey = sortedCategoryIcons[sortedIconKey];
+                        let iconURL = categoryIcons[iconKey];
+                        let legendRow = document.createElement('div');
+                        legendRow.innerHTML = '<img src="' + iconURL + '"> ' + iconKey;
+                        categorySection.appendChild(legendRow);
+
+                    }
+
+                    legend.appendChild(categorySection);
+
+                }
+
+            };
+
+            this.build = function(){
+
+                $.getJSON('/api/spots', function(json){
+
+                    instantiateSpots(json);
+                    reference.buildLegend();
+
+                });
+
+            };
+
+        }
+
+    </script>
+
+    <script>
+
+        let markers = [],
             icons = {},
             openInfoWindow = false,
             spots = <?= json_encode($spots) ?>;
@@ -56,8 +200,8 @@
          */
         function restrictMapMovement(){
 
-            var lastValidCenter = map.getCenter();
-            var allowedBounds = new google.maps.LatLngBounds(
+            let lastValidCenter = map.getCenter();
+            let allowedBounds = new google.maps.LatLngBounds(
 
                 new google.maps.LatLng(43.08138,-77.68277),
                 new google.maps.LatLng(43.087664,-77.666849)
@@ -87,12 +231,12 @@
          */
         function getIconForSpot(spot){
 
-            var baseIconDirectory = "images/spots";
-            var iconCategory = spot.type.category.name;
-            var iconDirectory = iconCategory.toLowerCase().trim();
-            var classification = spot.classification;
-            var icon = classification+".png";
-            var url = baseIconDirectory+"/"+iconDirectory+"/"+icon;
+            let baseIconDirectory = "images/spots";
+            let iconCategory = spot.type.category.name;
+            let iconDirectory = iconCategory.toLowerCase().trim();
+            let classification = spot.classification;
+            let icon = classification+".png";
+            let url = baseIconDirectory+"/"+iconDirectory+"/"+icon;
 
             if(!icons.hasOwnProperty(iconCategory)) icons[iconCategory] = {};
             if(!icons[iconCategory].hasOwnProperty(url)){
@@ -118,17 +262,17 @@
          */
         function buildLegend(){
 
-            var legend = document.getElementById('legend');
-            for (var classificationKey in icons) {
+            let legend = document.getElementById('legend');
+            for (let classificationKey in icons) {
 
-                var classificationIcons = icons[classificationKey];
-                var classificationSection = document.createElement('div');
+                let classificationIcons = icons[classificationKey];
+                let classificationSection = document.createElement('div');
                 classificationSection.className = 'legendSection';
                 classificationSection.innerHTML = '<h3>'+classificationKey+' Spot</h3>';
-                for(var iconUrl in classificationIcons){
+                for(let iconUrl in classificationIcons){
 
-                    var legendRow = document.createElement('div');
-                    var name = classificationIcons[iconUrl];
+                    let legendRow = document.createElement('div');
+                    let name = classificationIcons[iconUrl];
                     legendRow.innerHTML = '<img src="' + iconUrl + '"> ' + name;
                     classificationSection.appendChild(legendRow);
 
@@ -146,7 +290,7 @@
          */
         function addClickHandler(marker, spot){
 
-            var contentString =
+            let contentString =
                 '<div class="infoWindowContentBox">'+
                     '<div class="infoWindowTitle">'+
                         '<div>'+spot.title+'</div>'+
@@ -168,7 +312,7 @@
                     '</div>'+
                 '</div>';
 
-            var infowindow = new google.maps.InfoWindow({
+            let infowindow = new google.maps.InfoWindow({
 
                 content: contentString
 
@@ -197,7 +341,7 @@
          */
         function dropSpot(spot){
 
-            var marker = new google.maps.Marker({
+            let marker = new google.maps.Marker({
 
                 position: {lat: Number(spot.lat), lng:Number(spot.lng)},
                 animation: google.maps.Animation.DROP,
@@ -224,7 +368,7 @@
          */
         function dropSpots(){
 
-            for(var spotIndex in spots){
+            for(let spotIndex in spots){
 
                 dropSpot(spots[spotIndex]);
 
@@ -247,15 +391,13 @@
 
             });
 
-            // This event listener removes the styling on an infowindow popup.
-            // google.maps.event.addListener(window.map, 'idle', function(){
-            //     $('.gm-style-iw').prev('div').remove();
-            // });
-
             sortSpots();
             restrictMapMovement();
             dropSpots();
-            buildLegend();
+            // buildLegend();
+
+            window.builder = new Builder();
+            builder.build();
 
         }
 
@@ -321,7 +463,8 @@
                         name:"Nap",
                         description:"Test"
                     }
-                }
+                },
+                notes: ""
 
             });
 

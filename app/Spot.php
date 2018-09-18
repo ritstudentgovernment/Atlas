@@ -9,8 +9,7 @@ class Spot extends Model
 
     protected $appends = ['type', 'classification'];
     protected $hidden  = ['type_id', 'id', 'status','created_at', 'updated_at'];
-    protected $fillable = ['title', 'quietLevel', 'notes', 'type_id', 'user_id', 'lat', 'lng'];
-
+    protected $fillable = ['title', 'quietLevel', 'status', 'notes', 'type_id', 'user_id', 'lat', 'lng'];
     public function author(){
 
         return $this->belongsTo(User::class);
