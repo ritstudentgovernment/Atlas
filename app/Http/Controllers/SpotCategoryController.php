@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\SpotCategory;
+use App\Category;
 
 class SpotCategoryController extends Controller
 {
 
     public function get(){
 
-        return SpotCategory::all();
+        return Category::all();
 
     }
 
