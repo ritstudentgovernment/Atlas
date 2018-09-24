@@ -35,7 +35,7 @@ class SpotController extends Controller
             if(!$user->hasPermissionTo('view unapproved spots')){
 
                 // The user is logged in but they do not have permission to view unapproved spots
-                return Spot::where("status","!=",0)->orWhere("user_id","=",$user->id)->get();
+                return Spot::where("approved", 1)->orWhere("user_id","=",$user->id)->get();
 
             }
 
@@ -46,41 +46,9 @@ class SpotController extends Controller
         else{
 
             // The user is not logged in
-            return Spot::where("status","!=",0)->get();
+            return Spot::where("approved", 1)->get();
 
         }
-
-    }
-
-    /**
-     * Endpoint hit during homepage load.
-     *
-     * @param Request $request The HTTP request.
-     * @return View the view to load.
-     */
-    public function index(Request $request){
-
-        $center_lat = (float)env("GOOGLE_MAPS_CENTER_LAT");
-        $center_lng = (float)env("GOOGLE_MAPS_CENTER_LNG");
-        $lat_range  = (float)env("GOOGLE_MAPS_LAT_CHANGE");
-        $lng_range  = (float)env("GOOGLE_MAPS_LNG_CHANGE");
-
-        return view('pages.home', [
-
-            "map" => [
-                "api_key" => env("GOOGLE_MAPS_API_KEY"),
-                "center"  => [
-                    "lat" => $center_lat,
-                    "lng" => $center_lng,
-                    "max_lat" => $center_lat + $lat_range,
-                    "min_lat" => $center_lat + $lat_range,
-                    "max_lng" => $center_lng + $lng_range,
-                    "mix_lng" => $center_lng + $lng_range
-                ]
-            ],
-            "spots" => $this->get($request)
-
-        ]);
 
     }
 

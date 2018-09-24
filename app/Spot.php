@@ -9,12 +9,30 @@ class Spot extends Model
 {
 
     protected $appends  = ['type', 'classification', 'descriptors'];
-    protected $hidden   = ['author', 'created_at', 'updated_at'];
+    protected $hidden   = ['user_id', 'created_at', 'updated_at', 'type_id'];
     protected $fillable = [];
+
+    public function getTypeAttribute(){
+
+        return $this->type()->get();
+
+    }
+
+    public function getClassificationAttribute(){
+
+        return $this->classification()->get();
+
+    }
+
+    public function getDescriptorsAttribute(){
+
+        return $this->descriptors()->get();
+
+    }
 
     public function author(){
 
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
 
     }
 
@@ -32,44 +50,8 @@ class Spot extends Model
 
     public function descriptors(){
 
-        return $this->hasManyThrough(DescriptorSpot::class, Descriptors::class);
+        return $this->hasManyThrough(DescriptorSpot::class, Descriptors::class, 'id', 'descriptor_id');
 
     }
-
-//    protected $appends = ['type', 'classification'];
-//    protected $hidden  = ['type_id', 'id', 'status','created_at', 'updated_at'];
-//    protected $fillable = ['title', 'quietLevel', 'status', 'notes', 'type_id', 'user_id', 'lat', 'lng'];
-//
-//    public function author(){
-//
-//        return $this->belongsTo(User::class);
-//
-//    }
-//
-//    public function getClassificationAttribute() {
-//
-//        $classifications = [
-//
-//            0 => "review",
-//            1 => "public",
-//            2 => "designated"
-//
-//        ];
-//        return array_key_exists($this->status, $classifications) ? $classifications[$this->status] : "review";
-//
-//    }
-//
-//    public function getTypeAttribute() {
-//
-//        $type = $this->type()->getResults();
-//        return $type;
-//
-//    }
-//
-//    public function type(){
-//
-//        return $this->belongsTo(Type::class);
-//
-//    }
 
 }

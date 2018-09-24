@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/', 'SpotController@index')->name('home');
+Route::get('/', 'Pages\HomeController@index')->name('home');
 Route::get('/about', function () { return view('pages.about'); })->name('about');
 Route::get('/splash', function () { return view('pages.splash'); })->name('splash');
 

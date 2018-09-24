@@ -15,7 +15,7 @@ Route::prefix('spots')->group(function () {
 
     Route::get('/','SpotController@get');
     Route::get('/{spot_id}','SpotController@get');
-    Route::get('/categories','SpotCategoryController@get');
+    Route::get('/categories','CategoryController@get');
 
     Route::post('/create','SpotController@store')->middleware('permission:add spot');
     Route::post('/approve/{spot_id}','SpotController@update')->middleware('permission:approve spots');

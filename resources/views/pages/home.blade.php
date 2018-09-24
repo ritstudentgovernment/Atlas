@@ -175,8 +175,7 @@
 
         let markers = [],
             icons = {},
-            openInfoWindow = false,
-            spots = <?= json_encode($spots) ?>;
+            openInfoWindow = false;
 
         /**
          * Function to sort the spots based on their classification.
@@ -391,9 +390,9 @@
 
             });
 
-            sortSpots();
+            // sortSpots();
             restrictMapMovement();
-            dropSpots();
+            // dropSpots();
             // buildLegend();
 
             window.builder = new Builder();

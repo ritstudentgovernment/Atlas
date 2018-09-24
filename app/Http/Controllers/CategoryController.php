@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Category;
 
-class SpotCategoryController extends Controller
+class CategoryController extends Controller
 {
 
     public function get(){

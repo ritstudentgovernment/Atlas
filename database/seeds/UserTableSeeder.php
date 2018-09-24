@@ -23,7 +23,6 @@ class UserTableSeeder extends Seeder
             foreach ($users as $user) {
                 DB::table('users')->insert([
 
-                    'name'      => "$user User",
                     'first_name'=> "$user",
                     'last_name' => "User",
                     'email'     => "$user@rit.edu",

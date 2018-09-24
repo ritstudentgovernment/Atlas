@@ -15,7 +15,7 @@ class DescriptorSpot extends Model
 
     public function descriptor(){
 
-        return $this->belongsTo(Descriptors::class);
+        return $this->belongsTo(Descriptors::class,'descriptor_id');
 
     }
 
