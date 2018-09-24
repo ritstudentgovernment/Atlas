@@ -20,8 +20,8 @@ class CreateCategoriesTable extends Migration
             $table->string('name');
             $table->text('description');
             $table->string('icon');
-            $table->boolean('crowdsource');
-            $table->boolean('active');
+            $table->boolean('crowdsource')->default(true);
+            $table->boolean('active')->default(true);
             $table->timestamps();
 
         });

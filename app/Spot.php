@@ -14,7 +14,7 @@ class Spot extends Model
 
     public function getTypeAttribute(){
 
-        return $this->type()->get();
+        return $this->type()->first();
 
     }
 

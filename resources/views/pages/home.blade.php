@@ -48,18 +48,6 @@
 
         }
 
-        function Classification(){
-
-
-
-        }
-
-        function Category(){
-
-
-
-        }
-
         function Spot(data){
 
             this.data = data;
@@ -69,14 +57,18 @@
 
                 if (canvasBuilder instanceof CanvasBuilder) {
 
-                    let icon = "T";
-                    let color = "ff7700";
+                    let icon = data.type.hasOwnProperty('category') ? data.type.category.icon : 'T';
+                    let color = data.classification.hasOwnProperty('color') ? data.classification.color : 'ff7700';
                     let image = canvasBuilder.makeImage(icon, color);
 
                     this.icon = {
-                        image: image,
-                        title: data.classification,
-                        category: data.type.category.name
+                        url: image,
+                        size: new google.maps.Size(30, 35),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(15, 35),
+                        scaledSize: new google.maps.Size(30, 35),
+                        title: data.classification.hasOwnProperty('name') ? data.classification.name : 'Title',
+                        category: data.type.hasOwnProperty('category') ? data.type.category.name : 'Category'
                     };
 
                     return this.icon;
@@ -87,9 +79,79 @@
 
             };
 
+            /**
+             * Function to handle dropping a particular spot on the map
+             *
+             * @return google.maps.Marker
+             */
             this.drop = function(){
 
+                /**
+                 * Function to handle clicking on a particular spot and bringing up its infowindow.
+                 *
+                 * @return google.maps.InfoWindow
+                 */
+                function addClickHandler(marker, spot){
 
+                    let contentString =
+                        '<div class="infoWindowContentBox">'+
+                            '<div class="infoWindowTitle">'+
+                                '<div>'+spot.title+'</div>'+
+                                '<span>'+spot.classification+' '+spot.type.category.name+' spot</span>'+
+                            '</div>'+
+                            '<div class="infoWindowBody">'+
+                                '<div class="infoWindowIconDescriptors">' +
+                                    '<div>' +
+                                        '<span uk-icon="icon: bell; ratio: 1.1"></span>&nbsp;Quiet Level: '+
+                                        spot.quietLevel+
+                                    '</div>'+
+                                    '<div>' +
+                                        '<span uk-icon="icon: nut; ratio: 1.1"></span>&nbsp;Spot Type: '+
+                                        spot.type.name+
+                                    '</div>'+
+                                '</div>'+
+                                '<p>'+spot.type.category.description+'</p>'+
+                                '<p>'+spot.notes+'</p>'+
+                            '</div>'+
+                        '</div>';
+
+                    let infowindow = new google.maps.InfoWindow({
+
+                        content: contentString
+
+                    });
+
+                    marker.addListener('click', function() {
+
+                        if(openInfoWindow)openInfoWindow.close();
+
+                        window.map.setZoom(16);
+                        window.map.panTo(marker.getPosition());
+
+                        infowindow.open(marker.get('map'), marker);
+                        openInfoWindow = infowindow;
+
+                    });
+
+                    return infowindow;
+
+                }
+
+                let reference = this;
+                let marker = new google.maps.Marker({
+
+                    position: {lat: Number(data.lat), lng:Number(data.lng)},
+                    animation: google.maps.Animation.DROP,
+                    map: window.map,
+                    icon: reference.icon,
+                    title: data.name,
+                    draggable: data.hasOwnProperty('draggable') ? data.draggable : false
+
+                });
+
+                //marker.infoWindow = addClickHandler(marker, data);
+                markers.push(marker);
+                return marker;
 
             }
 
@@ -110,6 +172,7 @@
 
                     let spot = new Spot(spotData);
                     let icon = spot.buildIcon(canvasBuilder);
+                    spot.drop();
 
                     // Add the spot to the list of spots in the builder instance
                     reference.spots.push(spot);
@@ -119,7 +182,7 @@
 
                     if (!reference.legend[icon.category].hasOwnProperty(icon.title)) {
 
-                        reference.legend[icon.category][icon.title] = icon.image;
+                        reference.legend[icon.category][icon.title] = icon.url;
 
                     }
 
@@ -193,35 +256,6 @@
         }
 
         /**
-         * Function to restrict the movement of the Google Map so that the user doesn't loose campus.
-         *
-         * @return void.
-         */
-        function restrictMapMovement(){
-
-            let lastValidCenter = map.getCenter();
-            let allowedBounds = new google.maps.LatLngBounds(
-
-                new google.maps.LatLng(43.08138,-77.68277),
-                new google.maps.LatLng(43.087664,-77.666849)
-
-            );
-            google.maps.event.addListener(map, 'center_changed', function() {
-
-                if (allowedBounds.contains(map.getCenter())) {
-
-                    lastValidCenter = map.getCenter();
-                    return;
-
-                }
-                map.panTo(lastValidCenter);
-
-            });
-            map.setOptions({ minZoom: 15, maxZoom: 20 });
-
-        }
-
-        /**
          * Function that gets an image object for use in a spot pin based on the classification of the spot provided.
          * Images are expected to be stored in /images/spots/[icon category name]/[spot classification].png
          *
@@ -283,57 +317,6 @@
         }
 
         /**
-         * Function to handle clicking on a particular spot and bringing up its infowindow.
-         *
-         * @return google.maps.InfoWindow
-         */
-        function addClickHandler(marker, spot){
-
-            let contentString =
-                '<div class="infoWindowContentBox">'+
-                    '<div class="infoWindowTitle">'+
-                        '<div>'+spot.title+'</div>'+
-                        '<span>'+spot.classification+' '+spot.type.category.name+' spot</span>'+
-                    '</div>'+
-                    '<div class="infoWindowBody">'+
-                        '<div class="infoWindowIconDescriptors">' +
-                            '<div>' +
-                                '<span uk-icon="icon: bell; ratio: 1.1"></span>&nbsp;Quiet Level: '+
-                                spot.quietLevel+
-                            '</div>'+
-                            '<div>' +
-                                '<span uk-icon="icon: nut; ratio: 1.1"></span>&nbsp;Spot Type: '+
-                                spot.type.name+
-                            '</div>'+
-                        '</div>'+
-                        '<p>'+spot.type.category.description+'</p>'+
-                        '<p>'+spot.notes+'</p>'+
-                    '</div>'+
-                '</div>';
-
-            let infowindow = new google.maps.InfoWindow({
-
-                content: contentString
-
-            });
-
-            marker.addListener('click', function() {
-
-                if(openInfoWindow)openInfoWindow.close();
-
-                window.map.setZoom(16);
-                window.map.panTo(marker.getPosition());
-
-                infowindow.open(marker.get('map'), marker);
-                openInfoWindow = infowindow;
-
-            });
-
-            return infowindow;
-
-        }
-
-        /**
          * Function to drop a single spot on the map.
          *
          * @return google.maps.Marker
@@ -381,6 +364,35 @@
          * @return void.
          */
         function initMap() {
+
+            /**
+             * Function to restrict the movement of the Google Map so that the user doesn't loose campus.
+             *
+             * @return void.
+             */
+            function restrictMapMovement(){
+
+                let lastValidCenter = map.getCenter();
+                let allowedBounds = new google.maps.LatLngBounds(
+
+                    new google.maps.LatLng(43.08138,-77.68277),
+                    new google.maps.LatLng(43.087664,-77.666849)
+
+                );
+                google.maps.event.addListener(map, 'center_changed', function() {
+
+                    if (allowedBounds.contains(map.getCenter())) {
+
+                        lastValidCenter = map.getCenter();
+                        return;
+
+                    }
+                    map.panTo(lastValidCenter);
+
+                });
+                map.setOptions({ minZoom: 15, maxZoom: 20 });
+
+            }
 
             // Instantiate Google Maps on the page
             window.map = new google.maps.Map(document.getElementById('napMap'), {

@@ -13,10 +13,14 @@ class APITest extends TestCase
     private $user;
     private $adminUser;
 
+    /**
+     * Constructor overridden in order to create users to test with.
+     *
+     * @return void
+     */
     public function __construct(?string $name = null, array $data = [], string $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
-
         parent::setUp();
 
         $this->user = (factory(User::class))->create();
