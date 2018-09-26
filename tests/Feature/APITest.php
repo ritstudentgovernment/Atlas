@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\User;
+use App\Spot;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -10,11 +11,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class APITest extends TestCase
 {
 
+    private $spot;
     private $user;
     private $adminUser;
 
     /**
-     * Constructor overridden in order to create users to test with.
+     * Constructor overridden in order to create a spot and two users to test with.
      *
      * @return void
      */
@@ -22,6 +24,8 @@ class APITest extends TestCase
     {
         parent::__construct($name, $data, $dataName);
         parent::setUp();
+
+        $this->spot = (factory(Spot::class))->create(['approved'=>false]);
 
         $this->user = (factory(User::class))->create();
         $this->adminUser = (factory(User::class))->create();
@@ -85,5 +89,31 @@ class APITest extends TestCase
         // Make sure there are unapproved spots returned
         $approvals = $spots->pluck('approved')->toArray();
         $this->assertContains('false', $approvals);
+    }
+
+    /**
+     * Test to make sure that the api returns a 403 when a non-admin tries to approve a spot
+     *
+     * @return void
+     */
+    public function testNonAdminApproveSpot()
+    {
+        $response = $this->actingAs($this->user)->post('/api/spots/approve/'.$this->spot->id);
+        // Make sure the request failed with a 403
+        $response->assertStatus(403);
+    }
+
+    /**
+     * Test to make sure that the api allows an admin to approve a spot
+     *
+     * @return void
+     */
+    public function testAdminApproveSpot()
+    {
+        $response = $this->actingAs($this->adminUser)->post('/api/spots/approve/'.$this->spot->id);
+        // Make sure the request was successful
+        $response->assertStatus(200);
+        // Given that the request was successful, find the spot and check to make sure that it is approved.
+        $this->assertTrue(Spot::find($this->spot->id)->approved);
     }
 }

@@ -93,17 +93,12 @@ class SpotController extends Controller
      *
      * @param Request $request the http request
      * @param Spot $spot the spot to try and approve
-     * @return boolean Whether the operation would logically succeed or not
+     * @return null
      */
     public function approve(Request $request, Spot $spot){
 
-        // return false if the user is not authorized to approve spots or the status is not 0.
-        if ($spot->status != 0 || !$request->user()->can('approve spots')) return false;
-
-        $spot->status = 1;
+        $spot->approved = true;
         $spot->save();
-
-        return true;
 
     }
 
