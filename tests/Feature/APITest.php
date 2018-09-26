@@ -11,16 +11,22 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class APITest extends TestCase
 {
 
-    private $spot;
-    private $user;
-    private $adminUser;
+    protected $spot;
+    protected $user;
+    protected $adminUser;
+
+    protected $deletes = ['spot', 'user', 'adminUser'];
 
     /**
      * Constructor overridden in order to create a spot and two users to test with.
      *
+     * @param $name
+     * @param $data
+     * @param $dataName
+     *
      * @return void
      */
-    public function __construct(?string $name = null, array $data = [], string $dataName = '')
+    public function __construct(string $name = null, array $data = [], string $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
         parent::setUp();
@@ -32,20 +38,6 @@ class APITest extends TestCase
         if($this->adminUser instanceof User){
             $this->adminUser->assignRole(['admin', 'reviewer']);
         }
-    }
-
-    /**
-     * Destructor defined to clean up the objects created for these tests.
-     *
-     * @return void
-     */
-    public function __destruct()
-    {
-
-        $this->spot->delete();
-        $this->user->delete();
-        $this->adminUser->delete();
-
     }
 
     /**
@@ -115,6 +107,8 @@ class APITest extends TestCase
         $response = $this->actingAs($this->user)->post('/api/spots/approve/'.$this->spot->id);
         // Make sure the request failed with a 403
         $response->assertStatus(403);
+        // Given that the request failed, the spot should still be unapproved, check
+        $this->assertFalse(Spot::find($this->spot->id)->approved);
     }
 
     /**
