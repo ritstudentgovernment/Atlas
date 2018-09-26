@@ -35,6 +35,20 @@ class APITest extends TestCase
     }
 
     /**
+     * Destructor defined to clean up the objects created for these tests.
+     *
+     * @return void
+     */
+    public function __destruct()
+    {
+
+        $this->spot->delete();
+        $this->user->delete();
+        $this->adminUser->delete();
+
+    }
+
+    /**
      * Test to make sure that the api returns a response for unauthenticated
      * users on the home page. This response should not include any unapproved spots.
      *
@@ -43,7 +57,7 @@ class APITest extends TestCase
     public function testGetSpotsUnauthenticated()
     {
         $response = $this->get('/api/spots');
-        // Make sure the request succeeded
+        // Make sure the request succeeded.
         $response->assertStatus(200);
         // Make sure spots were returned
         $spots = collect($response->decodeResponseJson());

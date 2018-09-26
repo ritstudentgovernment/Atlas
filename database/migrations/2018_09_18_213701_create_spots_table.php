@@ -28,7 +28,7 @@ class CreateSpotsTable extends Migration
             $table->boolean('approved');
 
             $table->integer('user_id')->unsigned()->nullable();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->integer('type_id')->unsigned()->nullable();
             $table->foreign('type_id')->references('id')->on('types');

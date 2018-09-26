@@ -16,9 +16,9 @@ class CreateDescriptorSpotsTable extends Migration
         Schema::create('descriptor_spots', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('spot_id')->unsigned();
-            $table->foreign('spot_id')->references('id')->on('spots')->onDelete('cascade');;
+            $table->foreign('spot_id')->references('id')->on('spots')->onDelete('cascade');
             $table->integer('descriptor_id')->unsigned();
-            $table->foreign('descriptor_id')->references('id')->on('descriptors')->onDelete('cascade');;
+            $table->foreign('descriptor_id')->references('id')->on('descriptors')->onDelete('cascade');
             $table->string('value');
             $table->timestamps();
         });
