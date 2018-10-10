@@ -25,7 +25,7 @@ class UserTableSeeder extends Seeder
 
                     'first_name'=> "$user",
                     'last_name' => "User",
-                    'email'     => "$user@rit.edu",
+                    'email'     => strtolower($user)."@rit.edu",
                     'password'  => "shibboleth",
                     'created_at'=> $now,
                     'updated_at'=> $now

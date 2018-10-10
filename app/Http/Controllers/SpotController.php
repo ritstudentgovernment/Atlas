@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 use App\Spot;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\View\View;
 
 class SpotController extends Controller
 {
@@ -17,7 +18,7 @@ class SpotController extends Controller
      */
     public function __construct(){
 
-        $this->middleware('auth')->except(["index","get"]);
+        $this->middleware('auth')->except(["get"]);
 
     }
 
@@ -29,22 +30,25 @@ class SpotController extends Controller
      */
     public function get(Request $request){
 
-        if($user = auth()->user()){
+        if(($user = $request->user() ?: Auth::user()) && $user instanceof User){
 
             // Get spots a user is authorized to see.
-            if(!$user->hasPermissionTo('view unapproved spots')){
+            if(!$user->can('view unapproved spots')){
 
+                \Log::debug('User logged in and can view unapproved spots');
                 // The user is logged in but they do not have permission to view unapproved spots
-                return Spot::where("approved", 1)->orWhere("user_id","=",$user->id)->get();
+                return Spot::where("approved", 1)->orWhere("user_id", "=", $user->id)->get();
 
             }
 
+            \Log::debug('User logged in but cannot view unaproved spots');
             // The user is logged in and they have permission to view unapproved spots
             return Spot::all();
 
         }
         else{
 
+            \Log::debug('User Not Logged In');
             // The user is not logged in
             return Spot::where("approved", 1)->get();
 
@@ -93,7 +97,7 @@ class SpotController extends Controller
      *
      * @param Request $request the http request
      * @param Spot $spot the spot to try and approve
-     * @return null
+     * @return void
      */
     public function approve(Request $request, Spot $spot){
 

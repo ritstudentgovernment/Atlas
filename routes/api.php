@@ -11,16 +11,20 @@
 |
 */
 
-Route::prefix('spots')->group(function () {
+ use Illuminate\Support\Facades\Auth;
+
+ Route::prefix('spots')->group(function () {
 
     Route::get('/','SpotController@get');
     Route::get('/{spot_id}','SpotController@get');
     Route::get('/categories','CategoryController@get');
 
-    Route::post('/create','SpotController@store')->middleware('permission:add spot');
-    Route::post('/approve/{spot}','SpotController@approve')->middleware('permission:approve spots');
+    Route::post('/create','SpotController@store')->middleware(['permission:add spot']);
+    Route::post('/approve/{spot}','SpotController@approve')->middleware(['permission:approve spots']);
 
 });
+
+ Route::get('/checklogin',function(){return [Auth::check(), Auth::guest(), Auth::user()];});
 
 Route::prefix('admin')->middleware(['permission:administer'])->group(function () {
 

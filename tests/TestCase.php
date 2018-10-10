@@ -39,7 +39,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Upon the destruction of a test, delete the models created in it.
      */
-    public function __destruct()
+    public function tearDown()
     {
 
         $this->deleteVariables();

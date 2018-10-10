@@ -93,10 +93,27 @@
                  */
                 function addClickHandler(marker, spot){
 
+                    function getDescriptorString(spot){
+
+                        let contentString = '';
+                        for(let i = 0; i < spot.descriptors.length; i++){
+
+                            let descriptor = spot.descriptors[i];
+
+                            contentString +=
+                                '<div>' +
+                                    '<span uk-icon="icon: "'+descriptor.icon+ '"; ratio: 1.1"></span>&nbsp;Quiet Level: '+
+                                    spot.quietLevel+
+                                '</div>';
+
+                        }
+
+                    }
+
                     let contentString =
                         '<div class="infoWindowContentBox">'+
                             '<div class="infoWindowTitle">'+
-                                '<div>'+spot.title+'</div>'+
+                                '<div>'+spot.name+'</div>'+
                                 '<span>'+spot.classification+' '+spot.type.category.name+' spot</span>'+
                             '</div>'+
                             '<div class="infoWindowBody">'+
@@ -149,7 +166,7 @@
 
                 });
 
-                //marker.infoWindow = addClickHandler(marker, data);
+                marker.infoWindow = addClickHandler(marker, data);
                 markers.push(marker);
                 return marker;
 
