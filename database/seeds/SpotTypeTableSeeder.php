@@ -5,16 +5,14 @@ use Illuminate\Support\Facades\DB;
 
 class SpotTypeTableSeeder extends Seeder
 {
-
-    private function makeSpotType($name, $category){
-
+    private function makeSpotType($name, $category)
+    {
         DB::table('spot_types')->insert([
 
-            'name' => $name,
-            'category_id' => $category
+            'name'        => $name,
+            'category_id' => $category,
 
         ]);
-
     }
 
     /**
@@ -24,13 +22,11 @@ class SpotTypeTableSeeder extends Seeder
      */
     public function run()
     {
+        $this->makeSpotType('Chair', 1);
+        $this->makeSpotType('Couch', 1);
+        $this->makeSpotType('Bench', 1);
 
-        $this->makeSpotType("Chair", 1);
-        $this->makeSpotType("Couch", 1);
-        $this->makeSpotType("Bench", 1);
-
-        $this->makeSpotType("Vending Machine", 2);
-        $this->makeSpotType("Coffee", 2);
-
+        $this->makeSpotType('Vending Machine', 2);
+        $this->makeSpotType('Coffee', 2);
     }
 }

@@ -11,15 +11,15 @@
 |
 */
 
-Route::get('/spots/categories','SpotCategoryController@get');
-Route::get('/spots/{spot_id}','SpotController@get');
-Route::get('/spots','SpotController@get');
+Route::get('/spots/categories', 'SpotCategoryController@get');
+Route::get('/spots/{spot_id}', 'SpotController@get');
+Route::get('/spots', 'SpotController@get');
 
-Route::post('/spots/approve/{spot_id}','SpotController@update')->middleware('permission:approve spots');
-Route::post('/spots/create','SpotController@store')->middleware('permission:add spot');
+Route::post('/spots/approve/{spot_id}', 'SpotController@update')->middleware('permission:approve spots');
+Route::post('/spots/create', 'SpotController@store')->middleware('permission:add spot');
 
 Route::group(['middleware' => ['permission:administer']], function () {
-    Route::get('/admin/users','UserController@index');
-    Route::post('/admin/users/promote/{user}/reviewer','UserController@promoteReviewer');
-    Route::post('/admin/users/promote/{user}/admin','UserController@promoteAdmin');
+    Route::get('/admin/users', 'UserController@index');
+    Route::post('/admin/users/promote/{user}/reviewer', 'UserController@promoteReviewer');
+    Route::post('/admin/users/promote/{user}/admin', 'UserController@promoteAdmin');
 });

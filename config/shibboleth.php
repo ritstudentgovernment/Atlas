@@ -1,5 +1,6 @@
 <?php
-return array(
+
+return [
 
     /*
     |--------------------------------------------------------------------------
@@ -11,8 +12,8 @@ return array(
     |
      */
 
-    'idp_login' => '/Shibboleth.sso/Login',
-    'idp_logout' => '/Shibboleth.sso/Logout',
+    'idp_login'     => '/Shibboleth.sso/Login',
+    'idp_logout'    => '/Shibboleth.sso/Logout',
     'authenticated' => '/',
 
     /*
@@ -30,30 +31,30 @@ return array(
     |
      */
 
-    'emulate_idp' => true,
-    'emulate_idp_users' => array(
-        'admin' => array(
-            'emplId' => 'admin',
-            'cn' => 'Admin User',
+    'emulate_idp'       => true,
+    'emulate_idp_users' => [
+        'admin' => [
+            'emplId'    => 'admin',
+            'cn'        => 'Admin User',
             'givenName' => 'Admin',
-            'sn' => 'User',
-            'mail' => 'admin@rit.edu',
-        ),
-        'staff' => array(
-            'emplId' => 'staff',
-            'cn' => 'Staff User',
+            'sn'        => 'User',
+            'mail'      => 'admin@rit.edu',
+        ],
+        'staff' => [
+            'emplId'    => 'staff',
+            'cn'        => 'Staff User',
             'givenName' => 'Staff',
-            'sn' => 'User',
-            'mail' => 'staff@rit.edu',
-        ),
-        'user' => array(
-            'emplId' => 'user',
-            'cn' => 'User User',
+            'sn'        => 'User',
+            'mail'      => 'staff@rit.edu',
+        ],
+        'user' => [
+            'emplId'    => 'user',
+            'cn'        => 'User User',
             'givenName' => 'User',
-            'sn' => 'User',
-            'mail' => 'user@rit.edu',
-        ),
-    ),
+            'sn'        => 'User',
+            'mail'      => 'user@rit.edu',
+        ],
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -68,10 +69,10 @@ return array(
 
     'user' => [
         // fillable user model attribute => server variable
-        'name' => 'cn',
-        'email' => 'mail',
+        'name'       => 'cn',
+        'email'      => 'mail',
         'first_name' => 'givenName',
-        'last_name' => 'sn'
+        'last_name'  => 'sn',
     ],
 
     /*
@@ -98,4 +99,4 @@ return array(
      */
 
     'jwtauth' => env('JWTAUTH', false),
-);
+];
