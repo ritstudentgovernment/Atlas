@@ -1,8 +1,8 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class UserTableSeeder extends Seeder
 {
@@ -14,22 +14,21 @@ class UserTableSeeder extends Seeder
     public function run()
     {
         // Do not seed the users table if the App is set to production mode.
-        if(env("APP_ENV") == 'local') {
-
+        if (env('APP_ENV') == 'local') {
             $now = Carbon::now('America/New_York')->toDateTimeString();
             $users = [
-                'Admin', 'Staff', 'User'
+                'Admin', 'Staff', 'User',
             ];
             foreach ($users as $user) {
                 DB::table('users')->insert([
 
                     'name'      => "$user User",
                     'first_name'=> "$user",
-                    'last_name' => "User",
+                    'last_name' => 'User',
                     'email'     => "$user@rit.edu",
-                    'password'  => "shibboleth",
+                    'password'  => 'shibboleth',
                     'created_at'=> $now,
-                    'updated_at'=> $now
+                    'updated_at'=> $now,
 
                 ]);
             }

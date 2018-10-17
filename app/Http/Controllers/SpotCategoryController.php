@@ -6,11 +6,8 @@ use App\SpotCategory;
 
 class SpotCategoryController extends Controller
 {
-
-    public function get(){
-
+    public function get()
+    {
         return SpotCategory::all();
-
     }
-
 }
