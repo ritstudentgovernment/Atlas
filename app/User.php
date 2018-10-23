@@ -2,13 +2,12 @@
 
 namespace App;
 
-use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-
     use Notifiable;
     use HasRoles;
 
@@ -26,10 +25,8 @@ class User extends Authenticatable
      */
     protected $hidden = ['password', 'remember_token'];
 
-    public function createdSpots(){
-
+    public function createdSpots()
+    {
         return $this->hasMany(Spot::class);
-
     }
-
 }

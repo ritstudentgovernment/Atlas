@@ -19,26 +19,24 @@ class Saml2LoginEventListener
         //
     }
 
-    private function getUserProperties(Saml2User $user, $properties){
-
+    private function getUserProperties(Saml2User $user, $properties)
+    {
         $user->parseAttributes($properties);
 
         $attributes = [];
-        foreach($properties as $property => $samlKey){
-
+        foreach ($properties as $property => $samlKey) {
             $flattened_property_value = array_flatten($user->{$property})[0];
             $attributes[$property] = $flattened_property_value;
-
         }
 
         return $attributes;
-
     }
 
     /**
      * Handle the event.
      *
-     * @param  Saml2LoginEvent  $event
+     * @param Saml2LoginEvent $event
+     *
      * @return void
      */
     public function handle(Saml2LoginEvent $event)
@@ -47,18 +45,18 @@ class Saml2LoginEventListener
 
         $propertyMap = [
 
-            "EmailAddress"=>"urn:oid:0.9.2342.19200300.100.1.3",
-            "FirstName"=>"urn:oid:2.5.4.42",
-            "LastName"=>"urn:oid:2.5.4.4",
+            'EmailAddress'=> 'urn:oid:0.9.2342.19200300.100.1.3',
+            'FirstName'   => 'urn:oid:2.5.4.42',
+            'LastName'    => 'urn:oid:2.5.4.4',
 
         ];
 
         $userData = [
-            'id' => $user->getUserId(),
-            'attributes' => $this->getUserProperties($user, $propertyMap),
-            'assertion' => $user->getRawSamlAssertion(),
+            'id'           => $user->getUserId(),
+            'attributes'   => $this->getUserProperties($user, $propertyMap),
+            'assertion'    => $user->getRawSamlAssertion(),
             'sessionIndex' => $user->getSessionIndex(),
-            'nameId' => $user->getNameId()
+            'nameId'       => $user->getNameId(),
         ];
 
         \Log::debug($userData['attributes']);
@@ -66,9 +64,8 @@ class Saml2LoginEventListener
         $user = User::where('email', $userData['attributes']['EmailAddress'])->first();
 
         //if email doesn't exist, create new user
-        if($user === null)
-        {
-            $user = new User;
+        if ($user === null) {
+            $user = new User();
             $user->first_name = $userData['attributes']['FirstName'];
             $user->last_name = $userData['attributes']['LastName'];
             $user->email = $userData['attributes']['EmailAddress'];

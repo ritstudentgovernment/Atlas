@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Listeners\Saml2LoginEventListener;
 use Aacotroneo\Saml2\Events\Saml2LoginEvent;
+use App\Listeners\Saml2LoginEventListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -15,7 +15,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         Saml2LoginEvent::class => [
-            Saml2LoginEventListener::class
+            Saml2LoginEventListener::class,
         ],
     ];
 

@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             CategoriesTableSeeder::class,
             TypesTableSeeder::class,
             SpotsTableSeeder::class,
-            PermissionsSeeder::class
+            PermissionsSeeder::class,
 
         ]);
     }

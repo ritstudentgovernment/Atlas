@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateTypesTable extends Migration
 {
@@ -13,15 +13,12 @@ class CreateTypesTable extends Migration
      */
     public function up()
     {
-
-        Schema::create('types', function (Blueprint $table){
-
+        Schema::create('types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->integer('category_id')->unsigned();
             $table->foreign('category_id')->references('id')->on('categories');
             $table->timestamps();
-
         });
 
 //        Schema::create('spot_types', function (Blueprint $table) {
@@ -31,7 +28,6 @@ class CreateTypesTable extends Migration
 //            $table->foreign('category_id')->references('id')->on('spot_categories');
 //            $table->timestamps();
 //        });
-
     }
 
     /**
@@ -41,8 +37,6 @@ class CreateTypesTable extends Migration
      */
     public function down()
     {
-
         Schema::dropIfExists('types');
-
     }
 }

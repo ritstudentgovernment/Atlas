@@ -2,15 +2,12 @@
 
 namespace Tests\Feature;
 
-use \App\User;
-use \App\Spot;
+use App\Spot;
+use App\User;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class APITest extends TestCase
 {
-
     protected $spot;
     protected $user;
     protected $adminUser;
@@ -99,7 +96,7 @@ class APITest extends TestCase
     }
 
     /**
-     * Test to make sure that the api returns a 403 when a non-admin tries to approve a spot
+     * Test to make sure that the api returns a 403 when a non-admin tries to approve a spot.
      *
      * @return void
      */
@@ -113,7 +110,7 @@ class APITest extends TestCase
     }
 
     /**
-     * Test to make sure that the api allows an admin to approve a spot
+     * Test to make sure that the api allows an admin to approve a spot.
      *
      * @return void
      */
