@@ -2,16 +2,13 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
 use App\Spot;
+use Tests\TestCase;
 
 class SpotTest extends TestCase
 {
     /**
-     * Basic test to make sure there are approved spots in the db
+     * Basic test to make sure there are approved spots in the db.
      *
      * @return void
      */
@@ -23,7 +20,7 @@ class SpotTest extends TestCase
     }
 
     /**
-     * Basic test to make sure there are unapproved spots in the db
+     * Basic test to make sure there are unapproved spots in the db.
      *
      * @return void
      */
