@@ -25,14 +25,10 @@ abstract class TestCase extends BaseTestCase
      */
     protected function deleteVariables()
     {
-        foreach($this->deletes as $variableToDelete){
-
+        foreach ($this->deletes as $variableToDelete) {
             if ($this->$variableToDelete instanceof Model) {
-
                 $this->$variableToDelete->delete();
-
             }
-
         }
     }
 
@@ -41,9 +37,6 @@ abstract class TestCase extends BaseTestCase
      */
     public function tearDown()
     {
-
         $this->deleteVariables();
-
     }
-
 }
