@@ -11,11 +11,11 @@
 
 The Naps service rewritten in PHP
 
-##Configuration
+## Configuration
 
 This guide will help you configure your own instance of Naps.
 
-####Shibboleth (SAML2)
+#### Shibboleth (SAML2)
 
 The default application is setup to support [https://samltest.id](https://samltest.id) out of the box for local development testing.
 In order to use this service you just have to upload the metadata for this application from your installation.
