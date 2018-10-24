@@ -11,15 +11,25 @@
 |
 */
 
-Route::get('/spots/categories','SpotCategoryController@get');
-Route::get('/spots/{spot_id}','SpotController@get');
-Route::get('/spots','SpotController@get');
+ use Illuminate\Support\Facades\Auth;
 
-Route::post('/spots/approve/{spot_id}','SpotController@update')->middleware('permission:approve spots');
-Route::post('/spots/create','SpotController@store')->middleware('permission:add spot');
+ Route::prefix('spots')->group(function () {
+     Route::get('/', 'SpotController@get');
+     Route::get('/{spot_id}', 'SpotController@get');
+     Route::get('/categories', 'CategoryController@get');
 
-Route::group(['middleware' => ['permission:administer']], function () {
-    Route::get('/admin/users','UserController@index');
-    Route::post('/admin/users/promote/{user}/reviewer','UserController@promoteReviewer');
-    Route::post('/admin/users/promote/{user}/admin','UserController@promoteAdmin');
+     Route::post('/create', 'SpotController@store')->middleware(['permission:add spot']);
+     Route::post('/approve/{spot}', 'SpotController@approve')->middleware(['permission:approve spots']);
+ });
+
+ Route::get('/checklogin', function () {
+     return [Auth::check(), Auth::guest(), Auth::user()];
+ });
+
+Route::prefix('admin')->middleware(['permission:administer'])->group(function () {
+    Route::prefix('users')->group(function () {
+        Route::get('/', 'UserController@index');
+        Route::post('/promote/{user}/reviewer', 'UserController@promoteReviewer');
+        Route::post('/promote/{user}/admin', 'UserController@promoteAdmin');
+    });
 });

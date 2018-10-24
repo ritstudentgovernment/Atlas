@@ -2,13 +2,12 @@
 
 namespace App;
 
-use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-
     use Notifiable;
     use HasRoles;
 
@@ -17,23 +16,17 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = [
-        'name', 'first_name', 'last_name', 'email', 'password',
-    ];
+    protected $fillable = ['first_name', 'last_name', 'email', 'password'];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = [
-        'password', 'remember_token'
-    ];
+    protected $hidden = ['password', 'remember_token'];
 
-    public function createdSpots(){
-
+    public function createdSpots()
+    {
         return $this->hasMany(Spot::class);
-
     }
-
 }

@@ -14,10 +14,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
 
             UserTableSeeder::class,
-            SpotCategoryTableSeeder::class,
-            SpotTypeTableSeeder::class,
+            CategoriesTableSeeder::class,
+            TypesTableSeeder::class,
             SpotsTableSeeder::class,
-            PermissionsSeeder::class
+            PermissionsSeeder::class,
 
         ]);
     }

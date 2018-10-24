@@ -6,41 +6,42 @@ use Illuminate\Database\Eloquent\Model;
 
 class Spot extends Model
 {
+    protected $appends = ['type', 'classification', 'descriptors'];
+    protected $hidden = ['user_id', 'created_at', 'updated_at', 'type_id'];
+    protected $fillable = [];
 
-    protected $appends = ['type', 'classification'];
-    protected $hidden  = ['type_id', 'id', 'status','created_at', 'updated_at'];
-    protected $fillable = ['title', 'quietLevel', 'notes', 'type_id', 'user_id', 'lat', 'lng'];
-
-    public function author(){
-
-        return $this->belongsTo(User::class);
-
+    public function getTypeAttribute()
+    {
+        return $this->type()->first();
     }
 
-    public function getClassificationAttribute() {
-
-        $classifications = [
-
-            0 => "review",
-            1 => "public",
-            2 => "designated"
-
-        ];
-        return array_key_exists($this->status, $classifications) ? $classifications[$this->status] : "review";
-
+    public function getClassificationAttribute()
+    {
+        return $this->classification()->get();
     }
 
-    public function getTypeAttribute() {
-
-        $type = $this->type()->getResults();
-        return $type;
-
+    public function getDescriptorsAttribute()
+    {
+        return $this->descriptors()->get();
     }
 
-    public function type(){
-
-        return $this->belongsTo(SpotType::class);
-
+    public function author()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function type()
+    {
+        return $this->belongsTo(Type::class);
+    }
+
+    public function classification()
+    {
+        return $this->belongsTo(Classification::class);
+    }
+
+    public function descriptors()
+    {
+        return $this->hasManyThrough(DescriptorSpot::class, Descriptors::class, 'id', 'descriptor_id');
+    }
 }

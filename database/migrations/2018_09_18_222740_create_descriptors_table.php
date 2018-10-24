@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class CreateSpotCategoriesTable extends Migration
+class CreateDescriptorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,13 @@ class CreateSpotCategoriesTable extends Migration
      */
     public function up()
     {
-
-        Schema::create('spot_categories', function (Blueprint $table) {
+        Schema::create('descriptors', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->text("description");
-            $table->text('colorCode');
+            $table->string('default_value');
+            $table->string('icon');
             $table->timestamps();
         });
-
     }
 
     /**
@@ -31,8 +29,6 @@ class CreateSpotCategoriesTable extends Migration
      */
     public function down()
     {
-
-        Schema::dropIfExists('spot_categories');
-
+        Schema::dropIfExists('descriptors');
     }
 }

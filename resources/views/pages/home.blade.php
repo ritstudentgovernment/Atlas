@@ -5,6 +5,7 @@
 @section('page_head')
 
     <link rel="stylesheet" href="{{ mix('/css/home.css') }}">
+    <script src="{{ mix('js/home.js') }}"></script>
 
 @endsection
 
@@ -29,10 +30,232 @@
 
     <script>
 
-        var markers = [],
+        function Position(){
+
+
+
+        }
+
+        function Type(){
+
+
+
+        }
+
+        function Descriptor(){
+
+
+
+        }
+
+        function Spot(data){
+
+            this.data = data;
+            this.icon = null;
+
+            this.buildIcon = function(canvasBuilder){
+
+                if (canvasBuilder instanceof CanvasBuilder) {
+
+                    let icon = data.type.hasOwnProperty('category') ? data.type.category.icon : 'T';
+                    let color = data.classification.hasOwnProperty('color') ? data.classification.color : 'ff7700';
+                    let image = canvasBuilder.makeImage(icon, color);
+
+                    this.icon = {
+                        url: image,
+                        size: new google.maps.Size(30, 35),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(15, 35),
+                        scaledSize: new google.maps.Size(30, 35),
+                        title: data.classification.hasOwnProperty('name') ? data.classification.name : 'Title',
+                        category: data.type.hasOwnProperty('category') ? data.type.category.name : 'Category'
+                    };
+
+                    return this.icon;
+
+                }
+
+                return false;
+
+            };
+
+            /**
+             * Function to handle dropping a particular spot on the map
+             *
+             * @return google.maps.Marker
+             */
+            this.drop = function(){
+
+                /**
+                 * Function to handle clicking on a particular spot and bringing up its infowindow.
+                 *
+                 * @return google.maps.InfoWindow
+                 */
+                function addClickHandler(marker, spot){
+
+                    function getDescriptorString(spot){
+
+                        let contentString = '';
+                        for(let i = 0; i < spot.descriptors.length; i++){
+
+                            let descriptor = spot.descriptors[i];
+
+                            contentString +=
+                                '<div>' +
+                                    '<span uk-icon="icon: "'+descriptor.icon+ '"; ratio: 1.1"></span>&nbsp;Quiet Level: '+
+                                    spot.quietLevel+
+                                '</div>';
+
+                        }
+
+                    }
+
+                    let contentString =
+                        '<div class="infoWindowContentBox">'+
+                            '<div class="infoWindowTitle">'+
+                                '<div>'+spot.name+'</div>'+
+                                '<span>'+spot.classification+' '+spot.type.category.name+' spot</span>'+
+                            '</div>'+
+                            '<div class="infoWindowBody">'+
+                                '<div class="infoWindowIconDescriptors">' +
+                                    '<div>' +
+                                        '<span uk-icon="icon: bell; ratio: 1.1"></span>&nbsp;Quiet Level: '+
+                                        spot.quietLevel+
+                                    '</div>'+
+                                    '<div>' +
+                                        '<span uk-icon="icon: nut; ratio: 1.1"></span>&nbsp;Spot Type: '+
+                                        spot.type.name+
+                                    '</div>'+
+                                '</div>'+
+                                '<p>'+spot.type.category.description+'</p>'+
+                                '<p>'+spot.notes+'</p>'+
+                            '</div>'+
+                        '</div>';
+
+                    let infowindow = new google.maps.InfoWindow({
+
+                        content: contentString
+
+                    });
+
+                    marker.addListener('click', function() {
+
+                        if(openInfoWindow)openInfoWindow.close();
+
+                        window.map.setZoom(16);
+                        window.map.panTo(marker.getPosition());
+
+                        infowindow.open(marker.get('map'), marker);
+                        openInfoWindow = infowindow;
+
+                    });
+
+                    return infowindow;
+
+                }
+
+                let reference = this;
+                let marker = new google.maps.Marker({
+
+                    position: {lat: Number(data.lat), lng:Number(data.lng)},
+                    animation: google.maps.Animation.DROP,
+                    map: window.map,
+                    icon: reference.icon,
+                    title: data.name,
+                    draggable: data.hasOwnProperty('draggable') ? data.draggable : false
+
+                });
+
+                marker.infoWindow = addClickHandler(marker, data);
+                markers.push(marker);
+                return marker;
+
+            }
+
+        }
+
+        function Builder(){
+
+            this.spots = [];
+            this.legend = {};
+            let reference = this;
+
+            function instantiateSpots(json){
+
+                let canvasBuilder = new CanvasBuilder();
+                canvasBuilder.initialize();
+
+                json.forEach(function(spotData){
+
+                    let spot = new Spot(spotData);
+                    let icon = spot.buildIcon(canvasBuilder);
+                    spot.drop();
+
+                    // Add the spot to the list of spots in the builder instance
+                    reference.spots.push(spot);
+
+                    // Build the virtual legend map (with no duplicates)
+                    reference.legend[icon.category] = reference.legend[icon.category] ? reference.legend[icon.category] : {};
+
+                    if (!reference.legend[icon.category].hasOwnProperty(icon.title)) {
+
+                        reference.legend[icon.category][icon.title] = icon.url;
+
+                    }
+
+                });
+
+            }
+
+            this.buildLegend = function(){
+
+                let legend = document.getElementById('legend');
+
+                for (let categoryKey in this.legend) {
+
+                    let categoryIcons = this.legend[categoryKey];
+                    let categorySection = document.createElement('div');
+                    let sortedCategoryIcons = Object.keys(categoryIcons).sort();
+
+                    categorySection.className = 'legendSection';
+                    categorySection.innerHTML = '<h3>'+categoryKey+' Spot</h3>';
+
+                    for (let sortedIconKey in sortedCategoryIcons) {
+
+                        let iconKey = sortedCategoryIcons[sortedIconKey];
+                        let iconURL = categoryIcons[iconKey];
+                        let legendRow = document.createElement('div');
+                        legendRow.innerHTML = '<img src="' + iconURL + '"> ' + iconKey;
+                        categorySection.appendChild(legendRow);
+
+                    }
+
+                    legend.appendChild(categorySection);
+
+                }
+
+            };
+
+            this.build = function(){
+
+                $.getJSON('/api/spots', function(json){
+
+                    instantiateSpots(json);
+                    reference.buildLegend();
+
+                });
+
+            };
+
+        }
+
+    </script>
+
+    <script>
+
+        let markers = [],
             icons = {},
-            openInfoWindow = false,
-            spots = <?= json_encode($spots) ?>;
+            openInfoWindow = false;
 
         /**
          * Function to sort the spots based on their classification.
@@ -50,35 +273,6 @@
         }
 
         /**
-         * Function to restrict the movement of the Google Map so that the user doesn't loose campus.
-         *
-         * @return void.
-         */
-        function restrictMapMovement(){
-
-            var lastValidCenter = map.getCenter();
-            var allowedBounds = new google.maps.LatLngBounds(
-
-                new google.maps.LatLng(43.08138,-77.68277),
-                new google.maps.LatLng(43.087664,-77.666849)
-
-            );
-            google.maps.event.addListener(map, 'center_changed', function() {
-
-                if (allowedBounds.contains(map.getCenter())) {
-
-                    lastValidCenter = map.getCenter();
-                    return;
-
-                }
-                map.panTo(lastValidCenter);
-
-            });
-            map.setOptions({ minZoom: 15, maxZoom: 20 });
-
-        }
-
-        /**
          * Function that gets an image object for use in a spot pin based on the classification of the spot provided.
          * Images are expected to be stored in /images/spots/[icon category name]/[spot classification].png
          *
@@ -87,12 +281,12 @@
          */
         function getIconForSpot(spot){
 
-            var baseIconDirectory = "images/spots";
-            var iconCategory = spot.type.category.name;
-            var iconDirectory = iconCategory.toLowerCase().trim();
-            var classification = spot.classification;
-            var icon = classification+".png";
-            var url = baseIconDirectory+"/"+iconDirectory+"/"+icon;
+            let baseIconDirectory = "images/spots";
+            let iconCategory = spot.type.category.name;
+            let iconDirectory = iconCategory.toLowerCase().trim();
+            let classification = spot.classification;
+            let icon = classification+".png";
+            let url = baseIconDirectory+"/"+iconDirectory+"/"+icon;
 
             if(!icons.hasOwnProperty(iconCategory)) icons[iconCategory] = {};
             if(!icons[iconCategory].hasOwnProperty(url)){
@@ -118,17 +312,17 @@
          */
         function buildLegend(){
 
-            var legend = document.getElementById('legend');
-            for (var classificationKey in icons) {
+            let legend = document.getElementById('legend');
+            for (let classificationKey in icons) {
 
-                var classificationIcons = icons[classificationKey];
-                var classificationSection = document.createElement('div');
+                let classificationIcons = icons[classificationKey];
+                let classificationSection = document.createElement('div');
                 classificationSection.className = 'legendSection';
                 classificationSection.innerHTML = '<h3>'+classificationKey+' Spot</h3>';
-                for(var iconUrl in classificationIcons){
+                for(let iconUrl in classificationIcons){
 
-                    var legendRow = document.createElement('div');
-                    var name = classificationIcons[iconUrl];
+                    let legendRow = document.createElement('div');
+                    let name = classificationIcons[iconUrl];
                     legendRow.innerHTML = '<img src="' + iconUrl + '"> ' + name;
                     classificationSection.appendChild(legendRow);
 
@@ -140,64 +334,13 @@
         }
 
         /**
-         * Function to handle clicking on a particular spot and bringing up its infowindow.
-         *
-         * @return google.maps.InfoWindow
-         */
-        function addClickHandler(marker, spot){
-
-            var contentString =
-                '<div class="infoWindowContentBox">'+
-                    '<div class="infoWindowTitle">'+
-                        '<div>'+spot.title+'</div>'+
-                        '<span>'+spot.classification+' '+spot.type.category.name+' spot</span>'+
-                    '</div>'+
-                    '<div class="infoWindowBody">'+
-                        '<div class="infoWindowIconDescriptors">' +
-                            '<div>' +
-                                '<span uk-icon="icon: bell; ratio: 1.1"></span>&nbsp;Quiet Level: '+
-                                spot.quietLevel+
-                            '</div>'+
-                            '<div>' +
-                                '<span uk-icon="icon: nut; ratio: 1.1"></span>&nbsp;Spot Type: '+
-                                spot.type.name+
-                            '</div>'+
-                        '</div>'+
-                        '<p>'+spot.type.category.description+'</p>'+
-                        '<p>'+spot.notes+'</p>'+
-                    '</div>'+
-                '</div>';
-
-            var infowindow = new google.maps.InfoWindow({
-
-                content: contentString
-
-            });
-
-            marker.addListener('click', function() {
-
-                if(openInfoWindow)openInfoWindow.close();
-
-                window.map.setZoom(16);
-                window.map.panTo(marker.getPosition());
-
-                infowindow.open(marker.get('map'), marker);
-                openInfoWindow = infowindow;
-
-            });
-
-            return infowindow;
-
-        }
-
-        /**
          * Function to drop a single spot on the map.
          *
          * @return google.maps.Marker
          */
         function dropSpot(spot){
 
-            var marker = new google.maps.Marker({
+            let marker = new google.maps.Marker({
 
                 position: {lat: Number(spot.lat), lng:Number(spot.lng)},
                 animation: google.maps.Animation.DROP,
@@ -224,7 +367,7 @@
          */
         function dropSpots(){
 
-            for(var spotIndex in spots){
+            for(let spotIndex in spots){
 
                 dropSpot(spots[spotIndex]);
 
@@ -239,6 +382,35 @@
          */
         function initMap() {
 
+            /**
+             * Function to restrict the movement of the Google Map so that the user doesn't loose campus.
+             *
+             * @return void.
+             */
+            function restrictMapMovement(){
+
+                let lastValidCenter = map.getCenter();
+                let allowedBounds = new google.maps.LatLngBounds(
+
+                    new google.maps.LatLng(43.08138,-77.68277),
+                    new google.maps.LatLng(43.087664,-77.666849)
+
+                );
+                google.maps.event.addListener(map, 'center_changed', function() {
+
+                    if (allowedBounds.contains(map.getCenter())) {
+
+                        lastValidCenter = map.getCenter();
+                        return;
+
+                    }
+                    map.panTo(lastValidCenter);
+
+                });
+                map.setOptions({ minZoom: 15, maxZoom: 20 });
+
+            }
+
             // Instantiate Google Maps on the page
             window.map = new google.maps.Map(document.getElementById('napMap'), {
 
@@ -247,15 +419,13 @@
 
             });
 
-            // This event listener removes the styling on an infowindow popup.
-            // google.maps.event.addListener(window.map, 'idle', function(){
-            //     $('.gm-style-iw').prev('div').remove();
-            // });
-
-            sortSpots();
+            // sortSpots();
             restrictMapMovement();
-            dropSpots();
-            buildLegend();
+            // dropSpots();
+            // buildLegend();
+
+            window.builder = new Builder();
+            builder.build();
 
         }
 
@@ -321,7 +491,8 @@
                         name:"Nap",
                         description:"Test"
                     }
-                }
+                },
+                notes: ""
 
             });
 

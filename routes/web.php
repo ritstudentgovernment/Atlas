@@ -11,9 +11,15 @@
 |
 */
 
-Route::get('/', 'SpotController@index')->name('home');
-Route::get('/about', function () { return view('pages.about'); })->name('about');
-Route::get('/splash', function () { return view('pages.splash'); })->name('splash');
+use Illuminate\Support\Facades\Route;
 
-Route::redirect('/login', '/shibboleth-login')->name('login');
-Route::redirect('/logout', '/shibboleth-logout')->name('logout');
+Route::get('/', 'Pages\HomeController@index')->name('home');
+Route::get('/about', function () {
+    return view('pages.about');
+})->name('about');
+Route::get('/splash', function () {
+    return view('pages.splash');
+})->name('splash');
+
+Route::get('login', 'SAMLController@login');
+Route::get('logout', 'SAMLController@logout');
