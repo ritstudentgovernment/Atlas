@@ -47,17 +47,16 @@ class SAMLController extends Controller
     /**
      * Get the token array structure.
      *
-     * @param  string $token
+     * @param string $token
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    static function respondWithToken($token)
+    public static function respondWithToken($token)
     {
         return response()->json([
             'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'token_type'   => 'bearer',
+            'expires_in'   => auth()->factory()->getTTL() * 60,
         ]);
     }
-
 }
