@@ -26,9 +26,7 @@ class Saml2LoginEventListener
 
         $attributes = [];
         foreach ($attributeMap as $attribute => $samlKey) {
-
             $attributes[$attribute] = $user->{$attribute}[0];
-
         }
 
         return $attributes;
@@ -58,14 +56,12 @@ class Saml2LoginEventListener
 
         //if email doesn't exist, create new user
         if ($user === null) {
-
             $user = new User();
             $user->first_name = $userAttributes['FirstName'];
             $user->last_name = $userAttributes['LastName'];
             $user->email = $userAttributes['EmailAddress'];
             $user->password = bcrypt(str_random(8));
             $user->save();
-
         }
 
         //login user

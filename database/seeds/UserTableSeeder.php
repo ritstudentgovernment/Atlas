@@ -17,9 +17,9 @@ class UserTableSeeder extends Seeder
         if (env('APP_ENV') == 'local') {
             $now = Carbon::now('America/New_York')->toDateTimeString();
             $users = [
-                "Cooper" => "Sheldon",
-                "Sanchez" => "Rick",
-                "Smith" => "Morty",
+                'Cooper'  => 'Sheldon',
+                'Sanchez' => 'Rick',
+                'Smith'   => 'Morty',
             ];
             foreach ($users as $last => $first) {
                 DB::table('users')->insert([
