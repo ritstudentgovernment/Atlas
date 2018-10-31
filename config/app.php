@@ -162,6 +162,7 @@ return [
         Folklore\Image\ImageServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
 
+
     ],
 
     /*

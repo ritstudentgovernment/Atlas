@@ -238,10 +238,15 @@
 
             this.build = function(){
 
-                $.getJSON('/api/spots', function(json){
+                axios.get('/api/spots').then(response => {
 
+                    let json = response.data;
                     instantiateSpots(json);
                     reference.buildLegend();
+
+                }).catch(error => {
+
+                    console.error(error);
 
                 });
 
@@ -424,8 +429,17 @@
             // dropSpots();
             // buildLegend();
 
-            window.builder = new Builder();
-            builder.build();
+            @if(session()->has('api_key'))
+                console.log('has api key');
+                console.log(window.axios.defaults.headers.common['Authorization'] = "bearer <?= session('api_key') ?>");
+            @endif
+
+            setTimeout(() => {
+
+                window.builder = new Builder();
+                builder.build();
+
+            }, 0);
 
         }
 

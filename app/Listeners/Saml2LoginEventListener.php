@@ -6,6 +6,7 @@ use Aacotroneo\Saml2\Events\Saml2LoginEvent;
 use Aacotroneo\Saml2\Saml2User;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class Saml2LoginEventListener
 {
@@ -68,6 +69,7 @@ class Saml2LoginEventListener
         }
 
         //login user
+        session(['api_key' => JWTAuth::fromUser($user)]);
         Auth::login($user);
     }
 }

@@ -17,15 +17,17 @@ class UserTableSeeder extends Seeder
         if (env('APP_ENV') == 'local') {
             $now = Carbon::now('America/New_York')->toDateTimeString();
             $users = [
-                'Admin', 'Staff', 'User',
+                "Cooper" => "Sheldon",
+                "Sanchez" => "Rick",
+                "Smith" => "Morty",
             ];
-            foreach ($users as $user) {
+            foreach ($users as $last => $first) {
                 DB::table('users')->insert([
 
-                    'first_name'=> "$user",
-                    'last_name' => 'User',
-                    'email'     => strtolower($user).'@rit.edu',
-                    'password'  => 'shibboleth',
+                    'first_name'=> $first,
+                    'last_name' => $last,
+                    'email'     => substr(strtolower($first), 0, 1).strtolower($last).'@samltest.id',
+                    'password'  => bcrypt(str_random(8)),
                     'created_at'=> $now,
                     'updated_at'=> $now,
 

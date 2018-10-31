@@ -29,16 +29,16 @@ class SpotController extends Controller
      */
     public function get(Request $request)
     {
-        if (($user = $request->user() ?: Auth::user()) && $user instanceof User) {
+        if (($user = $request->user() ?: auth('api')->user()) && $user instanceof User) {
 
             // Get spots a user is authorized to see.
             if (!$user->can('view unapproved spots')) {
-                \Log::debug('User logged in and can view unapproved spots');
+                \Log::debug('User logged in and cannot view unapproved spots');
                 // The user is logged in but they do not have permission to view unapproved spots
                 return Spot::where('approved', 1)->orWhere('user_id', '=', $user->id)->get();
             }
 
-            \Log::debug('User logged in but cannot view unaproved spots');
+            \Log::debug('User logged in but can view unaproved spots');
             // The user is logged in and they have permission to view unapproved spots
             return Spot::all();
         } else {
