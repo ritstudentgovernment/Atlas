@@ -12,7 +12,7 @@ class APITest extends TestCase
     protected $user;
     protected $adminUser;
 
-    protected $deletes = ['spot', 'user', 'adminUser'];
+    protected $deletes = ['spot'];
 
     /**
      * Instantiate the necessary variables to run the tests.
@@ -23,11 +23,8 @@ class APITest extends TestCase
     {
         parent::setUp(); // For some reason this fixed way more than it was supposed to..
         $this->spot = (factory(Spot::class))->create(['approved' => false]);
-        $this->user = (factory(User::class))->create();
-        $this->adminUser = (factory(User::class))->create();
-        if ($this->adminUser instanceof User) {
-            $this->adminUser->assignRole(['admin', 'reviewer']);
-        }
+        $this->user = User::where('first_name', 'Morty')->first();
+        $this->adminUser = User::where('first_name', 'Sheldon')->first();
     }
 
     public function testPermissions()
@@ -59,7 +56,7 @@ class APITest extends TestCase
 
     /**
      * Test to make sure that the api returns a response for authenticated (non admin) users on the home page.
-     * This response should not include any unapproved spots.
+     * This response should not include any unapproved spots that the user did not author.
      *
      * @return void
      */
@@ -71,9 +68,13 @@ class APITest extends TestCase
         // Make sure spots were returned
         $spots = collect($response->decodeResponseJson());
         $this->assertGreaterThan(0, $spots->count());
+        // Filter out spots the user authored, because they may not be approved yet
+        $spots = $spots->filter(function ($value) {
+            return $value["authored"] != true;
+        });
         // Make sure there are no unapproved spots returned
         $approvals = $spots->pluck('approved');
-        $this->assertNotContains(false, $approvals);
+        $this->assertNotContains(false, $approvals->toArray());
     }
 
     /**
@@ -92,7 +93,7 @@ class APITest extends TestCase
         $this->assertGreaterThan(0, $spots->count());
         // Make sure there are unapproved spots returned
         $approvals = $spots->pluck('approved');
-        $this->assertContains(false, $approvals);
+        $this->assertContains(false, $approvals->toArray());
     }
 
     /**
