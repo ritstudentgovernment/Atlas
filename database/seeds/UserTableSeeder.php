@@ -14,7 +14,7 @@ class UserTableSeeder extends Seeder
     public function run()
     {
         // Do not seed the users table if the App is set to production mode.
-        if (env('APP_ENV') == 'local') {
+        if (env('APP_ENV') == 'local' || env('APP_ENV') == 'testing') {
             $now = Carbon::now('America/New_York')->toDateTimeString();
             $users = [
                 'Cooper'  => 'Sheldon',
