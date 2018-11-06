@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Spot;
 use App\Type;
 use App\User;
-use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class APITest extends TestCase
@@ -34,7 +33,7 @@ class APITest extends TestCase
             'notes'     => 'this is a test spot, dont expect much',
             'type_id'   => Type::first() ? Type::inRandomOrder()->first()->id : null,
             'lat'       => env('GOOGLE_MAPS_CENTER_LAT'),
-            'lng'       => env('GOOGLE_MAPS_CENTER_LNG')
+            'lng'       => env('GOOGLE_MAPS_CENTER_LNG'),
         ];
     }
 
@@ -145,5 +144,4 @@ class APITest extends TestCase
         // Given that the request was successful, find the spot and check to make sure that it is approved.
         $this->assertTrue(Spot::find($this->spot->id)->approved);
     }
-
 }
