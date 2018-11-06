@@ -70,7 +70,7 @@ class APITest extends TestCase
         $this->assertGreaterThan(0, $spots->count());
         // Filter out spots the user authored, because they may not be approved yet
         $spots = $spots->filter(function ($value) {
-            return $value["authored"] != true;
+            return $value['authored'] != true;
         });
         // Make sure there are no unapproved spots returned
         $approvals = $spots->pluck('approved');
