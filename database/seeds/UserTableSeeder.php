@@ -14,18 +14,20 @@ class UserTableSeeder extends Seeder
     public function run()
     {
         // Do not seed the users table if the App is set to production mode.
-        if (env('APP_ENV') == 'local') {
+        if (env('APP_ENV') == 'local' || env('APP_ENV') == 'testing') {
             $now = Carbon::now('America/New_York')->toDateTimeString();
             $users = [
-                'Admin', 'Staff', 'User',
+                'Cooper'  => 'Sheldon',
+                'Sanchez' => 'Rick',
+                'Smith'   => 'Morty',
             ];
-            foreach ($users as $user) {
+            foreach ($users as $last => $first) {
                 DB::table('users')->insert([
 
-                    'first_name'=> "$user",
-                    'last_name' => 'User',
-                    'email'     => strtolower($user).'@rit.edu',
-                    'password'  => 'shibboleth',
+                    'first_name'=> $first,
+                    'last_name' => $last,
+                    'email'     => substr(strtolower($first), 0, 1).strtolower($last).'@samltest.id',
+                    'password'  => bcrypt(str_random(8)),
                     'created_at'=> $now,
                     'updated_at'=> $now,
 

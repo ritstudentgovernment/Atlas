@@ -57,7 +57,10 @@ class Handler extends ExceptionHandler
 
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-        if ($request->expectsJson()) {
+        // For a testing environment, the request is not expectingJson so this if would be bypassed, and redirected.
+        // That is less than ideal because PHPUnit doesn't like it when you change headers, so lets check for a testing
+        // environment here.
+        if ($request->expectsJson() || env('APP_ENV') == 'testing') {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 

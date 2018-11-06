@@ -17,7 +17,7 @@ class SpotController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth')->except(['get']);
+        $this->middleware('auth:api')->except(['get']);
     }
 
     /**
@@ -29,16 +29,16 @@ class SpotController extends Controller
      */
     public function get(Request $request)
     {
-        if (($user = $request->user() ?: Auth::user()) && $user instanceof User) {
+        if (($user = $request->user() ?: auth('api')->user()) && $user instanceof User) {
 
             // Get spots a user is authorized to see.
             if (!$user->can('view unapproved spots')) {
-                \Log::debug('User logged in and can view unapproved spots');
+                \Log::debug('User logged in but cannot view unapproved spots');
                 // The user is logged in but they do not have permission to view unapproved spots
                 return Spot::where('approved', 1)->orWhere('user_id', '=', $user->id)->get();
             }
 
-            \Log::debug('User logged in but cannot view unaproved spots');
+            \Log::debug('User logged in and can view unaproved spots');
             // The user is logged in and they have permission to view unapproved spots
             return Spot::all();
         } else {
@@ -59,7 +59,6 @@ class SpotController extends Controller
     {
         $rules = [
             'title'     => 'required',
-            'quietLevel'=> 'required|numeric',
             'notes'     => 'required',
             'type_id'   => 'required|numeric',
             'lat'       => 'required|numeric',
@@ -74,7 +73,6 @@ class SpotController extends Controller
         $spot = Spot::create([
 
             'title'     => $request->input('title'),
-            'quietLevel'=> $request->input('quietLevel'),
             'notes'     => $request->input('notes'),
             'type_id'   => $request->input('type_id'),
             'lat'       => $request->input('lat'),

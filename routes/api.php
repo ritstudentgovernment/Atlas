@@ -18,12 +18,8 @@
      Route::get('/{spot_id}', 'SpotController@get');
      Route::get('/categories', 'CategoryController@get');
 
-     Route::post('/create', 'SpotController@store')->middleware(['permission:add spot']);
-     Route::post('/approve/{spot}', 'SpotController@approve')->middleware(['permission:approve spots']);
- });
-
- Route::get('/checklogin', function () {
-     return [Auth::check(), Auth::guest(), Auth::user()];
+     Route::post('/create', 'SpotController@store')->middleware(['auth:api']);
+     Route::post('/approve/{spot}', 'SpotController@approve')->middleware(['auth:api', 'permission:approve spots']);
  });
 
 Route::prefix('admin')->middleware(['permission:administer'])->group(function () {

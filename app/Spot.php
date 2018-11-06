@@ -3,12 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Spot extends Model
 {
-    protected $appends = ['type', 'classification', 'descriptors'];
+    protected $appends = ['type', 'classification', 'descriptors', 'authored'];
     protected $hidden = ['user_id', 'created_at', 'updated_at', 'type_id'];
-    protected $fillable = [];
+    protected $fillable = ['title', 'notes', 'type_id', 'lat', 'lng'];
 
     public function getTypeAttribute()
     {
@@ -23,6 +24,15 @@ class Spot extends Model
     public function getDescriptorsAttribute()
     {
         return $this->descriptors()->get();
+    }
+
+    public function getAuthoredAttribute()
+    {
+        if (($user = Auth::user()) && $this->author->id == $user->id) {
+            return true;
+        }
+
+        return false;
     }
 
     public function author()

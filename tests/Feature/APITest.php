@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Spot;
+use App\Type;
 use App\User;
 use Tests\TestCase;
 
@@ -11,8 +12,9 @@ class APITest extends TestCase
     protected $spot;
     protected $user;
     protected $adminUser;
+    protected $newSpotData;
 
-    protected $deletes = ['spot', 'user', 'adminUser'];
+    protected $deletes = ['spot'];
 
     /**
      * Instantiate the necessary variables to run the tests.
@@ -23,11 +25,16 @@ class APITest extends TestCase
     {
         parent::setUp(); // For some reason this fixed way more than it was supposed to..
         $this->spot = (factory(Spot::class))->create(['approved' => false]);
-        $this->user = (factory(User::class))->create();
-        $this->adminUser = (factory(User::class))->create();
-        if ($this->adminUser instanceof User) {
-            $this->adminUser->assignRole(['admin', 'reviewer']);
-        }
+        $this->user = User::where('first_name', 'Morty')->first();
+        $this->adminUser = User::where('first_name', 'Sheldon')->first();
+        $this->newSpotData = [
+            'title'     => 'TEST',
+            'quietLevel'=> 10,
+            'notes'     => 'this is a test spot, dont expect much',
+            'type_id'   => Type::first() ? Type::inRandomOrder()->first()->id : null,
+            'lat'       => env('GOOGLE_MAPS_CENTER_LAT'),
+            'lng'       => env('GOOGLE_MAPS_CENTER_LNG'),
+        ];
     }
 
     public function testPermissions()
@@ -59,7 +66,7 @@ class APITest extends TestCase
 
     /**
      * Test to make sure that the api returns a response for authenticated (non admin) users on the home page.
-     * This response should not include any unapproved spots.
+     * This response should not include any unapproved spots that the user did not author.
      *
      * @return void
      */
@@ -71,9 +78,13 @@ class APITest extends TestCase
         // Make sure spots were returned
         $spots = collect($response->decodeResponseJson());
         $this->assertGreaterThan(0, $spots->count());
+        // Filter out spots the user authored, because they may not be approved yet
+        $spots = $spots->filter(function ($value) {
+            return $value['authored'] != true;
+        });
         // Make sure there are no unapproved spots returned
         $approvals = $spots->pluck('approved');
-        $this->assertNotContains(false, $approvals);
+        $this->assertNotContains(false, $approvals->toArray());
     }
 
     /**
@@ -92,7 +103,18 @@ class APITest extends TestCase
         $this->assertGreaterThan(0, $spots->count());
         // Make sure there are unapproved spots returned
         $approvals = $spots->pluck('approved');
-        $this->assertContains(false, $approvals);
+        $this->assertContains(false, $approvals->toArray());
+    }
+
+    /**
+     * Test to make sure that the api denies an unauthenticated request to make a new spot.
+     *
+     * @return void
+     */
+    public function testCreateSpotUnauthenticated()
+    {
+        $response = $this->post('/api/spots/create', $this->newSpotData);
+        $response->assertStatus(401);
     }
 
     /**
@@ -102,7 +124,7 @@ class APITest extends TestCase
      */
     public function testNonAdminApproveSpot()
     {
-        $response = $this->actingAs($this->user)->post('/api/spots/approve/'.$this->spot->id);
+        $response = $this->actingAs($this->user, 'api')->post('/api/spots/approve/'.$this->spot->id);
         // Make sure the request failed with a 403
         $response->assertStatus(403);
         // Given that the request failed, the spot should still be unapproved, check
@@ -116,7 +138,7 @@ class APITest extends TestCase
      */
     public function testAdminApproveSpot()
     {
-        $response = $this->actingAs($this->adminUser, 'web')->post('/api/spots/approve/'.$this->spot->id);
+        $response = $this->actingAs($this->adminUser, 'api')->post('/api/spots/approve/'.$this->spot->id);
         // Make sure the request was successful.
         $response->assertStatus(200);
         // Given that the request was successful, find the spot and check to make sure that it is approved.

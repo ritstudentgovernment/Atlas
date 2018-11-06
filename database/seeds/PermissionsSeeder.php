@@ -38,7 +38,7 @@ class PermissionsSeeder extends Seeder
         ]);
 
         // If the seeds were run in a dev environment, the test admin user will exist. Give them admin rights.
-        if ($tempAdminUser = User::where('email', 'admin@rit.edu')->first()) {
+        if ($tempAdminUser = User::where('email', 'scooper@samltest.id')->first()) {
             $tempAdminUser->assignRole(['admin', 'reviewer']);
         }
     }

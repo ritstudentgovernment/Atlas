@@ -21,7 +21,6 @@ class HomeController extends Controller
         $lng_range = (float) env('GOOGLE_MAPS_LNG_CHANGE');
 
         return view('pages.home', [
-
             'map' => [
                 'api_key' => env('GOOGLE_MAPS_API_KEY'),
                 'center'  => [
@@ -33,7 +32,6 @@ class HomeController extends Controller
                     'mix_lng' => $center_lng + $lng_range,
                 ],
             ],
-
         ]);
     }
 }
