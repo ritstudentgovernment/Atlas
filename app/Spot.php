@@ -31,6 +31,7 @@ class Spot extends Model
         if (($user = Auth::user()) && $this->author->id == $user->id) {
             return true;
         }
+
         return false;
     }
 
