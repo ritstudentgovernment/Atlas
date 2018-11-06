@@ -30,23 +30,9 @@
 
     <script>
 
-        function Position(){
-
-
-
-        }
-
-        function Type(){
-
-
-
-        }
-
-        function Descriptor(){
-
-
-
-        }
+        let markers = [],
+            icons = {},
+            openInfoWindow = false;
 
         function Spot(data){
 
@@ -95,37 +81,35 @@
 
                     function getDescriptorString(spot){
 
-                        let contentString = '';
-                        for(let i = 0; i < spot.descriptors.length; i++){
+                        let string = '';
+                        if (spot.hasOwnProperty('descriptors')) {
 
-                            let descriptor = spot.descriptors[i];
+                            for(let i = 0; i < spot.descriptors.length; i++){
 
-                            contentString +=
-                                '<div>' +
-                                    '<span uk-icon="icon: "'+descriptor.icon+ '"; ratio: 1.1"></span>&nbsp;Quiet Level: '+
-                                    spot.quietLevel+
-                                '</div>';
+                                let descriptor = spot.descriptors[i];
+
+                                string +=
+                                    '<div>' +
+                                        '<span uk-icon="icon: '+descriptor.icon+ '; ratio: 1.1"></span>' +
+                                        '&nbsp;'+descriptor.name+': '+descriptor.value+
+                                    '</div>';
+
+                            }
 
                         }
+                        return string
 
                     }
 
                     let contentString =
                         '<div class="infoWindowContentBox">'+
                             '<div class="infoWindowTitle">'+
-                                '<div>'+spot.name+'</div>'+
+                                '<div>'+spot.title+'</div>'+
                                 '<span>'+spot.classification+' '+spot.type.category.name+' spot</span>'+
                             '</div>'+
                             '<div class="infoWindowBody">'+
-                                '<div class="infoWindowIconDescriptors">' +
-                                    '<div>' +
-                                        '<span uk-icon="icon: bell; ratio: 1.1"></span>&nbsp;Quiet Level: '+
-                                        spot.quietLevel+
-                                    '</div>'+
-                                    '<div>' +
-                                        '<span uk-icon="icon: nut; ratio: 1.1"></span>&nbsp;Spot Type: '+
-                                        spot.type.name+
-                                    '</div>'+
+                                '<div class="infoWindowIconDescriptors">'+
+                                    getDescriptorString(spot)+
                                 '</div>'+
                                 '<p>'+spot.type.category.description+'</p>'+
                                 '<p>'+spot.notes+'</p>'+
@@ -170,7 +154,7 @@
                 markers.push(marker);
                 return marker;
 
-            }
+            };
 
         }
 
@@ -254,13 +238,64 @@
 
         }
 
+        /**
+         * Function google calls when the maps API is finally loaded.
+         *
+         * @return void.
+         */
+        function initMap() {
+
+            /**
+             * Function to restrict the movement of the Google Map so that the user doesn't loose campus.
+             *
+             * @return void.
+             */
+            function restrictMapMovement(){
+
+                let lastValidCenter = map.getCenter();
+                let allowedBounds = new google.maps.LatLngBounds(
+
+                    new google.maps.LatLng(43.08138,-77.68277),
+                    new google.maps.LatLng(43.087664,-77.666849)
+
+                );
+                google.maps.event.addListener(map, 'center_changed', function() {
+
+                    if (allowedBounds.contains(map.getCenter())) {
+
+                        lastValidCenter = map.getCenter();
+                        return;
+
+                    }
+                    map.panTo(lastValidCenter);
+
+                });
+                map.setOptions({ minZoom: 15, maxZoom: 20 });
+
+            }
+
+            // Instantiate Google Maps on the page
+            window.map = new google.maps.Map(document.getElementById('napMap'), {
+
+                center: <?= json_encode($map["center"]) ?>,
+                zoom: 16
+
+            });
+
+            restrictMapMovement();
+
+            @if(session()->has('api_key'))
+                window.axios.defaults.headers.common['Authorization'] = "bearer <?= session('api_key') ?>";
+            @endif
+
+                window.builder = new Builder();
+            builder.build();
+
+        }
+
     </script>
 
     <script>
-
-        let markers = [],
-            icons = {},
-            openInfoWindow = false;
 
         /**
          * Function to sort the spots based on their classification.
@@ -377,69 +412,6 @@
                 dropSpot(spots[spotIndex]);
 
             }
-
-        }
-
-        /**
-         * Function google calls when the maps API is finally loaded.
-         *
-         * @return void.
-         */
-        function initMap() {
-
-            /**
-             * Function to restrict the movement of the Google Map so that the user doesn't loose campus.
-             *
-             * @return void.
-             */
-            function restrictMapMovement(){
-
-                let lastValidCenter = map.getCenter();
-                let allowedBounds = new google.maps.LatLngBounds(
-
-                    new google.maps.LatLng(43.08138,-77.68277),
-                    new google.maps.LatLng(43.087664,-77.666849)
-
-                );
-                google.maps.event.addListener(map, 'center_changed', function() {
-
-                    if (allowedBounds.contains(map.getCenter())) {
-
-                        lastValidCenter = map.getCenter();
-                        return;
-
-                    }
-                    map.panTo(lastValidCenter);
-
-                });
-                map.setOptions({ minZoom: 15, maxZoom: 20 });
-
-            }
-
-            // Instantiate Google Maps on the page
-            window.map = new google.maps.Map(document.getElementById('napMap'), {
-
-                center: <?= json_encode($map["center"]) ?>,
-                zoom: 16
-
-            });
-
-            // sortSpots();
-            restrictMapMovement();
-            // dropSpots();
-            // buildLegend();
-
-            @if(session()->has('api_key'))
-                console.log('has api key');
-                console.log(window.axios.defaults.headers.common['Authorization'] = "bearer <?= session('api_key') ?>");
-            @endif
-
-            setTimeout(() => {
-
-                window.builder = new Builder();
-                builder.build();
-
-            }, 0);
 
         }
 
