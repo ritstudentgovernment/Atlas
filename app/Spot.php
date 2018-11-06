@@ -9,7 +9,7 @@ class Spot extends Model
 {
     protected $appends = ['type', 'classification', 'descriptors', 'authored'];
     protected $hidden = ['user_id', 'created_at', 'updated_at', 'type_id'];
-    protected $fillable = [];
+    protected $fillable = ['title', 'notes', 'type_id', 'lat', 'lng'];
 
     public function getTypeAttribute()
     {

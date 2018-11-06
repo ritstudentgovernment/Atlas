@@ -3,7 +3,9 @@
 namespace Tests\Feature;
 
 use App\Spot;
+use App\Type;
 use App\User;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class APITest extends TestCase
@@ -11,6 +13,7 @@ class APITest extends TestCase
     protected $spot;
     protected $user;
     protected $adminUser;
+    protected $newSpotData;
 
     protected $deletes = ['spot'];
 
@@ -25,6 +28,14 @@ class APITest extends TestCase
         $this->spot = (factory(Spot::class))->create(['approved' => false]);
         $this->user = User::where('first_name', 'Morty')->first();
         $this->adminUser = User::where('first_name', 'Sheldon')->first();
+        $this->newSpotData = [
+            'title'     => 'TEST',
+            'quietLevel'=> 10,
+            'notes'     => 'this is a test spot, dont expect much',
+            'type_id'   => Type::first() ? Type::inRandomOrder()->first()->id : null,
+            'lat'       => env('GOOGLE_MAPS_CENTER_LAT'),
+            'lng'       => env('GOOGLE_MAPS_CENTER_LNG')
+        ];
     }
 
     public function testPermissions()
@@ -97,13 +108,24 @@ class APITest extends TestCase
     }
 
     /**
+     * Test to make sure that the api denies an unauthenticated request to make a new spot.
+     *
+     * @return void
+     */
+    public function testCreateSpotUnauthenticated()
+    {
+        $response = $this->post('/api/spots/create', $this->newSpotData);
+        $response->assertStatus(401);
+    }
+
+    /**
      * Test to make sure that the api returns a 403 when a non-admin tries to approve a spot.
      *
      * @return void
      */
     public function testNonAdminApproveSpot()
     {
-        $response = $this->actingAs($this->user)->post('/api/spots/approve/'.$this->spot->id);
+        $response = $this->actingAs($this->user, 'api')->post('/api/spots/approve/'.$this->spot->id);
         // Make sure the request failed with a 403
         $response->assertStatus(403);
         // Given that the request failed, the spot should still be unapproved, check
@@ -117,10 +139,11 @@ class APITest extends TestCase
      */
     public function testAdminApproveSpot()
     {
-        $response = $this->actingAs($this->adminUser, 'web')->post('/api/spots/approve/'.$this->spot->id);
+        $response = $this->actingAs($this->adminUser, 'api')->post('/api/spots/approve/'.$this->spot->id);
         // Make sure the request was successful.
         $response->assertStatus(200);
         // Given that the request was successful, find the spot and check to make sure that it is approved.
         $this->assertTrue(Spot::find($this->spot->id)->approved);
     }
+
 }

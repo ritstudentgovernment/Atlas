@@ -22,7 +22,7 @@ class CreateSpotsTable extends Migration
             $table->integer('floor');
 
             $table->text('notes');
-            $table->string('name');
+            $table->string('title');
             $table->boolean('approved');
 
             $table->integer('user_id')->unsigned()->nullable();

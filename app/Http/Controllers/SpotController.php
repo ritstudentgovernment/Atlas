@@ -17,7 +17,7 @@ class SpotController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth')->except(['get']);
+        $this->middleware('auth:api')->except(['get']);
     }
 
     /**
@@ -59,7 +59,6 @@ class SpotController extends Controller
     {
         $rules = [
             'title'     => 'required',
-            'quietLevel'=> 'required|numeric',
             'notes'     => 'required',
             'type_id'   => 'required|numeric',
             'lat'       => 'required|numeric',
@@ -74,7 +73,6 @@ class SpotController extends Controller
         $spot = Spot::create([
 
             'title'     => $request->input('title'),
-            'quietLevel'=> $request->input('quietLevel'),
             'notes'     => $request->input('notes'),
             'type_id'   => $request->input('type_id'),
             'lat'       => $request->input('lat'),
