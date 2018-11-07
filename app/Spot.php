@@ -30,7 +30,9 @@ class Spot extends Model
     {
         $spotAuthor = $this->author()->first();
         $requestUser = request()->user() ?: (auth('api')->user() ?: false);
-        if (!($spotAuthor && $requestUser && $requestUser instanceof User)) { return false; }
+        if (!($spotAuthor && $requestUser && $requestUser instanceof User)) {
+            return false;
+        }
 
         return $requestUser->id == $spotAuthor->id;
     }

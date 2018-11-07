@@ -149,7 +149,7 @@ class APITest extends TestCase
      */
     public function testMakeSureAllTestSpotsAreDeleted()
     {
-        Spot::where('title', 'TEST')->get()->each(function(Spot $spot){
+        Spot::where('title', 'TEST')->get()->each(function (Spot $spot) {
             $spot->delete();
         });
         $this->assertEmpty(Spot::where('title', 'TEST')->get()->toArray());
