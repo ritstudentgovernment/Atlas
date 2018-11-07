@@ -9,7 +9,7 @@ class Spot extends Model
 {
     protected $appends = ['type', 'classification', 'descriptors', 'authored'];
     protected $hidden = ['user_id', 'created_at', 'updated_at', 'type_id'];
-    protected $fillable = ['title', 'notes', 'type_id', 'lat', 'lng'];
+    protected $fillable = ['title', 'notes', 'building', 'floor', 'approved', 'user_id', 'type_id', 'lat', 'lng'];
 
     public function getTypeAttribute()
     {
@@ -28,11 +28,11 @@ class Spot extends Model
 
     public function getAuthoredAttribute()
     {
-        if (($user = Auth::user()) && $this->author->id == $user->id) {
-            return true;
-        }
+        $spotAuthor = $this->author()->first();
+        $requestUser = request()->user() ?: (auth('api')->user() ?: false);
+        if (!($spotAuthor && $requestUser && $requestUser instanceof User)) { return false; }
 
-        return false;
+        return $requestUser->id == $spotAuthor->id;
     }
 
     public function author()

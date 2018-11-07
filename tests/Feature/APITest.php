@@ -29,8 +29,9 @@ class APITest extends TestCase
         $this->adminUser = User::where('first_name', 'Sheldon')->first();
         $this->newSpotData = [
             'title'     => 'TEST',
-            'quietLevel'=> 10,
-            'notes'     => 'this is a test spot, dont expect much',
+            'building'  => 'KGCOE',
+            'floor'     => 1,
+            'notes'     => 'this is a test spot, dont expect much ',
             'type_id'   => Type::first() ? Type::inRandomOrder()->first()->id : null,
             'lat'       => env('GOOGLE_MAPS_CENTER_LAT'),
             'lng'       => env('GOOGLE_MAPS_CENTER_LNG'),
@@ -118,12 +119,50 @@ class APITest extends TestCase
     }
 
     /**
+     * Test to make sure that spots created by a non-admin user are not initially approved.
+     *
+     * @return void
+     */
+    public function testCreateSpotNonAdmin()
+    {
+        $response = $this->actingAs($this->user, 'api')->post('/api/spots/create', $this->newSpotData);
+        $response->assertStatus(201);
+        $this->assertContains('"approved":0', $response->getContent());
+    }
+
+    /**
+     * Test to make sure that spots created by an admin user are initially approved.
+     *
+     * @return void
+     */
+    public function testCreateSpotAdmin()
+    {
+        $response = $this->actingAs($this->adminUser, 'api')->post('/api/spots/create', $this->newSpotData);
+        $response->assertStatus(201);
+        $this->assertContains('"approved":1', $response->getContent());
+    }
+
+    /**
+     * Test to delete any spots created by these tests.
+     *
+     * @return void
+     */
+    public function testMakeSureAllTestSpotsAreDeleted()
+    {
+        Spot::where('title', 'TEST')->get()->each(function(Spot $spot){
+            $spot->delete();
+        });
+        $this->assertEmpty(Spot::where('title', 'TEST')->get()->toArray());
+    }
+
+    /**
      * Test to make sure that the api returns a 403 when a non-admin tries to approve a spot.
      *
      * @return void
      */
     public function testNonAdminApproveSpot()
     {
+        \Log::debug("Delete Spots");
         $response = $this->actingAs($this->user, 'api')->post('/api/spots/approve/'.$this->spot->id);
         // Make sure the request failed with a 403
         $response->assertStatus(403);

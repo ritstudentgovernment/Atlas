@@ -29,12 +29,12 @@ class SpotController extends Controller
      */
     public function get(Request $request)
     {
-        if (($user = $request->user() ?: auth('api')->user()) && $user instanceof User) {
+        if (($user = $request->user()) && $user instanceof User) {
 
             // Get spots a user is authorized to see.
             if (!$user->can('view unapproved spots')) {
                 // The user is logged in but they do not have permission to view unapproved spots
-                return Spot::where('approved', 1)->orWhere('user_id', '=', $user->id)->get();
+                return Spot::where('approved', 1)->orWhere('user_id', $user->id)->get();
             }
 
             // The user is logged in and they have permission to view unapproved spots
@@ -57,6 +57,8 @@ class SpotController extends Controller
         $rules = [
             'title'     => 'required',
             'notes'     => 'required',
+            'building'  => 'required',
+            'floor'     => 'required|numeric',
             'type_id'   => 'required|numeric',
             'lat'       => 'required|numeric',
             'lng'       => 'required|numeric',
@@ -71,10 +73,13 @@ class SpotController extends Controller
 
             'title'     => $request->input('title'),
             'notes'     => $request->input('notes'),
+            'building'  => $request->input('building'),
+            'floor'     => $request->input('floor'),
             'type_id'   => $request->input('type_id'),
             'lat'       => $request->input('lat'),
             'lng'       => $request->input('lng'),
-            'status'    => $request->user()->can('approve spots') ? 2 : 0,
+            'approved'  => $request->user()->can('approve spots') ? 1 : 0,
+            'user_id'   => $request->user()->id
 
         ]);
 
@@ -84,7 +89,7 @@ class SpotController extends Controller
     /**
      * Endpoint hit to approve a nap spot.
      *
-     * @param Request $request the http request
+     * @param Request $request the http request.
      * @param Spot    $spot    the spot to try and approve
      *
      * @return void
