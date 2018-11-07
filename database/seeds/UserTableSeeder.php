@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\DB;
 class UserTableSeeder extends Seeder
 {
     protected $users = [
-        'Cooper' => 'Sheldon',
+        'Cooper'  => 'Sheldon',
         'Sanchez' => 'Rick',
-        'Smith' => 'Morty',
+        'Smith'   => 'Morty',
     ];
 
     /**
@@ -26,9 +26,9 @@ class UserTableSeeder extends Seeder
                 DB::table('users')->insert([
 
                     'first_name' => $first,
-                    'last_name' => $last,
-                    'email' => substr(strtolower($first), 0, 1) . strtolower($last) . '@samltest.id',
-                    'password' => bcrypt(str_random(8)),
+                    'last_name'  => $last,
+                    'email'      => substr(strtolower($first), 0, 1).strtolower($last).'@samltest.id',
+                    'password'   => bcrypt(str_random(8)),
                     'created_at' => $now,
                     'updated_at' => $now,
 
