@@ -8,23 +8,23 @@ class TypesTableSeeder extends Seeder
 {
     protected $types = [
         [
-            'name' => 'Bench',
+            'name'        => 'Bench',
             'category_id' => 1,
         ],
         [
-            'name' => 'Couch',
+            'name'        => 'Couch',
             'category_id' => 1,
         ],
         [
-            'name' => 'Chair',
+            'name'        => 'Chair',
             'category_id' => 1,
         ],
         [
-            'name' => 'Coffee Shop',
+            'name'        => 'Coffee Shop',
             'category_id' => 2,
         ],
         [
-            'name' => 'Vending Machine',
+            'name'        => 'Vending Machine',
             'category_id' => 2,
         ],
     ];
