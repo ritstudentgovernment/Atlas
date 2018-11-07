@@ -18,6 +18,7 @@ class DescriptorSpot extends Model
     {
         return $this->descriptor->icon;
     }
+
     public function getDefaultValueAttribute()
     {
         return $this->descriptor->default_value;

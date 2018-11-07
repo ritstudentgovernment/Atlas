@@ -5,7 +5,7 @@ namespace Tests;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\DB;
-use \Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -55,7 +55,7 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * Reset the primary key of a given table to the smallest available ID
+     * Reset the primary key of a given table to the smallest available ID.
      *
      * @param $tables | string or array
      *        Acceptable formats: 'table 1', ['table 1', ...], ['primary key 1'=>'table 1', ...]
@@ -66,7 +66,6 @@ abstract class TestCase extends BaseTestCase
     {
         $tables = is_array($tables) ? $tables : [$tables];
         foreach ($tables as $primary_key => $table) {
-
             $max = DB::table($table)->max(is_string($primary_key) ? $primary_key : 'id') + 1;
 
             $dbDriver = env('DB_CONNECTION');
@@ -75,7 +74,8 @@ abstract class TestCase extends BaseTestCase
             } elseif ($dbDriver == 'mysql') {
                 $sql = "ALTER TABLE $table AUTO_INCREMENT = $max";
             } else {
-                Log::warning("You are not using postgres or mysql, the refreshDB function will not work and your tables may get very large.");
+                Log::warning('You are not using postgres or mysql, the refreshDB function will not work and your tables may get very large.');
+
                 return;
             }
 

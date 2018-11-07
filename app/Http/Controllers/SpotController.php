@@ -79,7 +79,7 @@ class SpotController extends Controller
             'lat'       => $request->input('lat'),
             'lng'       => $request->input('lng'),
             'approved'  => $request->user()->can('approve spots') ? 1 : 0,
-            'user_id'   => $request->user()->id
+            'user_id'   => $request->user()->id,
 
         ]);
 
