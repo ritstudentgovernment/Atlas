@@ -162,7 +162,6 @@ class APITest extends TestCase
      */
     public function testNonAdminApproveSpot()
     {
-        \Log::debug("Delete Spots");
         $response = $this->actingAs($this->user, 'api')->post('/api/spots/approve/'.$this->spot->id);
         // Make sure the request failed with a 403
         $response->assertStatus(403);
