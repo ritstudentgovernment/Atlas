@@ -43,6 +43,9 @@
 
                 if (canvasBuilder instanceof CanvasBuilder) {
 
+                    // Make the icon transparent if it is for a draggable spot
+                    canvasBuilder.setAlpha( (this.data.hasOwnProperty('draggable') ? 0.5 : 1) );
+
                     let icon = data.type.hasOwnProperty('category') ? data.type.category.icon : 'T';
                     let color = data.classification.hasOwnProperty('color') ? data.classification.color : 'ff7700';
                     let image = canvasBuilder.makeImage(icon, color);
@@ -288,7 +291,7 @@
                 window.axios.defaults.headers.common['Authorization'] = "bearer <?= session('api_key') ?>";
             @endif
 
-                window.builder = new Builder();
+            window.builder = new Builder();
             builder.build();
 
         }
@@ -296,124 +299,6 @@
     </script>
 
     <script>
-
-        /**
-         * Function to sort the spots based on their classification.
-         *
-         * @return void.
-         */
-        function sortSpots(){
-
-            spots.sort(function(a, b){
-
-                return a.classification.charCodeAt(0) - b.classification.charCodeAt(0);
-
-            });
-
-        }
-
-        /**
-         * Function that gets an image object for use in a spot pin based on the classification of the spot provided.
-         * Images are expected to be stored in /images/spots/[icon category name]/[spot classification].png
-         *
-         * @param spot A spot object
-         * @returns array {url: string, size: google.maps.Size, origin: Point, anchor: Point, scaledSize: google.maps.Size}
-         */
-        function getIconForSpot(spot){
-
-            let baseIconDirectory = "images/spots";
-            let iconCategory = spot.type.category.name;
-            let iconDirectory = iconCategory.toLowerCase().trim();
-            let classification = spot.classification;
-            let icon = classification+".png";
-            let url = baseIconDirectory+"/"+iconDirectory+"/"+icon;
-
-            if(!icons.hasOwnProperty(iconCategory)) icons[iconCategory] = {};
-            if(!icons[iconCategory].hasOwnProperty(url)){
-
-                icons[iconCategory][url] = classification === "review" ? "Under Review" : classification;
-
-            }
-
-            return {
-                url: url,
-                size: new google.maps.Size(30, 35),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(15, 35),
-                scaledSize: new google.maps.Size(30, 35)
-            };
-
-        }
-
-        /**
-         * Function to build the map legend based on the spots that the site is rendering.
-         *
-         * @return void.
-         */
-        function buildLegend(){
-
-            let legend = document.getElementById('legend');
-            for (let classificationKey in icons) {
-
-                let classificationIcons = icons[classificationKey];
-                let classificationSection = document.createElement('div');
-                classificationSection.className = 'legendSection';
-                classificationSection.innerHTML = '<h3>'+classificationKey+' Spot</h3>';
-                for(let iconUrl in classificationIcons){
-
-                    let legendRow = document.createElement('div');
-                    let name = classificationIcons[iconUrl];
-                    legendRow.innerHTML = '<img src="' + iconUrl + '"> ' + name;
-                    classificationSection.appendChild(legendRow);
-
-                }
-                legend.appendChild(classificationSection);
-
-            }
-
-        }
-
-        /**
-         * Function to drop a single spot on the map.
-         *
-         * @return google.maps.Marker
-         */
-        function dropSpot(spot){
-
-            let marker = new google.maps.Marker({
-
-                position: {lat: Number(spot.lat), lng:Number(spot.lng)},
-                animation: google.maps.Animation.DROP,
-                map: window.map,
-                icon: getIconForSpot(spot),
-                title: spot.name,
-                draggable: spot.hasOwnProperty('draggable') ? spot.draggable : false
-
-            });
-
-            marker.infoWindow = addClickHandler(marker, spot);
-
-            markers.push(marker);
-
-            return marker;
-
-        }
-
-        /**
-         * Function to drop all of the spots the page was given.
-         * Calls dropSpot() multiple times.
-         *
-         * @return void.
-         */
-        function dropSpots(){
-
-            for(let spotIndex in spots){
-
-                dropSpot(spots[spotIndex]);
-
-            }
-
-        }
 
         /**
          * Function to cancel the creation of a new spot.
@@ -479,6 +364,13 @@
                     }
                 },
                 notes: ""
+
+            });
+
+            let newspot = new Spot({
+
+                draggable: true,
+                approved: false
 
             });
 

@@ -3,6 +3,10 @@ window.CanvasBuilder = function(){
     let canvas = document.createElement("CANVAS");
     let context = canvas.getContext('2d');
 
+    this.setAlpha = function(alpha){
+        context.globalAlpha = alpha;
+    };
+
     this.makeImage = function(icon, color){
 
         function drawRectangle(color){

@@ -17,6 +17,7 @@ class CreateDescriptorsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('default_value');
+            $table->string('allowed_values');
             $table->string('icon');
             $table->timestamps();
         });

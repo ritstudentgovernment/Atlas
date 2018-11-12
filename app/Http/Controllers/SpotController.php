@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
+use App\Classification;
+use App\Descriptors;
 use App\Spot;
 use App\User;
 use Illuminate\Http\Request;
@@ -83,7 +86,44 @@ class SpotController extends Controller
 
         ]);
 
+        if ($request->input('descriptors')) {
+            $descriptors = $request->input('descriptors');
+            foreach ($descriptors as $descriptor => $value) {
+                $descriptor = Descriptors::where();
+            }
+        }
+
         return $spot;
+    }
+
+    public function getDefaults(Request $request)
+    {
+
+        if ($categoryName = $request->input('category')) {
+            $category = Category::where('name', $categoryName)->first();
+            $descriptors = $category->descriptors;
+
+        }
+
+        $requiredSpotData = [
+
+            'lat'       => null,
+            'lng'       => null,
+            'building'  => null,
+            'floor'     => null,
+
+            'title'     => null,
+            'notes'     => null,
+            'approved'  => null,
+
+            'user_id'           => null,
+            'type_id'           => null,
+            'classification_id' => null,
+
+        ];
+
+        return ['requiredData'=>$requiredSpotData];
+
     }
 
     /**
