@@ -54,6 +54,6 @@ class Spot extends Model
 
     public function descriptors()
     {
-        return $this->hasManyThrough(DescriptorSpot::class, Descriptors::class, 'id', 'descriptor_id');
+        return $this->hasManyThrough(Descriptors::class, DescriptorSpot::class, 'id', 'id', 'id','descriptor_id');
     }
 }

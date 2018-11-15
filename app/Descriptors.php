@@ -10,7 +10,7 @@ class Descriptors extends Model
 
     public function spots()
     {
-        return $this->hasManyThrough(Spot::class, DescriptorSpot::class);
+        return $this->hasManyThrough(Spot::class, DescriptorSpot::class, 'id', 'id', 'id','descriptor_id');
     }
 
     public function categories()

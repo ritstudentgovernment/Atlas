@@ -13,6 +13,6 @@ class CategoryDescriptor extends Model
 
     public function descriptor()
     {
-        return $this->belongsTo(Descriptors::class);
+        return $this->belongsTo(Descriptors::class, 'id', 'descriptor_id');
     }
 }

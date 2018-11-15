@@ -16,6 +16,6 @@ class Category extends Model
 
     public function descriptors()
     {
-        return $this->hasManyThrough(Descriptors::class, CategoryDescriptor::class, 'id', 'id');
+        return $this->hasManyThrough(Descriptors::class, CategoryDescriptor::class, 'id', 'id', 'id', 'descriptor_id');
     }
 }
