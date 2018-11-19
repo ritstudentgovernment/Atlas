@@ -10,11 +10,11 @@ class Descriptors extends Model
 
     public function spots()
     {
-        return $this->hasManyThrough(Spot::class, DescriptorSpot::class, 'id', 'id', 'id','descriptor_id');
+        return $this->belongsToMany(Spot::class, 'descriptors_spot', 'descriptor_id', 'spot_id')->withPivot('value');
     }
 
     public function categories()
     {
-        return $this->hasManyThrough(Category::class, CategoryDescriptor::class);
+        return $this->belongsToMany(Category::class, 'category_descriptors', 'descriptor_id', 'category_id');
     }
 }

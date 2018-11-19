@@ -15,11 +15,12 @@ class DescriptorsTableSeeder extends BaseSeeder
                 $descriptors = is_array($descriptors) ?: [$descriptors];
                 foreach ($descriptors as $descriptor) {
                     $descriptor = Descriptor::where('name', $descriptor)->first();
-                    if ($descriptor) {
-                        $categoryDescriptor = new CategoryDescriptor;
-                        $categoryDescriptor->category_id = $category->id;
-                        $categoryDescriptor->descriptor_id = $descriptor->id;
-                        $categoryDescriptor->save();
+                    if ($descriptor instanceof Descriptor) {
+//                        $categoryDescriptor = new CategoryDescriptor;
+//                        $categoryDescriptor->category_id = $category->id;
+//                        $categoryDescriptor->descriptor_id = $descriptor->id;
+//                        $categoryDescriptor->save();
+                        $descriptor->categories()->attach($category);
                     }
                 }
             }
@@ -35,7 +36,7 @@ class DescriptorsTableSeeder extends BaseSeeder
     {
         $this->staticData = [
             [
-                'name'              => 'Quiet Level',
+                'name'              => 'Sound Level',
                 'default_value'     => 'Quiet',
                 'allowed_values'    => 'Super Quiet|Quiet|Average|Noisy|Very Loud',
                 'icon'              => 'rss',
@@ -50,7 +51,7 @@ class DescriptorsTableSeeder extends BaseSeeder
 
         $categoryDescriptorsMap = [
             'Energy'    => 'Fuel',
-            'Nap'       => 'Quiet Level',
+            'Nap'       => 'Sound Level',
         ];
 
         $this->seed(Descriptor::class);

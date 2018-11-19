@@ -93,8 +93,8 @@
 
                                 string +=
                                     '<div>' +
-                                        '<span uk-icon="icon: '+descriptor.icon+ '; ratio: 1.1"></span>' +
-                                        '&nbsp;'+descriptor.name+': '+descriptor.value+
+                                        '<span uk-icon="icon: '+descriptor.icon+ '; ratio: .9"></span>' +
+                                        '&nbsp;'+descriptor.name+': '+descriptor.pivot.value+
                                     '</div>';
 
                             }

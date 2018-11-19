@@ -54,6 +54,6 @@ class Spot extends Model
 
     public function descriptors()
     {
-        return $this->hasManyThrough(Descriptors::class, DescriptorSpot::class, 'id', 'id', 'id','descriptor_id');
+        return $this->belongsToMany(Descriptors::class, 'descriptors_spot', 'spot_id', 'descriptor_id', 'id', 'id')->withPivot('value');
     }
 }
