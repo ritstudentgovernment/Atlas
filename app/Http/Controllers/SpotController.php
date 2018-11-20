@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Category;
-use App\Classification;
 use App\Descriptors;
 use App\Spot;
 use App\User;
@@ -98,11 +97,9 @@ class SpotController extends Controller
 
     public function getDefaults(Request $request)
     {
-
         if ($categoryName = $request->input('category')) {
             $category = Category::where('name', $categoryName)->first();
             $descriptors = $category->descriptors;
-
         }
 
         $requiredSpotData = [
@@ -123,7 +120,6 @@ class SpotController extends Controller
         ];
 
         return ['requiredData'=>$requiredSpotData];
-
     }
 
     /**
