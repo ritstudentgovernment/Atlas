@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             CategoriesTableSeeder::class,
             TypesTableSeeder::class,
             DescriptorsTableSeeder::class,
+            ClassificationsSeeder::class,
             SpotsTableSeeder::class,
             PermissionsSeeder::class,
 

@@ -108,7 +108,7 @@
                         '<div class="infoWindowContentBox">'+
                             '<div class="infoWindowTitle">'+
                                 '<div>'+spot.title+'</div>'+
-                                '<span>'+spot.classification+' '+spot.type.category.name+' spot</span>'+
+                                '<span style="background-color: #'+spot.classification.color+'">'+spot.classification.name+' '+spot.type.category.name+' spot</span>'+
                             '</div>'+
                             '<div class="infoWindowBody">'+
                                 '<div class="infoWindowIconDescriptors">'+

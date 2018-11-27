@@ -21,11 +21,6 @@ class SpotsTableSeeder extends Seeder
             if ($descriptors instanceof Collection) {
                 $descriptors->each(function (Descriptors $descriptor) use ($spot) {
                     $spot->descriptors()->sync([$descriptor->id => ['value'=>$descriptor->default_value]]);
-//                    $spotDescriptor = new DescriptorSpot;
-//                    $spotDescriptor->spot_id = $spot->id;
-//                    $spotDescriptor->descriptor_id = $descriptor->id;
-//                    $spotDescriptor->value = $descriptor->default_value;
-//                    $spotDescriptor->save();
                 });
             } else {
                 \Log::error("Descriptors should be a collection instance");

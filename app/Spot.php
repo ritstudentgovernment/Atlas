@@ -18,7 +18,7 @@ class Spot extends Model
 
     public function getClassificationAttribute()
     {
-        return $this->classification()->get();
+        return $this->classification()->first();
     }
 
     public function getDescriptorsAttribute()

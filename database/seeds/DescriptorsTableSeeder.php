@@ -16,10 +16,6 @@ class DescriptorsTableSeeder extends BaseSeeder
                 foreach ($descriptors as $descriptor) {
                     $descriptor = Descriptor::where('name', $descriptor)->first();
                     if ($descriptor instanceof Descriptor) {
-//                        $categoryDescriptor = new CategoryDescriptor;
-//                        $categoryDescriptor->category_id = $category->id;
-//                        $categoryDescriptor->descriptor_id = $descriptor->id;
-//                        $categoryDescriptor->save();
                         $descriptor->categories()->attach($category);
                     }
                 }
