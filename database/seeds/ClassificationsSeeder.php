@@ -16,6 +16,7 @@ class ClassificationsSeeder extends BaseSeeder
                 'name'  => 'Designated',
                 'color' => 'ff7700',
                 'category_id' => 1,
+                'create_permission' => 'approve spots'
             ],
             [
                 'name'  => 'Public',
@@ -26,6 +27,7 @@ class ClassificationsSeeder extends BaseSeeder
                 'name'  => 'Under Review',
                 'color' => 'cb0020',
                 'category_id' => 1,
+                'view_permission' => 'view unapproved spots',
             ],
             [
                 'name'  => 'Public',
@@ -36,6 +38,7 @@ class ClassificationsSeeder extends BaseSeeder
                 'name'  => 'Designated',
                 'color' => '40ca56',
                 'category_id' => 2,
+                'create_permission' => 'approve spots'
             ],
         ];
 

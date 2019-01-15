@@ -6,12 +6,15 @@ use App\Category;
 use App\Classification;
 use App\Descriptors;
 use App\Spot;
+use App\Type;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\MessageBag;
 
 class SpotController extends Controller
 {
@@ -23,6 +26,29 @@ class SpotController extends Controller
         $this->middleware('auth:api')->except(['get']);
     }
 
+    private function filterSpotsVisible(Collection $spots, User $user = null)
+    {
+        \Log::debug($user);
+        return $spots->reject(function (Spot $spot) use ($user) {
+
+            $requiredViewPermission = $spot->classification->view_permission;
+            if ($user == null) { // User is not logged in
+
+                // Remove spots that are not approved or that have a required permission
+                return (!$spot->approved || $requiredViewPermission);
+
+            } else {
+
+                if (!$spot->approved && !$user->can('view unapproved spots')) {
+                    return true;
+                }
+                return !$user->can($requiredViewPermission);
+
+            }
+
+        })->values()->all();
+    }
+
     /**
      * Function to get the nap spots the current user may see.
      *
@@ -32,20 +58,38 @@ class SpotController extends Controller
      */
     public function get(Request $request)
     {
-        if (($user = $request->user()) && $user instanceof User) {
+        return $this->filterSpotsVisible(Spot::all(), auth('api')->user());
+    }
 
-            // Get spots a user is authorized to see.
-            if (!$user->can('view unapproved spots')) {
-                // The user is logged in but they do not have permission to view unapproved spots
-                return Spot::where('approved', 1)->orWhere('user_id', $user->id)->get();
+    private function validateSentDescriptors(Request $request, \Illuminate\Validation\Validator $validator, Type $type)
+    {
+        $validatedRequestDescriptors = [];
+        $requestDescriptors = $request->input('descriptors');
+        $categoryRequiredDescriptors = $type->category->descriptors;
+        // Loop through all of the sent descriptors and make sure they're supposed to be there and that required ones exist
+        foreach ($requestDescriptors as $descriptorId => $value) {
+            // Make sure the descriptor actually exists
+            if ( !($descriptor = Descriptors::find($descriptorId)) ) {
+                $validator->errors()->add('Descriptors', "Descriptor $descriptorId does not exist");
+            } else {
+                // Make sure the descriptor is one of the Category's required descriptors
+                if ($categoryRequiredDescriptors->pluck('id')->contains($descriptorId)) {
+                    $validatedRequestDescriptors[$descriptorId] = ['descriptor'=>$descriptor, 'value'=>$value];
+                } else {
+                    Log::debug('Descriptor sent with creation of spot is not required for the sent type');
+                }
             }
-
-            // The user is logged in and they have permission to view unapproved spots
-            return Spot::all();
-        } else {
-            // The user is not logged in
-            return Spot::where('approved', 1)->get();
         }
+        $missingDescriptors = $categoryRequiredDescriptors->diff(collect($validatedRequestDescriptors)->pluck('descriptor'));
+        if ($missingDescriptors->count()) {
+            $validator->errors()->add('Missing Descriptors', $missingDescriptors->pluck('name')->toJson());
+        }
+        if ($validatedRequestDescriptors instanceof Collection) {
+            $validatedRequestDescriptors = $validatedRequestDescriptors->map(function ($item) {
+                return [$item['descriptor']->id => $item['value']];
+            });
+        }
+        return ['descriptors' => $validatedRequestDescriptors, 'validator' => $validator];
     }
 
     /**
@@ -53,21 +97,34 @@ class SpotController extends Controller
      *
      * @param Request $request The HTTP request.
      *
-     * @return Spot The new spot.
+     * @return Spot|MessageBag The new spot or the errors that occurred while parsing the request.
      */
     public function store(Request $request)
     {
         $rules = [
-            'title'     => 'required',
-            'notes'     => 'required',
-            'building'  => 'required',
-            'floor'     => 'required|numeric',
-            'type_id'   => 'required|numeric',
-            'lat'       => 'required|numeric',
-            'lng'       => 'required|numeric',
+            'title'         => 'required',
+            'notes'         => 'required',
+            'building'      => 'required',
+            'descriptors'   => 'required',
+            'floor'         => 'required|numeric',
+            'type_id'       => 'required|numeric',
+            'lat'           => 'required|numeric',
+            'lng'           => 'required|numeric',
         ];
 
         $validator = Validator::make(Input::all(), $rules);
+
+        // Initial validation, just that required fields are sent
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+
+        $type = Type::find($request->input('type_id'));
+        $validatedRequestDescriptors = $this->validateSentDescriptors($request, $validator, $type);
+
+        $validatedDescriptors = $validatedRequestDescriptors['descriptors'];
+        $validator = $validatedRequestDescriptors['validator'];
+
         if ($validator->fails()) {
             return $validator->errors();
         }
@@ -86,11 +143,8 @@ class SpotController extends Controller
 
         ]);
 
-        if ($request->input('descriptors')) {
-            $descriptors = $request->input('descriptors');
-            foreach ($descriptors as $descriptor => $value) {
-                $descriptor = Descriptors::where();
-            }
+        if ($spot instanceof Spot) {
+            $spot->descriptors()->attach($validatedDescriptors);
         }
 
         return $spot;
@@ -101,28 +155,39 @@ class SpotController extends Controller
 
         if ($categoryName = $request->input('category')) {
             $category = Category::where('name', $categoryName)->first();
-            $descriptors = $category->descriptors;
-
+        } else {
+            $category = Category::all()->first();
         }
+
+        $descriptors = $category->descriptors;
+        $classifications = $category->classifications;
+        $types = $category->types;
 
         $requiredSpotData = [
 
-            'lat'       => null,
-            'lng'       => null,
-            'building'  => null,
-            'floor'     => null,
+            'lat'               =>  null,
+            'lng'               =>  null,
+            'building'          =>  null,
+            'floor'             =>  null,
 
-            'title'     => null,
-            'notes'     => null,
-            'approved'  => null,
+            'title'             =>  null,
+            'notes'             =>  null,
+            'approved'          =>  null,
 
-            'user_id'           => null,
-            'type_id'           => null,
-            'classification_id' => null,
+            'user_id'           =>  null,
+            'type_id'           =>  null,
+
+            'descriptors'       =>  null,
+            'classification_id' =>  null,
 
         ];
 
-        return ['requiredData'=>$requiredSpotData];
+        return [
+            'requiredData'              =>  $requiredSpotData,
+            'availableTypes'            =>  $types,
+            'requiredDescriptors'       =>  $descriptors,
+            'availableClassifications'  =>  $classifications,
+        ];
 
     }
 

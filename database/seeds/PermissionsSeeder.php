@@ -21,6 +21,7 @@ class PermissionsSeeder extends Seeder
 
         // Define Permissions
         $approve_spots = Permission::create(['name' => 'approve spots']);
+        $make_designated_spots = Permission::create(['name' => 'make designated spots']);
         $view_unapproved_spots = Permission::create(['name' => 'view unapproved spots']);
         $mass_upload_spots = Permission::create(['name' => 'mass upload spots']);
         $edit_categories = Permission::create(['name' => 'edit categories']);
@@ -33,6 +34,7 @@ class PermissionsSeeder extends Seeder
             $administer,
         ]);
         $reviewer->syncPermissions([
+            $make_designated_spots,
             $view_unapproved_spots,
             $approve_spots,
         ]);

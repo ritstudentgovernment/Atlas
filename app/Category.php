@@ -18,4 +18,9 @@ class Category extends Model
     {
         return $this->belongsToMany(Descriptors::class, 'category_descriptors','descriptor_id', 'category_id');
     }
+
+    public function classifications()
+    {
+        return $this->hasMany(Classification::class);
+    }
 }

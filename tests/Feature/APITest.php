@@ -27,14 +27,20 @@ class APITest extends TestCase
         $this->spot = (factory(Spot::class))->create(['approved' => false]);
         $this->user = User::where('first_name', 'Morty')->first();
         $this->adminUser = User::where('first_name', 'Sheldon')->first();
+        $type = Type::first() ? Type::inRandomOrder()->first() : null;
+        $requiredDescriptors = $type == null ?: $type->category->descriptors;
+        $requiredDescriptors = $requiredDescriptors->map(function ($item) {
+            return [$item->id=>$item->defaultValue];
+        });
         $this->newSpotData = [
-            'title'     => 'TEST',
-            'building'  => 'KGCOE',
-            'floor'     => 1,
-            'notes'     => 'this is a test spot, dont expect much ',
-            'type_id'   => Type::first() ? Type::inRandomOrder()->first()->id : null,
-            'lat'       => env('GOOGLE_MAPS_CENTER_LAT'),
-            'lng'       => env('GOOGLE_MAPS_CENTER_LNG'),
+            'title'         => 'TEST',
+            'building'      => 'KGCOE',
+            'floor'         => 1,
+            'notes'         => 'this is a test spot, dont expect much ',
+            'type_id'       => $type == null ?: $type->id,
+            'lat'           => env('GOOGLE_MAPS_CENTER_LAT'),
+            'lng'           => env('GOOGLE_MAPS_CENTER_LNG'),
+            'descriptors'   => $requiredDescriptors,
         ];
     }
 
@@ -96,7 +102,7 @@ class APITest extends TestCase
      */
     public function testGetSpotsAdmin()
     {
-        $response = $this->actingAs($this->adminUser, 'web')->get('/api/spots');
+        $response = $this->actingAs($this->adminUser, 'api')->get('/api/spots');
         // Make sure the request succeeded
         $response->assertStatus(200);
         // Make sure spots were returned
