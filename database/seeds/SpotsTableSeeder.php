@@ -1,11 +1,9 @@
 <?php
 
-use Illuminate\Database\Seeder;
-
-use App\Spot;
 use App\Descriptors;
-use App\DescriptorSpot;
-use \Illuminate\Support\Collection;
+use App\Spot;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 
 class SpotsTableSeeder extends Seeder
 {
@@ -23,7 +21,7 @@ class SpotsTableSeeder extends Seeder
                     $spot->descriptors()->sync([$descriptor->id => ['value'=>$descriptor->default_value]]);
                 });
             } else {
-                \Log::error("Descriptors should be a collection instance");
+                \Log::error('Descriptors should be a collection instance');
             }
         });
     }

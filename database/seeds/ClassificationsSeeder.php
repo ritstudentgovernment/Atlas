@@ -13,32 +13,32 @@ class ClassificationsSeeder extends BaseSeeder
     {
         $this->staticData = [
             [
-                'name'  => 'Designated',
-                'color' => 'ff7700',
-                'category_id' => 1,
-                'create_permission' => 'approve spots'
+                'name'              => 'Designated',
+                'color'             => 'ff7700',
+                'category_id'       => 1,
+                'create_permission' => 'approve spots',
             ],
             [
-                'name'  => 'Public',
-                'color' => '8d5632',
+                'name'        => 'Public',
+                'color'       => '8d5632',
                 'category_id' => 1,
             ],
             [
-                'name'  => 'Under Review',
-                'color' => 'cb0020',
-                'category_id' => 1,
+                'name'            => 'Under Review',
+                'color'           => 'cb0020',
+                'category_id'     => 1,
                 'view_permission' => 'view unapproved spots',
             ],
             [
-                'name'  => 'Public',
-                'color' => '298237',
+                'name'        => 'Public',
+                'color'       => '298237',
                 'category_id' => 2,
             ],
             [
-                'name'  => 'Designated',
-                'color' => '40ca56',
-                'category_id' => 2,
-                'create_permission' => 'approve spots'
+                'name'              => 'Designated',
+                'color'             => '40ca56',
+                'category_id'       => 2,
+                'create_permission' => 'approve spots',
             ],
         ];
 

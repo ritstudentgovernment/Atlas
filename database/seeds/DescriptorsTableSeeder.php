@@ -1,15 +1,13 @@
 <?php
 
 use App\Category;
-use App\CategoryDescriptor;
 use App\Descriptors as Descriptor;
 
 class DescriptorsTableSeeder extends BaseSeeder
 {
-
     protected function addDescriptorToCategories($map)
     {
-        Category::all()->each(function(Category $category) use ($map) {
+        Category::all()->each(function (Category $category) use ($map) {
             if (array_key_exists($category->name, $map)) {
                 $descriptors = $map[$category->name];
                 $descriptors = is_array($descriptors) ?: [$descriptors];

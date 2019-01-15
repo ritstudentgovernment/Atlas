@@ -42,7 +42,7 @@ $factory->define(App\Spot::class, function (Faker $faker) {
 
         'user_id'           => User::first() ? User::inRandomOrder()->first()->id : null,
         'type_id'           => $type ? $type->id : null,
-        'classification_id' => $classification ? $classification->id: null,
+        'classification_id' => $classification ? $classification->id : null,
 
     ];
 });
