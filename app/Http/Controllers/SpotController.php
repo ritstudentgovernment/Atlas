@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Category;
-use App\Classification;
 use App\Descriptors;
 use App\Spot;
 use App\Type;
@@ -13,8 +12,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Validator;
 use Illuminate\Support\MessageBag;
+use Illuminate\Validation\Validator;
 
 class SpotController extends Controller
 {
@@ -29,23 +28,20 @@ class SpotController extends Controller
     private function filterSpotsVisible(Collection $spots, User $user = null)
     {
         \Log::debug($user);
-        return $spots->reject(function (Spot $spot) use ($user) {
 
+        return $spots->reject(function (Spot $spot) use ($user) {
             $requiredViewPermission = $spot->classification->view_permission;
             if ($user == null) { // User is not logged in
 
                 // Remove spots that are not approved or that have a required permission
-                return (!$spot->approved || $requiredViewPermission);
-
+                return !$spot->approved || $requiredViewPermission;
             } else {
-
                 if (!$spot->approved && !$user->can('view unapproved spots')) {
                     return true;
                 }
+
                 return !$user->can($requiredViewPermission);
-
             }
-
         })->values()->all();
     }
 
@@ -69,7 +65,7 @@ class SpotController extends Controller
         // Loop through all of the sent descriptors and make sure they're supposed to be there and that required ones exist
         foreach ($requestDescriptors as $descriptorId => $value) {
             // Make sure the descriptor actually exists
-            if ( !($descriptor = Descriptors::find($descriptorId)) ) {
+            if (!($descriptor = Descriptors::find($descriptorId))) {
                 $validator->errors()->add('Descriptors', "Descriptor $descriptorId does not exist");
             } else {
                 // Make sure the descriptor is one of the Category's required descriptors
@@ -89,6 +85,7 @@ class SpotController extends Controller
                 return [$item['descriptor']->id => $item['value']];
             });
         }
+
         return ['descriptors' => $validatedRequestDescriptors, 'validator' => $validator];
     }
 
@@ -100,6 +97,7 @@ class SpotController extends Controller
             }
             $validator->errors()->add('Permission Error', 'The category you specified does not allow croudsourced spots.');
         }
+
         return $validator;
     }
 
@@ -165,7 +163,6 @@ class SpotController extends Controller
 
     public function getDefaults(Request $request)
     {
-
         if ($categoryName = $request->input('category')) {
             $category = Category::where('name', $categoryName)->first();
         } else {
@@ -178,30 +175,29 @@ class SpotController extends Controller
 
         $requiredSpotData = [
 
-            'lat'               =>  null,
-            'lng'               =>  null,
-            'building'          =>  null,
-            'floor'             =>  null,
+            'lat'               => null,
+            'lng'               => null,
+            'building'          => null,
+            'floor'             => null,
 
-            'title'             =>  null,
-            'notes'             =>  null,
-            'approved'          =>  null,
+            'title'             => null,
+            'notes'             => null,
+            'approved'          => null,
 
-            'user_id'           =>  null,
-            'type_id'           =>  null,
+            'user_id'           => null,
+            'type_id'           => null,
 
-            'descriptors'       =>  null,
-            'classification_id' =>  null,
+            'descriptors'       => null,
+            'classification_id' => null,
 
         ];
 
         return [
-            'requiredData'              =>  $requiredSpotData,
-            'availableTypes'            =>  $types,
-            'requiredDescriptors'       =>  $descriptors,
-            'availableClassifications'  =>  $classifications,
+            'requiredData'              => $requiredSpotData,
+            'availableTypes'            => $types,
+            'requiredDescriptors'       => $descriptors,
+            'availableClassifications'  => $classifications,
         ];
-
     }
 
     /**
