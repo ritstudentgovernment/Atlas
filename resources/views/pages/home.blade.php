@@ -197,8 +197,9 @@
             this.buildLegend = function(){
 
                 let legend = document.getElementById('legend');
+                let keys = Object.keys(this.legend).sort((a, b) => b > a);
 
-                for (let categoryKey in this.legend) {
+                keys.forEach((categoryKey) => {
 
                     let categoryIcons = this.legend[categoryKey];
                     let categorySection = document.createElement('div');
@@ -219,7 +220,7 @@
 
                     legend.appendChild(categorySection);
 
-                }
+                });
 
             };
 
