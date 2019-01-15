@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use Tymon\JWTAuth\Http\Parser\Cookies;
 
 class SAMLController extends Controller
 {
@@ -19,7 +20,7 @@ class SAMLController extends Controller
     public function logout()
     {
         Auth::logout();
-        Session::save();
+        Session::flush();
 
         return Redirect::intended(config('saml2_settings.logoutRoute'));
     }
