@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Validator;
 use Illuminate\Support\MessageBag;
 
 class SpotController extends Controller
@@ -61,7 +61,7 @@ class SpotController extends Controller
         return $this->filterSpotsVisible(Spot::all(), auth('api')->user());
     }
 
-    private function validateSentDescriptors(Request $request, \Illuminate\Validation\Validator $validator, Type $type)
+    private function validateSentDescriptors(Request $request, Type $type, Validator $validator)
     {
         $validatedRequestDescriptors = [];
         $requestDescriptors = $request->input('descriptors');
@@ -92,6 +92,17 @@ class SpotController extends Controller
         return ['descriptors' => $validatedRequestDescriptors, 'validator' => $validator];
     }
 
+    private function checkUserCanMakeRequestedSpot(User $user, Category $category, Validator $validator)
+    {
+        if (!$user->can('make designated spots')) {
+            if ($category->croudsource) {
+                return $validator;
+            }
+            $validator->errors()->add('Permission Error', 'The category you specified does not allow croudsourced spots.');
+        }
+        return $validator;
+    }
+
     /**
      * Endpoint hit for creating nap spots.
      *
@@ -112,7 +123,7 @@ class SpotController extends Controller
             'lng'           => 'required|numeric',
         ];
 
-        $validator = Validator::make(Input::all(), $rules);
+        $validator = \Illuminate\Support\Facades\Validator::make(Input::all(), $rules);
 
         // Initial validation, just that required fields are sent
         if ($validator->fails()) {
@@ -120,10 +131,12 @@ class SpotController extends Controller
         }
 
         $type = Type::find($request->input('type_id'));
-        $validatedRequestDescriptors = $this->validateSentDescriptors($request, $validator, $type);
+        $validatedRequestDescriptors = $this->validateSentDescriptors($request, $type, $validator);
 
         $validatedDescriptors = $validatedRequestDescriptors['descriptors'];
         $validator = $validatedRequestDescriptors['validator'];
+
+        $validator = $this->checkUserCanMakeRequestedSpot($request->user(), $type->category, $validator);
 
         if ($validator->fails()) {
             return $validator->errors();
