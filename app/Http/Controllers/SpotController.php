@@ -27,8 +27,6 @@ class SpotController extends Controller
 
     private function filterSpotsVisible(Collection $spots, User $user = null)
     {
-        \Log::debug($user);
-
         return $spots->reject(function (Spot $spot) use ($user) {
             $requiredViewPermission = $spot->classification->view_permission;
             if ($user == null) { // User is not logged in
@@ -163,10 +161,12 @@ class SpotController extends Controller
 
     public function getDefaults(Request $request)
     {
+        $categories = Category::all();
+
         if ($categoryName = $request->input('category')) {
             $category = Category::where('name', $categoryName)->first();
         } else {
-            $category = Category::all()->first();
+            $category = $categories->first();
         }
 
         $descriptors = $category->descriptors;
@@ -197,6 +197,7 @@ class SpotController extends Controller
             'availableTypes'            => $types,
             'requiredDescriptors'       => $descriptors,
             'availableClassifications'  => $classifications,
+            'availableCategories'       => $categories
         ];
     }
 

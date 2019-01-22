@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "ajv": "^6.5.3",
+        "element-ui": "^2.4.11",
         "imagemin": "^5.3.1",
         "npm": "^5.8.0",
         "v-tooltip": "^2.0.0-rc.33",

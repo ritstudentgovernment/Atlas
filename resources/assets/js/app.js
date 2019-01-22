@@ -7,9 +7,15 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+// window.Vue = require('vue');
+import Vue from 'vue';
+import VTooltip from 'v-tooltip';
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.prototype.$http = axios;
+Vue.use(VTooltip);
+Vue.use(ElementUI);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -18,9 +24,13 @@ Vue.prototype.$http = axios;
  */
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-
-const app = new Vue({
+Vue.component('new-spot-component', require('./components/NewSpotComponent.vue').default);
+window.vue = new Vue({
     el: '#app'
+});
+
+$(document).ready(() => {
+    loaded();
 });
 
 $.urlParam = function(name, value = false){
