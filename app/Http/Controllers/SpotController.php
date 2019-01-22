@@ -197,7 +197,7 @@ class SpotController extends Controller
             'availableTypes'            => $types,
             'requiredDescriptors'       => $descriptors,
             'availableClassifications'  => $classifications,
-            'availableCategories'       => $categories
+            'availableCategories'       => $categories,
         ];
     }
 
