@@ -23,7 +23,6 @@
         "element-ui": "^2.4.11",
         "imagemin": "^5.3.1",
         "npm": "^5.8.0",
-        "v-tooltip": "^2.0.0-rc.33",
         "vue": "^2.5.17",
         "vue-loader": "^14.2.3",
         "vue-template-compiler": "^2.5.17"

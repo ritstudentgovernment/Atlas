@@ -161,7 +161,7 @@ class SpotController extends Controller
 
     public function getDefaults(Request $request)
     {
-        $categories = Category::all();
+        $categories = Category::with(['classifications', 'descriptors', 'types'])->get();
 
         if ($categoryName = $request->input('category')) {
             $category = Category::where('name', $categoryName)->first();
