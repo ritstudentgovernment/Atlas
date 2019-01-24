@@ -110,4 +110,6 @@
 
 	</script>
 
+    <script src="https://maps.googleapis.com/maps/api/js?key=<?= $map["api_key"] ?>&callback=initMap" async></script>
+
 @endsection

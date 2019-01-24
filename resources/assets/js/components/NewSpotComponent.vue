@@ -8,10 +8,28 @@
         </button>
 
         <div id="new-spot-popup">
-            <el-input placeholder="Spot Title" v-model="spotTitle" size="mini" class="padding-bottom" />
-            <el-radio-group v-model="spotCategory" size="mini" :fill="fillColor" @change="changeFillColor">
-                <el-radio-button v-for="category in availableCategories" :key="category.id" :label="category.name"></el-radio-button>
+            <el-input placeholder="Spot Title" v-model="spotTitle" size="mini" />
+            <el-radio-group v-model="spotCategory" size="mini" :fill="fillColor" @change="changeCategory">
+                <el-radio-button v-for="(category, index) in availableCategories" :key="index" :label="category.name"></el-radio-button>
             </el-radio-group>
+            <el-radio-group v-model="spotType" size="mini" :fill="fillColor">
+                <el-radio-button v-for="(type, index) in availableTypes" :key="index" :label="type.name"></el-radio-button>
+            </el-radio-group>
+            <el-select
+                    v-for="(descriptor, index) in requiredDescriptors"
+                    v-model="spotDescriptors[descriptor.name]"
+                    :key="index"
+                    :placeholder="descriptor.name"
+                    size="mini"
+                    value="test"
+            >
+                <el-option
+                        v-for="(item, index) in descriptor.allowed_values.split('|')"
+                        :key="index"
+                        :label="item"
+                        :value="item">
+                </el-option>
+            </el-select>
         </div>
     </el-popover>
 </template>
@@ -26,37 +44,47 @@
             ElementUI
         },
         methods: {
-            changeFillColor(categoryName) {
-                console.log(this.fillColor);
-                console.log(this.availableCategories);
-                let category = this.availableCategories.filter((category) => {
+            setupDescriptors() {
+                this.requiredDescriptors.forEach((descriptor)=>{
+                    this.$set(this.spotDescriptors, descriptor.name, '');
+                });
+            },
+            loadData(data) {
+                console.log(data);
+                this.availableTypes = data.availableTypes;
+                this.fillColor = this.activeCategory.color;
+                this.spotType = this.availableTypes[0].name;
+                this.requiredDescriptors = data.requiredDescriptors;
+                this.setupDescriptors();
+            },
+            changeCategory(categoryName) {
+                let self = this;
+
+                self.activeCategory = self.availableCategories.filter((category) => {
                     return category.name === categoryName;
                 })[0];
-                console.log(category);
-                this.fillColor = category.color;
+
+                window.axios.get('api/spots/create/?category='+categoryName).then((response) => {
+                    self.loadData(response.data);
+                });
             }
         },
         created() {
             let self = this;
             window.loaded();
             window.axios.get('api/spots/create/').then((response) => {
-                let index = 0;
                 let data = response.data;
-                console.log(data);
                 self.availableCategories = data.availableCategories.map((category) => {
-                    index += 1;
                     window.category = category;
-                    console.log(category);
                     let publicClassification = category.classifications.filter((category) => {
                         return category.name === "Public";
                     })[0];
                     let color = publicClassification ? "#" + publicClassification.color : '';
-                    return {'name': category.name, 'id': index, 'color': color};
+                    return {'name': category.name, 'color': color};
                 });
-                let defaultCategory = self.availableCategories[0];
-                self.spotCategory = defaultCategory.name;
-                self.fillColor = defaultCategory.color;
-                console.log(self.fillColor);
+                self.activeCategory = self.availableCategories[0];
+                self.spotCategory = self.activeCategory.name;
+                self.loadData(data);
             }).catch((error) => {
                 console.error(error);
             });
@@ -67,9 +95,11 @@
                 spotTitle: '',
                 spotCategory: '',
                 spotType: '',
-                spotDescriptors: '',
+                spotDescriptors: {},
                 availableCategories: [],
                 availableTypes: [],
+                requiredDescriptors: [],
+                activeCategory: '',
                 fillColor: '',
             };
         }
@@ -77,5 +107,7 @@
 </script>
 
 <style scoped>
-
+    #new-spot-popup div:not(:last-of-type){
+        padding-bottom: 10px;
+    }
 </style>

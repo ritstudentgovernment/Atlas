@@ -20,7 +20,7 @@ class TypesTableSeeder extends Seeder
             'category_id' => 1,
         ],
         [
-            'name'        => 'Coffee Shop',
+            'name'        => 'Cafe',
             'category_id' => 2,
         ],
         [

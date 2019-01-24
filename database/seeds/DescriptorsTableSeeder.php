@@ -38,7 +38,7 @@ class DescriptorsTableSeeder extends BaseSeeder
             [
                 'name'              => 'Fuel',
                 'default_value'     => 'Coffee',
-                'allowed_values'    => 'Coffee|Energy Drinks|Vending Machines|Food',
+                'allowed_values'    => 'Coffee|Energy Drinks|Food|Various',
                 'icon'              => 'bolt',
             ],
         ];
