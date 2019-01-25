@@ -32,45 +32,6 @@
     <script>
 
         /**
-         * Function to cancel the creation of a new spot.
-         *
-         * @return void.
-         */
-        function cancelNewSpot(){
-
-            window.newSpot.setMap(null);
-            window.newSpot = undefined;
-            window.markers.splice(window.markers.length - 1, 1);
-            $('#new-spot').fadeIn(100);
-
-        }
-
-        /**
-         * Function to bind the new spot event handlers.
-         *
-         * @return void.
-         */
-        function bindCancelNewSpot(){
-
-            $(document).on("keyup", function(e){
-
-                if(e.keyCode === 8 || e.keyCode === 27){ // Backspace or Escape
-
-                    cancelNewSpot();
-
-                }
-
-            });
-
-            google.maps.event.addListener(window.newSpot.infoWindow, 'closeclick', function(){
-
-                cancelNewSpot();
-
-            });
-
-        }
-
-        /**
          * Function to do all of the steps necessary for the user to be able to create a new spot.
          *
          * @return void.

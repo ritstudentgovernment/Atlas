@@ -33,13 +33,14 @@ class APITest extends TestCase
             return [$item->id=>$item->defaultValue];
         });
         $this->newSpotData = [
-            'building'      => 'KGCOE',
-            'floor'         => 1,
-            'notes'         => 'this is a test spot, dont expect much',
-            'type_id'       => $type == null ?: $type->id,
-            'lat'           => env('GOOGLE_MAPS_CENTER_LAT'),
-            'lng'           => env('GOOGLE_MAPS_CENTER_LNG'),
-            'descriptors'   => $requiredDescriptors,
+            'building'          => 'KGCOE',
+            'floor'             => 1,
+            'notes'             => 'this is a test spot, dont expect much',
+            'type_id'           => $type == null ?: $type->id,
+            'lat'               => env('GOOGLE_MAPS_CENTER_LAT'),
+            'lng'               => env('GOOGLE_MAPS_CENTER_LNG'),
+            'descriptors'       => $requiredDescriptors,
+            'classification_id' => 1
         ];
     }
 

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Classification;
 use App\Descriptors;
 use App\Spot;
 use App\Type;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\MessageBag;
@@ -27,18 +27,27 @@ class SpotController extends Controller
 
     private function filterSpotsVisible(Collection $spots, User $user = null)
     {
-        return $spots->reject(function (Spot $spot) use ($user) {
+        return $spots->filter(function (Spot $spot) use ($user) {
             $requiredViewPermission = $spot->classification->view_permission;
-            if ($user == null) { // User is not logged in
-
-                // Remove spots that are not approved or that have a required permission
-                return !$spot->approved || $requiredViewPermission;
-            } else {
-                if (!$spot->approved && !$user->can('view unapproved spots')) {
+            if ($user) {
+                if (!$spot->approved && $user->can('view unapproved spots')) {
                     return true;
                 }
+                return $spot->approved && $user->can($requiredViewPermission);
+            }
+            return $spot->approved && !$requiredViewPermission;
+        })->values()->all();
+    }
 
-                return !$user->can($requiredViewPermission);
+    private function filterClassifications(Collection $classifications, User $user = null)
+    {
+        return $classifications->filter(function (Classification $classification) use ($user) {
+            $requiredCreatePermission = $classification->create_permission;
+            if ($user == null) {
+                // The user is not logged in, reject all classifications. (should never happen)
+                return false;
+            } else {
+                return $user->can($requiredCreatePermission);
             }
         })->values()->all();
     }
@@ -109,13 +118,14 @@ class SpotController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'notes'         => 'required',
-            'building'      => 'required',
-            'descriptors'   => 'required',
-            'floor'         => 'required|numeric',
-            'type_id'       => 'required|numeric',
-            'lat'           => 'required|numeric',
-            'lng'           => 'required|numeric',
+            'notes'             => 'required',
+            'building'          => 'required',
+            'descriptors'       => 'required',
+            'floor'             => 'required|numeric',
+            'type_id'           => 'required|numeric',
+            'lat'               => 'required|numeric',
+            'lng'               => 'required|numeric',
+            'classification_id' => 'required|numeric',
         ];
 
         $validator = \Illuminate\Support\Facades\Validator::make(Input::all(), $rules);
@@ -139,14 +149,15 @@ class SpotController extends Controller
 
         $spot = Spot::create([
 
-            'notes'     => $request->input('notes'),
-            'building'  => $request->input('building'),
-            'floor'     => $request->input('floor'),
-            'type_id'   => $request->input('type_id'),
-            'lat'       => $request->input('lat'),
-            'lng'       => $request->input('lng'),
-            'approved'  => $request->user()->can('approve spots') ? 1 : 0,
-            'user_id'   => $request->user()->id,
+            'notes'             => $request->input('notes'),
+            'building'          => $request->input('building'),
+            'floor'             => $request->input('floor'),
+            'type_id'           => $request->input('type_id'),
+            'lat'               => $request->input('lat'),
+            'lng'               => $request->input('lng'),
+            'approved'          => $request->user()->can('approve spots') ? 1 : 0,
+            'user_id'           => $request->user()->id,
+            'classification_id' => $request->input('classification_id'),
 
         ]);
 
@@ -173,19 +184,16 @@ class SpotController extends Controller
 
         $requiredSpotData = [
 
-            'lat'               => null,
-            'lng'               => null,
-            'building'          => null,
-            'floor'             => null,
+            'lat'               => 'number',
+            'lng'               => 'number',
+            'building'          => 'string',
+            'floor'             => 'number',
 
-            'notes'             => null,
-            'approved'          => null,
+            'notes'             => 'string',
+            'descriptors'       => 'object',
 
-            'user_id'           => null,
-            'type_id'           => null,
-
-            'descriptors'       => null,
-            'classification_id' => null,
+            'type_id'           => 'number',
+            'classification_id' => 'number',
 
         ];
 
@@ -193,7 +201,7 @@ class SpotController extends Controller
             'requiredData'              => $requiredSpotData,
             'availableTypes'            => $types,
             'requiredDescriptors'       => $descriptors,
-            'availableClassifications'  => $classifications,
+            'availableClassifications'  => $this->filterClassifications($classifications, auth('api')->user()),
             'availableCategories'       => $categories,
         ];
     }
