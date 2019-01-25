@@ -33,10 +33,9 @@ class APITest extends TestCase
             return [$item->id=>$item->defaultValue];
         });
         $this->newSpotData = [
-            'title'         => 'TEST',
             'building'      => 'KGCOE',
             'floor'         => 1,
-            'notes'         => 'this is a test spot, dont expect much ',
+            'notes'         => 'this is a test spot, dont expect much',
             'type_id'       => $type == null ?: $type->id,
             'lat'           => env('GOOGLE_MAPS_CENTER_LAT'),
             'lng'           => env('GOOGLE_MAPS_CENTER_LNG'),
@@ -155,10 +154,11 @@ class APITest extends TestCase
      */
     public function testMakeSureAllTestSpotsAreDeleted()
     {
-        Spot::where('title', 'TEST')->get()->each(function (Spot $spot) {
+        $notes = $this->newSpotData['notes'];
+        Spot::where('notes', $notes)->get()->each(function (Spot $spot) {
             $spot->delete();
         });
-        $this->assertEmpty(Spot::where('title', 'TEST')->get()->toArray());
+        $this->assertEmpty(Spot::where('notes', $notes)->get()->toArray());
     }
 
     /**

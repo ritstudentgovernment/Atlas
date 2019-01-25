@@ -8,7 +8,6 @@
         </button>
 
         <div id="new-spot-popup">
-            <el-input placeholder="Spot Title" v-model="spotTitle" size="mini" />
             <el-radio-group v-model="spotCategory" size="mini" :fill="fillColor" @change="changeCategory">
                 <el-radio-button v-for="(category, index) in availableCategories" :key="index" :label="category.name"></el-radio-button>
             </el-radio-group>
@@ -21,7 +20,7 @@
                     :key="index"
                     :placeholder="descriptor.name"
                     size="mini"
-                    value="test"
+                    value=""
             >
                 <el-option
                         v-for="(item, index) in descriptor.allowed_values.split('|')"
@@ -92,7 +91,6 @@
         data() {
             return {
                 isEnabled: true,
-                spotTitle: '',
                 spotCategory: '',
                 spotType: '',
                 spotDescriptors: {},

@@ -9,7 +9,7 @@ class Spot extends Model
 {
     protected $appends = ['type', 'classification', 'descriptors', 'authored'];
     protected $hidden = ['user_id', 'created_at', 'updated_at', 'type_id'];
-    protected $fillable = ['title', 'notes', 'building', 'floor', 'approved', 'user_id', 'type_id', 'lat', 'lng'];
+    protected $fillable = ['notes', 'building', 'floor', 'approved', 'user_id', 'type_id', 'lat', 'lng'];
 
     public function getAuthoredAttribute()
     {

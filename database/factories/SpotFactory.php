@@ -36,7 +36,6 @@ $factory->define(App\Spot::class, function (Faker $faker) {
         'building'  => '',
         'floor'     => 1,
 
-        'title'     => $faker->name,
         'notes'     => $faker->text(100),
         'approved'  => $faker->boolean(),
 

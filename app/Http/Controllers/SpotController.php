@@ -109,7 +109,6 @@ class SpotController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'title'         => 'required',
             'notes'         => 'required',
             'building'      => 'required',
             'descriptors'   => 'required',
@@ -140,7 +139,6 @@ class SpotController extends Controller
 
         $spot = Spot::create([
 
-            'title'     => $request->input('title'),
             'notes'     => $request->input('notes'),
             'building'  => $request->input('building'),
             'floor'     => $request->input('floor'),
@@ -180,7 +178,6 @@ class SpotController extends Controller
             'building'          => null,
             'floor'             => null,
 
-            'title'             => null,
             'notes'             => null,
             'approved'          => null,
 

@@ -92,7 +92,7 @@ export class Spot {
             // Make the icon transparent if it is for a draggable spot
             canvasBuilder.setAlpha( (this.data.hasOwnProperty('draggable') ? 0.5 : 1) );
 
-            let icon = this.data.type.hasOwnProperty('category') ? this.data.type.category.icon : 'T';
+            let icon = this.data.type.hasOwnProperty('category') ? this.data.type.category.icon : 'S';
             let color = this.data.classification.hasOwnProperty('color') ? this.data.classification.color : 'ff7700';
             let image = canvasBuilder.makeImage(icon, color);
 
@@ -163,7 +163,7 @@ export class Spot {
             let contentString =
                 '<div class="infoWindowContentBox">'+
                 '<div class="infoWindowTitle">'+
-                '<div>'+spot.title+'</div>'+
+                '<div>'+spot.type.name+'</div>'+
                 '<span style="background-color: #'+spot.classification.color+'">'+spot.classification.name+' '+spot.type.category.name+' spot</span>'+
                 '</div>'+
                 '<div class="infoWindowBody">'+
