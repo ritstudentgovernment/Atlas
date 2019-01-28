@@ -64,36 +64,39 @@ class SpotController extends Controller
         return $this->filterSpotsVisible(Spot::all(), auth('api')->user());
     }
 
+
     private function validateSentDescriptors(Request $request, Type $type, Validator $validator)
     {
-        $validatedRequestDescriptors = [];
+        $validatedDescriptors = [];
+        $sentDescriptors = collect();
         $requestDescriptors = $request->input('descriptors');
         $categoryRequiredDescriptors = $type->category->descriptors;
-        // Loop through all of the sent descriptors and make sure they're supposed to be there and that required ones exist
+        // Loop through all of the sent descriptors to verify they are required by the spots category
         foreach ($requestDescriptors as $descriptorId => $value) {
-            // Make sure the descriptor actually exists
-            if (!($descriptor = Descriptors::find($descriptorId))) {
-                $validator->errors()->add('Descriptors', "Descriptor $descriptorId does not exist");
-            } else {
-                // Make sure the descriptor is one of the Category's required descriptors
+            if ($descriptor = Descriptors::find($descriptorId)) {
+                // Make sure the descriptor exists
                 if ($categoryRequiredDescriptors->pluck('id')->contains($descriptorId)) {
-                    $validatedRequestDescriptors[$descriptorId] = ['descriptor'=>$descriptor, 'value'=>$value];
+                    // Verify the value is one of the allowed values
+                    $allowedValues = collect(explode("|", $descriptor->allowed_values));
+                    if ($allowedValues->contains($value)) {
+                        $sentDescriptors->push($descriptor);
+                        $validatedDescriptors[$descriptorId] = ['value' => $value];
+                    } else {
+                        $validator->errors()->add('Descriptors', "Invalid value, $value, supplied for descriptor $descriptorId");
+                    }
                 } else {
                     Log::debug('Descriptor sent with creation of spot is not required for the sent type');
                 }
+            } else {
+                $validator->errors()->add('Descriptors', "Descriptor $descriptorId does not exist");
             }
         }
-        $missingDescriptors = $categoryRequiredDescriptors->diff(collect($validatedRequestDescriptors)->pluck('descriptor'));
+        // Compare the descriptors that the category requires with the sent descriptors to make sure no missing required descriptors
+        $missingDescriptors = $categoryRequiredDescriptors->diff($sentDescriptors);
         if ($missingDescriptors->count()) {
             $validator->errors()->add('Missing Descriptors', $missingDescriptors->pluck('name')->toJson());
         }
-        if ($validatedRequestDescriptors instanceof Collection) {
-            $validatedRequestDescriptors = $validatedRequestDescriptors->map(function ($item) {
-                return [$item['descriptor']->id => $item['value']];
-            });
-        }
-
-        return ['descriptors' => $validatedRequestDescriptors, 'validator' => $validator];
+        return ['descriptors' => $validatedDescriptors, 'validator' => $validator];
     }
 
     private function checkUserCanMakeRequestedSpot(User $user, Category $category, Validator $validator)

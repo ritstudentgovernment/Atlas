@@ -10,7 +10,7 @@ class DescriptorsTableSeeder extends BaseSeeder
         Category::all()->each(function (Category $category) use ($map) {
             if (array_key_exists($category->name, $map)) {
                 $descriptors = $map[$category->name];
-                $descriptors = is_array($descriptors) ?: [$descriptors];
+                $descriptors = is_array($descriptors) ? $descriptors : [$descriptors];
                 foreach ($descriptors as $descriptor) {
                     $descriptor = Descriptor::where('name', $descriptor)->first();
                     if ($descriptor instanceof Descriptor) {
@@ -36,6 +36,12 @@ class DescriptorsTableSeeder extends BaseSeeder
                 'icon'              => 'rss',
             ],
             [
+                'name'              => 'Comfort Level',
+                'default_value'     => 'Comfortable',
+                'allowed_values'    => 'Godly|Comfortable|Awkward|Hard|Not Comfortable',
+                'icon'              => 'bed',
+            ],
+            [
                 'name'              => 'Fuel',
                 'default_value'     => 'Coffee',
                 'allowed_values'    => 'Coffee|Energy Drinks|Food|Various',
@@ -45,7 +51,7 @@ class DescriptorsTableSeeder extends BaseSeeder
 
         $categoryDescriptorsMap = [
             'Energy'    => 'Fuel',
-            'Nap'       => 'Sound Level',
+            'Nap'       => ['Sound Level', 'Comfort Level'],
         ];
 
         $this->seed(Descriptor::class);
