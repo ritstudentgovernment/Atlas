@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Descriptors extends Model
 {
-    protected $fillable = ['name', 'default_value', 'allowed_values', 'icon'];
+    protected $fillable = ['name', 'value_type', 'default_value', 'allowed_values', 'icon'];
 
     public function spots()
     {

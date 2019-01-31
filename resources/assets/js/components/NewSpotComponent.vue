@@ -55,16 +55,21 @@
                 <h5>Notes</h5>
                 <el-input
                         type="textarea"
-                        :rows="3"
                         placeholder="Notes (optional)"
-                        v-model="spotNotes">
+                        v-model="spotNotes"
+                        :rows="3">
                 </el-input>
             </div>
             <div>
-                <el-button size="medium" :style="'color: #fff;background-color:'+fillColor" :disabled="!formCompleted">
+                <el-button
+                        size="medium"
+                        :style="'color: #fff;background-color:'+fillColor"
+                        :disabled="!formCompleted"
+                        @click="submit">
                     Create
                 </el-button>
-                <el-button type="text" @click="cancel()">Cancel</el-button>
+                <el-button type="text" @click="cancel">Cancel</el-button>
+                <el-button @click="plop" :disabled="true">Place</el-button>
             </div>
         </div>
     </el-popover>
@@ -87,11 +92,13 @@
                 spotNotes: '',
                 spotDescriptors: {},
                 activeCategory: '',
+                activeClassification: {name:'', color:''},
                 availableCategories: [],
                 availableTypes: [],
                 requiredDescriptors: [],
                 requiredData: {},
                 fillColor: '',
+                spot: '',
             };
         },
         computed: {
@@ -148,7 +155,57 @@
                 this.visible = false;
                 this.spotNotes = '';
                 this.setup();
-            }
+            },
+            makeSpot() {
+                let category = {
+                        name: this.activeCategory.name,
+                        icon: this.activeCategory.icon,
+                        description: this.activeCategory.description,
+                    },
+                    type = {
+                        name: this.spotType.name,
+                        category: category,
+                    },
+                    classification = {
+                        name: this.activeClassification.name,
+                        color: this.fillColor,
+                    },
+                    center = JSON.parse(getMeta('googleMapsCenter')),
+                    spotData = {
+                        type: type,
+                        classification: classification,
+                        notes: this.spotNotes,
+                        descriptors: this.spotDescriptors,
+                        draggable: true,
+                        lat: center.lat,
+                        lng: center.lng
+                    };
+                return window.builder.newSpot(spotData);
+            },
+            plop() {
+                if (this.spot !== '') {
+                    // Remove the last dropped spot, which should be the previously created newSpot marker
+                    window.builder.removeLastSpot();
+                }
+
+                let spot = this.makeSpot(),
+                    builder = window.builder;
+
+                console.log(spot);
+
+                spot.buildIcon(builder.canvasBuilder);
+
+                let marker = spot.drop();
+
+                this.spot = spot;
+                builder.markers.push(marker);
+            },
+            verifyInput() {
+
+            },
+            submit() {
+
+            },
         },
         created() {
             window.loaded();

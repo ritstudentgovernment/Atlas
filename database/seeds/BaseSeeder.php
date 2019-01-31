@@ -17,6 +17,7 @@ abstract class BaseSeeder extends Seeder
                 $model->fill($data);
                 $model->save();
             } catch (Exception $ignored) {
+                \Log::debug($ignored);
                 if ($factory = factory($this->model)) {
                     $model = $factory->create($data);
                 }

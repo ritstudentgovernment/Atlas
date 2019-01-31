@@ -44,7 +44,7 @@ class SpotController extends Controller
         return $classifications->filter(function (Classification $classification) use ($user) {
             $requiredCreatePermission = $classification->create_permission;
             if ($user == null) {
-                // The user is not logged in, reject all classifications. (should never happen)
+                // The user is not logged in, filter out all classifications. (should never happen)
                 return false;
             } else {
                 return $user->can($requiredCreatePermission);

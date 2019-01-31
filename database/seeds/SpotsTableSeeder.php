@@ -18,7 +18,7 @@ class SpotsTableSeeder extends Seeder
             $descriptors = $spot->type->category->descriptors;
             if ($descriptors instanceof Collection) {
                 $descriptors->each(function (Descriptors $descriptor) use ($spot) {
-                    $spot->descriptors()->sync([$descriptor->id => ['value'=>$descriptor->default_value]]);
+                    $spot->descriptors()->attach([$descriptor->id => ['value'=>$descriptor->default_value]]);
                 });
             } else {
                 \Log::error('Descriptors should be a collection instance');

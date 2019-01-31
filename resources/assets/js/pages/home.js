@@ -197,7 +197,7 @@ export class Spot {
             animation: google.maps.Animation.DROP,
             map: window.map,
             icon: this.icon,
-            title: this.data.name,
+            title: this.data.type.name,
             draggable: this.data.hasOwnProperty('draggable') ? this.data.draggable : false
 
         });
@@ -226,22 +226,39 @@ export class Builder{
     constructor(){
         this.spots = [];
         this.legend = {};
+        this.markers = [];
+        this.canvasBuilder = {};
+    }
+
+    removeLastSpot() {
+        let marker = this.markers.splice(this.markers.length - 1, 1)[0];
+        marker.setMap(null);
+    }
+
+    newSpot(spotData) {
+        return new Spot(spotData);
     }
 
     instantiateSpots(json) {
 
-        let reference = this;
-        let canvasBuilder = new CanvasBuilder();
+        let reference = this,
+            canvasBuilder = new CanvasBuilder();
+
         canvasBuilder.initialize();
+
+        this.canvasBuilder = canvasBuilder;
 
         json.forEach(function(spotData){
 
-            let spot = new Spot(spotData);
-            let icon = spot.buildIcon(canvasBuilder);
-            spot.drop();
+            let spot = new Spot(spotData),
+                icon = spot.buildIcon(canvasBuilder),
+                marker = spot.drop();
 
             // Add the spot to the list of spots in the builder instance
             reference.spots.push(spot);
+
+            // Add the google maps marker to the list of markers in the builder instance
+            reference.markers.push(marker);
 
             // Build the virtual legend map (with no duplicates)
             reference.legend[icon.category] = reference.legend[icon.category] ? reference.legend[icon.category] : {};
