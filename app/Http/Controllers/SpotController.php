@@ -33,8 +33,10 @@ class SpotController extends Controller
                 if (!$spot->approved && $user->can('view unapproved spots')) {
                     return true;
                 }
+
                 return $spot->approved && $user->can($requiredViewPermission);
             }
+
             return $spot->approved && !$requiredViewPermission;
         })->values()->all();
     }
@@ -64,7 +66,6 @@ class SpotController extends Controller
         return $this->filterSpotsVisible(Spot::all(), auth('api')->user());
     }
 
-
     private function validateSentDescriptors(Request $request, Type $type, Validator $validator)
     {
         $validatedDescriptors = [];
@@ -77,7 +78,7 @@ class SpotController extends Controller
                 // Make sure the descriptor exists
                 if ($categoryRequiredDescriptors->pluck('id')->contains($descriptorId)) {
                     // Verify the value is one of the allowed values
-                    $allowedValues = collect(explode("|", $descriptor->allowed_values));
+                    $allowedValues = collect(explode('|', $descriptor->allowed_values));
                     if ($allowedValues->contains($value)) {
                         $sentDescriptors->push($descriptor);
                         $validatedDescriptors[$descriptorId] = ['value' => $value];
@@ -96,6 +97,7 @@ class SpotController extends Controller
         if ($missingDescriptors->count()) {
             $validator->errors()->add('Missing Descriptors', $missingDescriptors->pluck('name')->toJson());
         }
+
         return ['descriptors' => $validatedDescriptors, 'validator' => $validator];
     }
 

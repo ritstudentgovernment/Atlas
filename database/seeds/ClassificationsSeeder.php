@@ -30,9 +30,9 @@ class ClassificationsSeeder extends BaseSeeder
                 'view_permission' => 'view unapproved spots',
             ],
             [
-                'name'        => 'Public',
-                'color'       => '298237',
-                'category_id' => 2,
+                'name'              => 'Public',
+                'color'             => '298237',
+                'category_id'       => 2,
                 'create_permission' => 'approve spots',
             ],
             [
