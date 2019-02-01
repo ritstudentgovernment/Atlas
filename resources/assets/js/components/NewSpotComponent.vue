@@ -143,6 +143,13 @@
                     return descriptor;
                 });
             },
+            spotLocation() {
+                if (this.isPlopped) {
+                    let position = this.ploppedMarker.position;
+                    this.location = {lat: position.lat(), lng: position.lng()};
+                }
+                return this.location;
+            },
         },
         methods: {
             setupDescriptors() {
@@ -211,20 +218,23 @@
                     this.isPlopped = false;
                     this.ploppedMarker = null;
                 }
+                this.getDefaultLocation();
                 this.setup();
             },
-            getLocation(callback) {
+            getDefaultLocation(callback) {
                 let self = this;
-                this.location = JSON.parse(getMeta('googleMapsCenter'));
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition((position)=>{
-                        self.location = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude,
-                        };
-                        callback();
-                    });
-                    return true;
+                if (!this.isPlopped) {
+                    this.location = JSON.parse(getMeta('googleMapsCenter'));
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition((position)=>{
+                            self.location = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude,
+                            };
+                            callback();
+                        });
+                        return true;
+                    }
                 }
                 callback();
                 return false;
@@ -265,7 +275,7 @@
                     animateDrop = false;
                 }
 
-                this.getLocation(()=>{
+                this.getDefaultLocation(()=>{
                     let spot = self.makeSpot(),
                         builder = window.builder;
 
@@ -275,14 +285,14 @@
 
                     let marker = spot.drop(true, animateDrop);
 
+                    marker.addListener('dragend', () => {
+                        return self.spotLocation; // This is a computed property call that updates the location data of the spot
+                    });
+
                     self.isPlopped = true;
                     self.ploppedMarker = marker;
                     builder.markers.push(marker);
                 });
-            },
-            getSpotLocation() {
-                let position = this.ploppedMarker.position;
-                console.log({lat: position.lat(), lng: position.lng()});
             },
             verifyInput() {
 
