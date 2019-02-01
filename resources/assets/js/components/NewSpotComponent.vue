@@ -195,6 +195,9 @@
 
                 window.axios.get('api/spots/create/?category='+categoryName).then((response) => {
                     self.loadData(response.data);
+                    self.$nextTick(()=>{
+                        window.dispatchEvent(new Event('resize'));
+                    });
                 });
             },
             changeClassification(classificationName) {

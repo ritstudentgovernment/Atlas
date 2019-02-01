@@ -34,7 +34,6 @@ class ClassificationsSeeder extends BaseSeeder
                 'name'              => 'Public',
                 'color'             => '298237',
                 'category_id'       => 2,
-                'create_permission' => 'approve spots',
             ],
             [
                 'name'              => 'Designated',
