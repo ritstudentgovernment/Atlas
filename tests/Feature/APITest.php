@@ -30,7 +30,7 @@ class APITest extends TestCase
         $type = Type::first() ? Type::inRandomOrder()->first() : null;
         $descriptors = [];
         $categoryDescriptors = $type == null ?: $type->category->descriptors;
-        foreach($categoryDescriptors as $descriptor){
+        foreach ($categoryDescriptors as $descriptor) {
             $descriptors[$descriptor->id] = $descriptor->default_value;
         }
         $this->newSpotData = [
@@ -41,7 +41,7 @@ class APITest extends TestCase
             'lat'               => env('GOOGLE_MAPS_CENTER_LAT'),
             'lng'               => env('GOOGLE_MAPS_CENTER_LNG'),
             'descriptors'       => $descriptors,
-            'classification_id' => 1
+            'classification_id' => 1,
         ];
     }
 

@@ -31,9 +31,9 @@ class ClassificationsSeeder extends BaseSeeder
                 'create_permission' => 'create under review spots',
             ],
             [
-                'name'        => 'Public',
-                'color'       => '298237',
-                'category_id' => 2,
+                'name'              => 'Public',
+                'color'             => '298237',
+                'category_id'       => 2,
                 'create_permission' => 'approve spots',
             ],
             [
