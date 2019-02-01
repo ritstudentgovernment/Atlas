@@ -29,8 +29,23 @@
             </div>
             <div>
                 <h5>Type</h5>
-                <el-radio-group v-model="spotType" size="mini" :fill="fillColor">
+                <el-radio-group size="mini" :fill="fillColor" v-model="spotType">
                     <el-radio-button v-for="(type, index) in availableTypes" :key="index" :label="type.name"></el-radio-button>
+                </el-radio-group>
+            </div>
+            <div v-if="availableClassifications.length > 1">
+                <h5>Classification</h5>
+                <el-radio-group
+                        size="mini"
+                        :fill="fillColor"
+                        v-model="spotClassification"
+                        @change="changeClassification"
+                >
+                    <el-radio-button
+                            v-for="(classification, index) in availableClassifications"
+                            :key="index"
+                            :label="classification.name"
+                    ></el-radio-button>
                 </el-radio-group>
             </div>
             <div>
@@ -47,7 +62,8 @@
                             v-for="(item, index) in descriptor.allowed_values.split('|')"
                             :key="index"
                             :label="item"
-                            :value="item">
+                            :value="item"
+                    >
                     </el-option>
                 </el-select>
             </div>
@@ -57,19 +73,20 @@
                         type="textarea"
                         placeholder="Notes (optional)"
                         v-model="spotNotes"
-                        :rows="3">
-                </el-input>
+                        :rows="3"
+                ></el-input>
             </div>
             <div>
                 <el-button
                         size="medium"
                         :style="'color: #fff;background-color:'+fillColor"
                         :disabled="!formCompleted"
-                        @click="submit">
+                        @click="submit"
+                >
                     Create
                 </el-button>
                 <el-button type="text" @click="cancel">Cancel</el-button>
-                <el-button @click="plop" :disabled="true">Place</el-button>
+                <el-button @click="plop">Place</el-button>
             </div>
         </div>
     </el-popover>
@@ -88,22 +105,34 @@
             return {
                 visible: false,
                 spotCategory: '',
+                spotClassification: '',
                 spotType: '',
                 spotNotes: '',
                 spotDescriptors: {},
                 activeCategory: '',
                 activeClassification: {name:'', color:''},
                 availableCategories: [],
+                availableClassifications: [],
                 availableTypes: [],
                 requiredDescriptors: [],
                 requiredData: {},
                 fillColor: '',
-                spot: '',
+                isPlopped: false,
             };
         },
         computed: {
-            formCompleted: () => {
+            formCompleted() {
                 return false;
+            },
+            formattedDescriptors() {
+                return this.requiredDescriptors.map((descriptor) => {
+                    let value = descriptor.default_value;
+                    if (this.spotDescriptors[descriptor.name]) {
+                        value = this.spotDescriptors[descriptor.name];
+                    }
+                    descriptor.pivot.value = value;
+                    return descriptor;
+                });
             }
         },
         methods: {
@@ -112,29 +141,35 @@
                     this.$set(this.spotDescriptors, descriptor.name, '');
                 });
             },
+            setupClassifications() {
+
+            },
             loadData(data) {
                 console.log(data);
+                this.availableClassifications = data.availableClassifications;
+                this.activeClassification = this.availableClassifications.filter((classification) => {
+                    return classification.name === "Public";
+                })[0];
+                this.spotClassification = this.activeClassification.name;
                 this.availableTypes = data.availableTypes;
-                this.fillColor = this.activeCategory.color;
+                this.fillColor = "#" + this.activeClassification.color;
                 this.spotType = this.availableTypes[0].name;
                 this.requiredDescriptors = data.requiredDescriptors;
                 this.setupDescriptors();
                 this.requiredData = data.requiredData;
+                if (this.isPlopped) {
+                    this.plop();
+                }
             },
             setup() {
                 let self = this;
+                window.nsp = self;
                 window.axios.get('api/spots/create/').then((response) => {
                     let data = response.data;
-                    self.availableCategories = data.availableCategories.map((category) => {
-                        window.category = category;
-                        let publicClassification = category.classifications.filter((category) => {
-                            return category.name === "Public";
-                        })[0];
-                        let color = publicClassification ? "#" + publicClassification.color : '';
-                        return {'name': category.name, 'color': color};
-                    });
+                    self.availableCategories = data.availableCategories;
                     self.activeCategory = self.availableCategories[0];
                     self.spotCategory = self.activeCategory.name;
+                    self.availableClassifications = data.availableClassifications;
                     self.loadData(data);
                 }).catch((error) => {
                     console.error(error);
@@ -151,9 +186,24 @@
                     self.loadData(response.data);
                 });
             },
+            changeClassification(classificationName) {
+                this.activeClassification = this.availableClassifications.filter((classification) => {
+                    return classification.name === classificationName;
+                })[0];
+
+                this.fillColor = "#" + this.activeClassification.color;
+
+                if (this.isPlopped) {
+                    this.plop();
+                }
+            },
             cancel() {
                 this.visible = false;
                 this.spotNotes = '';
+                if (this.isPlopped) {
+                    window.builder.removeLastSpot();
+                    this.isPlopped = false;
+                }
                 this.setup();
             },
             makeSpot() {
@@ -163,19 +213,19 @@
                         description: this.activeCategory.description,
                     },
                     type = {
-                        name: this.spotType.name,
+                        name: this.spotType,
                         category: category,
                     },
                     classification = {
                         name: this.activeClassification.name,
-                        color: this.fillColor,
+                        color: this.fillColor.replace('#', ''),
                     },
                     center = JSON.parse(getMeta('googleMapsCenter')),
                     spotData = {
                         type: type,
                         classification: classification,
                         notes: this.spotNotes,
-                        descriptors: this.spotDescriptors,
+                        descriptors: this.formattedDescriptors,
                         draggable: true,
                         lat: center.lat,
                         lng: center.lng
@@ -183,10 +233,12 @@
                 return window.builder.newSpot(spotData);
             },
             plop() {
-                if (this.spot !== '') {
+                if (this.isPlopped) {
                     // Remove the last dropped spot, which should be the previously created newSpot marker
                     window.builder.removeLastSpot();
                 }
+
+                this.isPlopped = true;
 
                 let spot = this.makeSpot(),
                     builder = window.builder;
@@ -197,7 +249,6 @@
 
                 let marker = spot.drop();
 
-                this.spot = spot;
                 builder.markers.push(marker);
             },
             verifyInput() {
