@@ -126,6 +126,7 @@
                 fillColor: '',
                 isPlopped: false,
                 ploppedMarker: null,
+                location: null,
             };
         },
         computed: {
@@ -141,7 +142,7 @@
                     descriptor.pivot.value = value;
                     return descriptor;
                 });
-            }
+            },
         },
         methods: {
             setupDescriptors() {
@@ -212,6 +213,22 @@
                 }
                 this.setup();
             },
+            getLocation(callback) {
+                let self = this;
+                this.location = JSON.parse(getMeta('googleMapsCenter'));
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition((position)=>{
+                        self.location = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                        };
+                        callback();
+                    });
+                    return true;
+                }
+                callback();
+                return false;
+            },
             makeSpot() {
                 let category = {
                         name: this.activeCategory.name,
@@ -226,20 +243,21 @@
                         name: this.activeClassification.name,
                         color: this.fillColor.replace('#', ''),
                     },
-                    center = JSON.parse(getMeta('googleMapsCenter')),
                     spotData = {
                         type: type,
                         classification: classification,
                         notes: this.spotNotes,
                         descriptors: this.formattedDescriptors,
                         draggable: true,
-                        lat: center.lat,
-                        lng: center.lng
+                        lat: this.location.lat,
+                        lng: this.location.lng
                     };
                 return window.builder.newSpot(spotData);
             },
             plop() {
-                let animateDrop = true;
+                let self = this,
+                    animateDrop = true;
+
                 if (this.isPlopped) {
                     // Remove the last dropped spot, which should be the previously created newSpot marker
                     window.builder.removeLastSpot();
@@ -247,19 +265,20 @@
                     animateDrop = false;
                 }
 
-                this.isPlopped = true;
+                this.getLocation(()=>{
+                    let spot = self.makeSpot(),
+                        builder = window.builder;
 
-                let spot = this.makeSpot(),
-                    builder = window.builder;
+                    console.log(spot);
 
-                console.log(spot);
+                    spot.buildIcon(builder.canvasBuilder);
 
-                spot.buildIcon(builder.canvasBuilder);
+                    let marker = spot.drop(true, animateDrop);
 
-                let marker = spot.drop(true, animateDrop);
-
-                this.ploppedMarker = marker;
-                builder.markers.push(marker);
+                    self.isPlopped = true;
+                    self.ploppedMarker = marker;
+                    builder.markers.push(marker);
+                });
             },
             getSpotLocation() {
                 let position = this.ploppedMarker.position;
