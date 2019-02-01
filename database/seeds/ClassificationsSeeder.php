@@ -24,10 +24,10 @@ class ClassificationsSeeder extends BaseSeeder
                 'create_permission' => 'make designated spots',
             ],
             [
-                'name'            => 'Under Review',
-                'color'           => 'cb0020',
-                'category_id'     => 1,
-                'view_permission' => 'view unapproved spots',
+                'name'              => 'Under Review',
+                'color'             => 'cb0020',
+                'category_id'       => 1,
+                'view_permission'   => 'view unapproved spots',
                 'create_permission' => 'create under review spots',
             ],
             [
@@ -43,10 +43,10 @@ class ClassificationsSeeder extends BaseSeeder
                 'create_permission' => 'make designated spots',
             ],
             [
-                'name'            => 'Under Review',
-                'color'           => 'cb0020',
-                'category_id'     => 2,
-                'view_permission' => 'view unapproved spots',
+                'name'              => 'Under Review',
+                'color'             => 'cb0020',
+                'category_id'       => 2,
+                'view_permission'   => 'view unapproved spots',
                 'create_permission' => 'create under review spots',
             ],
         ];
