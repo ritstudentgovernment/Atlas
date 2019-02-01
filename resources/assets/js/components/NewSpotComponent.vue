@@ -29,7 +29,12 @@
             </div>
             <div>
                 <h5>Type</h5>
-                <el-radio-group size="mini" :fill="fillColor" v-model="spotType">
+                <el-radio-group
+                        size="mini"
+                        :fill="fillColor"
+                        v-model="spotType"
+                        @change="updatePloppedSpot"
+                >
                     <el-radio-button v-for="(type, index) in availableTypes" :key="index" :label="type.name"></el-radio-button>
                 </el-radio-group>
             </div>
@@ -57,6 +62,7 @@
                         v-model="spotDescriptors[descriptor.name]"
                         :key="index"
                         :placeholder="descriptor.name"
+                        @change="updatePloppedSpot"
                 >
                     <el-option
                             v-for="(item, index) in descriptor.allowed_values.split('|')"
@@ -74,6 +80,7 @@
                         placeholder="Notes (optional)"
                         v-model="spotNotes"
                         :rows="3"
+                        @change="updatePloppedSpot"
                 ></el-input>
             </div>
             <div>
@@ -118,6 +125,7 @@
                 requiredData: {},
                 fillColor: '',
                 isPlopped: false,
+                ploppedMarker: null,
             };
         },
         computed: {
@@ -141,9 +149,6 @@
                     this.$set(this.spotDescriptors, descriptor.name, '');
                 });
             },
-            setupClassifications() {
-
-            },
             loadData(data) {
                 console.log(data);
                 this.availableClassifications = data.availableClassifications;
@@ -157,9 +162,7 @@
                 this.requiredDescriptors = data.requiredDescriptors;
                 this.setupDescriptors();
                 this.requiredData = data.requiredData;
-                if (this.isPlopped) {
-                    this.plop();
-                }
+                this.updatePloppedSpot();
             },
             setup() {
                 let self = this;
@@ -192,7 +195,9 @@
                 })[0];
 
                 this.fillColor = "#" + this.activeClassification.color;
-
+                this.updatePloppedSpot();
+            },
+            updatePloppedSpot() {
                 if (this.isPlopped) {
                     this.plop();
                 }
@@ -203,6 +208,7 @@
                 if (this.isPlopped) {
                     window.builder.removeLastSpot();
                     this.isPlopped = false;
+                    this.ploppedMarker = null;
                 }
                 this.setup();
             },
@@ -233,9 +239,12 @@
                 return window.builder.newSpot(spotData);
             },
             plop() {
+                let animateDrop = true;
                 if (this.isPlopped) {
                     // Remove the last dropped spot, which should be the previously created newSpot marker
                     window.builder.removeLastSpot();
+                    this.ploppedMarker = null;
+                    animateDrop = false;
                 }
 
                 this.isPlopped = true;
@@ -247,9 +256,14 @@
 
                 spot.buildIcon(builder.canvasBuilder);
 
-                let marker = spot.drop();
+                let marker = spot.drop(true, animateDrop);
 
+                this.ploppedMarker = marker;
                 builder.markers.push(marker);
+            },
+            getSpotLocation() {
+                let position = this.ploppedMarker.position;
+                console.log({lat: position.lat(), lng: position.lng()});
             },
             verifyInput() {
 

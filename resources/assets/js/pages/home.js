@@ -119,7 +119,7 @@ export class Spot {
      *
      * @return google.maps.Marker
      */
-    drop(autoOpen = false) {
+    drop(autoOpen = false, animate = true) {
 
         function openTooltip(infowindow){
             if(openInfoWindow)openInfoWindow.close();
@@ -194,7 +194,7 @@ export class Spot {
         let marker = new google.maps.Marker({
 
             position: {lat: Number(this.data.lat), lng: Number(this.data.lng)},
-            animation: google.maps.Animation.DROP,
+            animation: animate ? google.maps.Animation.DROP : null,
             map: window.map,
             icon: this.icon,
             title: this.data.type.name,
