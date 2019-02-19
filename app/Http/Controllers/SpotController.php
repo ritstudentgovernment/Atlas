@@ -123,11 +123,9 @@ class SpotController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'notes'             => 'required',
-            'building'          => 'required',
+            'notes'             => 'sometimes|string|nullable',
             'descriptors'       => 'required',
-            'floor'             => 'required|numeric',
-            'type_id'           => 'required|numeric',
+            'type_name'         => 'required',
             'lat'               => 'required|numeric',
             'lng'               => 'required|numeric',
             'classification_id' => 'required|numeric',
@@ -140,7 +138,14 @@ class SpotController extends Controller
             return $validator->errors();
         }
 
-        $type = Type::find($request->input('type_id'));
+        $type = Type::where('name', $request->input('type_name'))->first();
+        $classification = Classification::find($request->input('classification_id'));
+
+        if (!$type || !$classification) {
+            $validator->errors()->add('Invalid Error', 'You\'ve provided an invalid type or classification.');
+            return $validator->errors();
+        }
+
         $validatedRequestDescriptors = $this->validateSentDescriptors($request, $type, $validator);
 
         $validatedDescriptors = $validatedRequestDescriptors['descriptors'];
@@ -155,14 +160,12 @@ class SpotController extends Controller
         $spot = Spot::create([
 
             'notes'             => $request->input('notes'),
-            'building'          => $request->input('building'),
-            'floor'             => $request->input('floor'),
-            'type_id'           => $request->input('type_id'),
+            'type_id'           => $type->id,
             'lat'               => $request->input('lat'),
             'lng'               => $request->input('lng'),
             'approved'          => $request->user()->can('approve spots') ? 1 : 0,
             'user_id'           => $request->user()->id,
-            'classification_id' => $request->input('classification_id'),
+            'classification_id' => $classification->id,
 
         ]);
 
@@ -191,8 +194,6 @@ class SpotController extends Controller
 
             'lat'               => 'number',
             'lng'               => 'number',
-            'building'          => 'string',
-            'floor'             => 'number',
 
             'notes'             => 'string',
             'descriptors'       => 'object',

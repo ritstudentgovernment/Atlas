@@ -34,10 +34,8 @@ class APITest extends TestCase
             $descriptors[$descriptor->id] = $descriptor->default_value;
         }
         $this->newSpotData = [
-            'building'          => 'KGCOE',
-            'floor'             => 1,
             'notes'             => 'this is a test spot, dont expect much',
-            'type_id'           => $type == null ?: $type->id,
+            'type_name'         => $type == null ?: $type->name,
             'lat'               => env('GOOGLE_MAPS_CENTER_LAT'),
             'lng'               => env('GOOGLE_MAPS_CENTER_LNG'),
             'descriptors'       => $descriptors,

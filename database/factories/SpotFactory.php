@@ -33,8 +33,6 @@ $factory->define(App\Spot::class, function (Faker $faker) {
 
         'lat'       => $faker->randomFloat(5, $center_lat - $lat_range, $center_lat + $lat_range),
         'lng'       => $faker->randomFloat(5, $center_lng - $lng_range, $center_lng + $lng_range),
-        'building'  => '',
-        'floor'     => 1,
 
         'notes'     => $faker->text(100),
         'approved'  => $faker->boolean(),

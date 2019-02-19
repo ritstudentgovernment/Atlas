@@ -87,13 +87,13 @@
                 <el-button
                         size="medium"
                         :style="'color: #fff;background-color:'+fillColor"
-                        :disabled="!formCompleted"
+                        v-if="formCompleted"
                         @click="submit"
                 >
                     Create
                 </el-button>
+                <el-button v-if="!formCompleted" @click="plop">Place</el-button>
                 <el-button type="text" @click="cancel">Cancel</el-button>
-                <el-button @click="plop">Place</el-button>
             </div>
         </div>
     </el-popover>
@@ -131,7 +131,7 @@
         },
         computed: {
             formCompleted() {
-                return false;
+                return this.verifyInput() && this.isPlopped;
             },
             formattedDescriptors() {
                 return this.requiredDescriptors.map((descriptor) => {
@@ -221,7 +221,7 @@
                     this.isPlopped = false;
                     this.ploppedMarker = null;
                 }
-                this.getDefaultLocation();
+                this.location = null;
                 this.setup();
             },
             getDefaultLocation(callback) {
@@ -297,11 +297,45 @@
                     builder.markers.push(marker);
                 });
             },
+            verifyDescriptors() {
+                let allDescriptorsCompleted = true;
+                this.requiredDescriptors.forEach((descriptor)=>{
+                    let value = this.spotDescriptors[descriptor.name];
+                    if (value === '' || !(descriptor.allowed_values.includes(value))) {
+                        allDescriptorsCompleted = false;
+                    }
+                });
+                return allDescriptorsCompleted;
+            },
             verifyInput() {
-
+                return this.verifyDescriptors();
+            },
+            parseDescriptors() {
+                let descriptorIDtoValue = {};
+                this.requiredDescriptors.forEach((descriptor)=>{
+                    descriptorIDtoValue[descriptor.id] = this.spotDescriptors[descriptor.name];
+                });
+                return descriptorIDtoValue;
             },
             submit() {
-
+                let self = this;
+                let data = {
+                    'notes': self.spotNotes,
+                    'type_name': self.spotType,
+                    'descriptors': self.parseDescriptors(),
+                    'lat': self.location.lat,
+                    'lng': self.location.lng,
+                    'classification_id': self.activeClassification.id,
+                };
+                window.axios.post('api/spots/create/', data).then((response) => {
+                    self.cancel();
+                    this.$notify({
+                        title: 'Spot Created',
+                        message: 'The spot you created will be reviewed and published once approved! Until then hang tight, you\'ll get an email when your spot has been reviewed.',
+                        type: 'success',
+                        duration: 0
+                    });
+                });
             },
         },
         created() {
