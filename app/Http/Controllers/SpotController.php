@@ -143,6 +143,7 @@ class SpotController extends Controller
 
         if (!$type || !$classification) {
             $validator->errors()->add('Invalid Error', 'You\'ve provided an invalid type or classification.');
+
             return $validator->errors();
         }
 
