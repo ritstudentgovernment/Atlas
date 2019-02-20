@@ -235,11 +235,15 @@ export class Builder{
         marker.setMap(null);
     }
 
+    removeAllSpots() {
+        this.markers.splice(0, this.markers.length);
+    }
+
     newSpot(spotData) {
         return new Spot(spotData);
     }
 
-    instantiateSpots(json) {
+    instantiateSpots(json, animateDrop = true) {
 
         let reference = this,
             canvasBuilder = new CanvasBuilder();
@@ -252,7 +256,7 @@ export class Builder{
 
             let spot = new Spot(spotData),
                 icon = spot.buildIcon(canvasBuilder),
-                marker = spot.drop();
+                marker = spot.drop(false, animateDrop);
 
             // Add the spot to the list of spots in the builder instance
             reference.spots.push(spot);
@@ -303,15 +307,20 @@ export class Builder{
 
     };
 
-    build() {
+    build(buildLegend = true) {
 
         let reference = this;
 
         axios.get('/api/spots').then(response => {
             let json = response.data;
             window.spotData = json;
-            reference.instantiateSpots(json);
-            reference.buildLegend();
+            if (buildLegend) {
+                reference.instantiateSpots(json);
+                reference.buildLegend();
+            } else {
+                reference.removeAllSpots();
+                reference.instantiateSpots(json, false);
+            }
 
         }).catch(error => {
 

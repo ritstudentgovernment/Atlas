@@ -131,7 +131,7 @@
         },
         computed: {
             formCompleted() {
-                return this.verifyInput() && this.isPlopped;
+                return this.verifyInput() || this.isPlopped;
             },
             formattedDescriptors() {
                 return this.requiredDescriptors.map((descriptor) => {
@@ -328,13 +328,23 @@
                     'classification_id': self.activeClassification.id,
                 };
                 window.axios.post('api/spots/create/', data).then((response) => {
+                    console.log(response);
                     self.cancel();
-                    this.$notify({
-                        title: 'Spot Created',
-                        message: 'The spot you created will be reviewed and published once approved! Until then hang tight, you\'ll get an email when your spot has been reviewed.',
-                        type: 'success',
-                        duration: 0
-                    });
+                    window.builder.build(false);
+                    if (response.status === 201) {
+                        this.$notify({
+                            title: 'Spot Created',
+                            message: response.data.message[0],
+                            type: 'success',
+                            duration: 30000
+                        });
+                    } else {
+                        this.$notify.error({
+                            title: 'Error Creating Spot',
+                            message: response.data.message[0],
+                            duration: 30000
+                        });
+                    }
                 });
             },
         },

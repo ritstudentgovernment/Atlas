@@ -34,7 +34,7 @@ class SpotController extends Controller
                     return true;
                 }
 
-                return $spot->approved && $user->can($requiredViewPermission);
+                return ($spot->approved && $user->can($requiredViewPermission)) || ($spot->author->id == $user->id);
             }
 
             return $spot->approved && !$requiredViewPermission;
@@ -135,16 +135,23 @@ class SpotController extends Controller
 
         // Initial validation, just that required fields are sent
         if ($validator->fails()) {
-            return $validator->errors();
+            return response($validator->errors(), 400);
         }
 
+        $user = $request->user();
         $type = Type::where('name', $request->input('type_name'))->first();
         $classification = Classification::find($request->input('classification_id'));
+        $canApproveSpots = $user->can('approve spots');
+
+        if (!$canApproveSpots) {
+            $classification = Classification::where('category_id', $classification->category_id)->where('name', 'Under Review')->first();
+            if (!$classification) {
+                $validator->errors()->add('Internal Error', 'Under review classification does not exist for the given category.');
+            }
+        }
 
         if (!$type || !$classification) {
             $validator->errors()->add('Invalid Error', 'You\'ve provided an invalid type or classification.');
-
-            return $validator->errors();
         }
 
         $validatedRequestDescriptors = $this->validateSentDescriptors($request, $type, $validator);
@@ -152,10 +159,10 @@ class SpotController extends Controller
         $validatedDescriptors = $validatedRequestDescriptors['descriptors'];
         $validator = $validatedRequestDescriptors['validator'];
 
-        $validator = $this->checkUserCanMakeRequestedSpot($request->user(), $type->category, $validator);
+        $validator = $this->checkUserCanMakeRequestedSpot($user, $type->category, $validator);
 
         if ($validator->fails()) {
-            return $validator->errors();
+            return response($validator->errors(), 400);
         }
 
         $spot = Spot::create([
@@ -164,8 +171,8 @@ class SpotController extends Controller
             'type_id'           => $type->id,
             'lat'               => $request->input('lat'),
             'lng'               => $request->input('lng'),
-            'approved'          => $request->user()->can('approve spots') ? 1 : 0,
-            'user_id'           => $request->user()->id,
+            'approved'          => $canApproveSpots ? 1 : 0,
+            'user_id'           => $user->id,
             'classification_id' => $classification->id,
 
         ]);
@@ -174,7 +181,15 @@ class SpotController extends Controller
             $spot->descriptors()->attach($validatedDescriptors);
         }
 
-        return $spot;
+        $response = new MessageBag();
+        $response->add('spot', $spot);
+        if ($canApproveSpots) {
+            $response->add('message', 'Your spot has been created successfully!');
+        } else {
+            $response->add('message', "The spot you created will be reviewed and published once approved! Until then hang tight, you'll get an email when your spot has been reviewed.");
+        }
+
+        return response($response, 201);
     }
 
     public function getDefaults(Request $request)
@@ -224,6 +239,11 @@ class SpotController extends Controller
     public function approve(Request $request, Spot $spot)
     {
         $spot->approved = true;
+        if (!$spot->author->can('create designated spots')) {
+            $classification = $spot->classification;
+            $classification = Classification::where('category_id', $classification->category_id)->where('name', 'Public')->first();
+            $spot->classification_id = $classification->id;
+        }
         $spot->save();
     }
 }
