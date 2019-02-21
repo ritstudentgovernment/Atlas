@@ -18,7 +18,7 @@ before_script:
 - ./cc-test-reporter before-build
 
 script:
-- php71-phpdbg -qrr vendor/bin/phpunit -v
+- phpdbg -qrr vendor/bin/phpunit -v
 
 after_script:
 - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
