@@ -27,9 +27,9 @@ class HomeController extends Controller
                     'lat'     => $center_lat,
                     'lng'     => $center_lng,
                     'max_lat' => $center_lat + $lat_range,
-                    'min_lat' => $center_lat + $lat_range,
+                    'min_lat' => $center_lat - $lat_range,
                     'max_lng' => $center_lng + $lng_range,
-                    'mix_lng' => $center_lng + $lng_range,
+                    'min_lng' => $center_lng - $lng_range,
                 ],
             ],
         ]);

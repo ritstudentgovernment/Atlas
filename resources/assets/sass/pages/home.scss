@@ -13,29 +13,40 @@
   position: fixed;
   bottom: 20px;
   right: 59px;
-  height: 70px;
-  width: 70px;
-  z-index:100;
-  text-align: center;
-  color: $bright;
-  border-color: rgba(243, 110, 33, 0.8);
-  background-color: rgba(243, 110, 33, 0.8);
-  @include shadow(10px, rgba(0,0,0,0.3))
+
+  button{
+
+    height: 70px;
+    width: 70px;
+    z-index:100000;
+    text-align: center;
+    color: $bright;
+    border-color: rgba(243, 110, 33, 0.8);
+    background-color: rgba(243, 110, 33, 0.8);
+    @include shadow(10px, rgba(0,0,0,0.3));
+
+  }
+
+  button:hover{
+
+    background-color: rgba(243, 110, 33, 1);
+    text-shadow: 0px 5px 10px rgba(0,0,0,0.2);
+    @include shadow(10px, rgba(0,0,0,0.4));
+
+  }
 
 }
 
-#new-spot:hover{
+#new-spot-popup{
 
-  background-color: rgba(243, 110, 33, 1);
-  text-shadow: 0px 5px 10px rgba(0,0,0,0.2);
-  @include shadow(10px, rgba(0,0,0,0.4));
+  width: 250px;
 
 }
 
 #legend {
 
   position: absolute;
-  bottom: 39px;
+  bottom: 15px;
   left: 1px;
   z-index: 100;
   font-family: $font-title;
@@ -84,60 +95,74 @@
 
 }
 
-.infoWindowContentBox{
+.gm-style-iw.gm-style-iw-c{
 
-  width: 300px;
+  padding: 0 0 0 10px !important;
 
-  .infoWindowTitle{
+  .gm-ui-hover-effect[title='Close']{
 
-    margin-bottom: 8px;
-
-    div {
-
-      font-weight: bolder;
-      color: #000;
-      font-size: 1.4em;
-      display: inline-block;
-      margin: 5px 12px 0 0;
-
-    }
-
-    span {
-
-      color: $bright;
-      padding: 3px 7px;
-      display: inline-block;
-      background-color: $highlight;
-      text-transform: capitalize;
-      -webkit-border-radius: 4px;
-      -moz-border-radius: 4px;
-      border-radius: 4px;
-      margin-top: 5px;
-
-    }
+    top: 0 !important;
+    right: 0 !important;
+    background-color: transparent !important;
 
   }
 
-  .infoWindowBody{
+  .infoWindowContentBox{
 
-    padding-bottom: 5px;
+    width: 300px;
 
-    p{
+    .infoWindowTitle{
 
-      margin-top: 10px;
-      margin-bottom: 0;
+      margin-bottom: 8px;
+
+      div {
+
+        font-weight: bolder;
+        color: #000;
+        font-size: 1.4em;
+        display: inline-block;
+        margin: 5px 12px 0 0;
+
+      }
+
+      span {
+
+        color: $bright;
+        padding: 3px 7px;
+        display: inline-block;
+        background-color: $highlight;
+        text-transform: capitalize;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        margin-top: 5px;
+
+      }
 
     }
 
-    .infoWindowIconDescriptors{
+    .infoWindowBody{
 
-      border-top: 1px solid #ccc;
+      padding-bottom: 5px;
 
-      div{
+      p{
 
-        padding-top: 6px;
-        display: inline-block;
-        margin-right: 14px;
+        margin-top: 10px;
+        margin-bottom: 0;
+
+      }
+
+      .infoWindowIconDescriptors{
+
+        border-top: 1px solid #ccc;
+
+        div{
+
+          padding-top: 6px;
+          display: inline-block;
+          margin-right: 14px;
+
+        }
 
       }
 

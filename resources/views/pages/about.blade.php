@@ -11,7 +11,7 @@
 @section("body")
 
     <div class="uk-container">
-        <div class="white-background">
+        <div class="bright-background">
             <div id="about-tab-nav">
                 <div class="center">
                     <ul class="uk-child-width-expand" uk-tab="connect: #about-content-switcher">
@@ -22,8 +22,8 @@
                     </ul>
                 </div>
             </div>
-            <div id="about-content">
-                <ul id="about-content-switcher" class="uk-switcher">
+            <div id="about-content" class="padding-left padding-right">
+                <ul id="about-content-switcher" class="uk-switcher padding-left padding-right">
                     <li>
                         <h4>What is Naps?</h4>
                         <p>
@@ -74,7 +74,7 @@
                         </ul>
                     </li>
                 </ul>
-                <hr class="uk-divider-icon" />
+                <hr class="uk-divider-icon center padding" />
             </div>
         </div>
     </div>

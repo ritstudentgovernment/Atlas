@@ -11,19 +11,22 @@
 |
 */
 
- use Illuminate\Support\Facades\Auth;
-
- Route::prefix('spots')->group(function () {
+ Route::prefix('/spots')->group(function () {
+     // Publicly accessible routes
      Route::get('/', 'SpotController@get');
-     Route::get('/{spot_id}', 'SpotController@get');
      Route::get('/categories', 'CategoryController@get');
-
-     Route::post('/create', 'SpotController@store')->middleware(['auth:api']);
-     Route::post('/approve/{spot}', 'SpotController@approve')->middleware(['auth:api', 'permission:approve spots']);
+     // Routes protected by authentication
+     Route::middleware(['auth:api'])->group(function () {
+         Route::prefix('/create')->group(function () {
+             Route::post('/', 'SpotController@store');
+             Route::get('/', 'SpotController@getDefaults');
+         });
+         Route::post('/approve/{spot}', 'SpotController@approve')->middleware(['permission:approve spots']);
+     });
  });
 
-Route::prefix('admin')->middleware(['permission:administer'])->group(function () {
-    Route::prefix('users')->group(function () {
+Route::prefix('/admin')->middleware(['permission:administer'])->group(function () {
+    Route::prefix('/users')->group(function () {
         Route::get('/', 'UserController@index');
         Route::post('/promote/{user}/reviewer', 'UserController@promoteReviewer');
         Route::post('/promote/{user}/admin', 'UserController@promoteAdmin');

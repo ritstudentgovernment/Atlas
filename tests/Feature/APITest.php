@@ -23,17 +23,23 @@ class APITest extends TestCase
      */
     protected function setUp()
     {
-        parent::setUp(); // For some reason this fixed way more than it was supposed to..
+        parent::setUp();
         $this->spot = (factory(Spot::class))->create(['approved' => false]);
         $this->user = User::where('first_name', 'Morty')->first();
         $this->adminUser = User::where('first_name', 'Sheldon')->first();
+        $type = Type::first() ? Type::inRandomOrder()->first() : null;
+        $descriptors = [];
+        $categoryDescriptors = $type == null ?: $type->category->descriptors;
+        foreach ($categoryDescriptors as $descriptor) {
+            $descriptors[$descriptor->id] = $descriptor->default_value;
+        }
         $this->newSpotData = [
-            'title'     => 'TEST',
-            'quietLevel'=> 10,
-            'notes'     => 'this is a test spot, dont expect much',
-            'type_id'   => Type::first() ? Type::inRandomOrder()->first()->id : null,
-            'lat'       => env('GOOGLE_MAPS_CENTER_LAT'),
-            'lng'       => env('GOOGLE_MAPS_CENTER_LNG'),
+            'notes'             => 'this is a test spot, dont expect much',
+            'type_name'         => $type == null ?: $type->name,
+            'lat'               => env('GOOGLE_MAPS_CENTER_LAT'),
+            'lng'               => env('GOOGLE_MAPS_CENTER_LNG'),
+            'descriptors'       => $descriptors,
+            'classification_id' => 1,
         ];
     }
 
@@ -72,7 +78,7 @@ class APITest extends TestCase
      */
     public function testGetSpotsNonAdmin()
     {
-        $response = $this->actingAs($this->user)->get('/api/spots');
+        $response = $this->actingAs($this->user, 'api')->get('/api/spots');
         // Make sure the request succeeded
         $response->assertStatus(200);
         // Make sure spots were returned
@@ -95,7 +101,7 @@ class APITest extends TestCase
      */
     public function testGetSpotsAdmin()
     {
-        $response = $this->actingAs($this->adminUser, 'web')->get('/api/spots');
+        $response = $this->actingAs($this->adminUser, 'api')->get('/api/spots');
         // Make sure the request succeeded
         $response->assertStatus(200);
         // Make sure spots were returned
@@ -115,6 +121,44 @@ class APITest extends TestCase
     {
         $response = $this->post('/api/spots/create', $this->newSpotData);
         $response->assertStatus(401);
+    }
+
+    /**
+     * Test to make sure that spots created by a non-admin user are not initially approved.
+     *
+     * @return void
+     */
+    public function testCreateSpotNonAdmin()
+    {
+        $response = $this->actingAs($this->user, 'api')->post('/api/spots/create', $this->newSpotData);
+        $response->assertStatus(201);
+        $this->assertContains('"approved":0', $response->getContent());
+    }
+
+    /**
+     * Test to make sure that spots created by an admin user are initially approved.
+     *
+     * @return void
+     */
+    public function testCreateSpotAdmin()
+    {
+        $response = $this->actingAs($this->adminUser, 'api')->post('/api/spots/create', $this->newSpotData);
+        $response->assertStatus(201);
+        $this->assertContains('"approved":1', $response->getContent());
+    }
+
+    /**
+     * Test to delete any spots created by these tests.
+     *
+     * @return void
+     */
+    public function testMakeSureAllTestSpotsAreDeleted()
+    {
+        $notes = $this->newSpotData['notes'];
+        Spot::where('notes', $notes)->get()->each(function (Spot $spot) {
+            $spot->delete();
+        });
+        $this->assertEmpty(Spot::where('notes', $notes)->get()->toArray());
     }
 
     /**

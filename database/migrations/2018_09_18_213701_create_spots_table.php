@@ -18,20 +18,17 @@ class CreateSpotsTable extends Migration
 
             $table->float('lat');
             $table->float('lng');
-            $table->string('building');
-            $table->integer('floor');
 
-            $table->text('notes');
-            $table->string('title');
+            $table->text('notes')->nullable();
             $table->boolean('approved');
 
-            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
-            $table->integer('type_id')->unsigned()->nullable();
+            $table->integer('type_id')->unsigned();
             $table->foreign('type_id')->references('id')->on('types');
 
-            $table->integer('classification_id')->unsigned()->nullable();
+            $table->integer('classification_id')->unsigned();
             $table->foreign('classification_id')->references('id')->on('classifications');
 
             $table->timestamps();

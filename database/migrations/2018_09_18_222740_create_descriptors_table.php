@@ -14,9 +14,11 @@ class CreateDescriptorsTable extends Migration
     public function up()
     {
         Schema::create('descriptors', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id')->onDelete('cascade');
             $table->string('name');
+            $table->string('value_type');
             $table->string('default_value');
+            $table->longText('allowed_values');
             $table->string('icon');
             $table->timestamps();
         });

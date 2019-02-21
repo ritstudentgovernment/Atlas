@@ -22,12 +22,12 @@
             @if (Auth::guest())
                 <a href="/login">Login</a>
 			@else
-			<a>Hello, {{ Auth::user()->first_name }} <span uk-icon="icon: chevron-down; ratio:1.2;"></span></a>
+			    <a>Hello, {{ Auth::user()->first_name }} <span uk-icon="icon: chevron-down; ratio:1.2;"></span></a>
 				<div class="uk-navbar-dropdown" uk-dropdown>
                     <ul class="uk-nav uk-navbar-dropdown-nav">
 						<li>
 							<a href="/logout">
-								Logout 
+								Logout
 							</a>
 						</li>
                     </ul>

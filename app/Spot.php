@@ -9,16 +9,28 @@ class Spot extends Model
 {
     protected $appends = ['type', 'classification', 'descriptors', 'authored'];
     protected $hidden = ['user_id', 'created_at', 'updated_at', 'type_id'];
-    protected $fillable = ['title', 'notes', 'type_id', 'lat', 'lng'];
+    protected $fillable = ['notes', 'classification_id', 'approved', 'user_id', 'type_id', 'lat', 'lng'];
 
-    public function getTypeAttribute()
+    public function getAuthoredAttribute()
     {
-        return $this->type()->first();
+        $spotAuthor = $this->author()->first();
+        $requestUser = request()->user() ?: (auth('api')->user() ?: false);
+        // Check for edge cases where a user isn't logged in or the spot author is undefined.
+        if (!($spotAuthor && $requestUser && $requestUser instanceof User)) {
+            return false;
+        }
+
+        return $requestUser->id == $spotAuthor->id;
+    }
+
+    public function getCategoryAttribute()
+    {
+        return $this->category();
     }
 
     public function getClassificationAttribute()
     {
-        return $this->classification()->get();
+        return $this->classification()->first();
     }
 
     public function getDescriptorsAttribute()
@@ -26,13 +38,9 @@ class Spot extends Model
         return $this->descriptors()->get();
     }
 
-    public function getAuthoredAttribute()
+    public function getTypeAttribute()
     {
-        if (($user = Auth::user()) && $this->author->id == $user->id) {
-            return true;
-        }
-
-        return false;
+        return $this->type()->first();
     }
 
     public function author()
@@ -40,9 +48,9 @@ class Spot extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function type()
+    public function category()
     {
-        return $this->belongsTo(Type::class);
+        return $this->type->category;
     }
 
     public function classification()
@@ -52,6 +60,11 @@ class Spot extends Model
 
     public function descriptors()
     {
-        return $this->hasManyThrough(DescriptorSpot::class, Descriptors::class, 'id', 'descriptor_id');
+        return $this->belongsToMany(Descriptors::class, 'descriptors_spot', 'spot_id', 'descriptor_id', 'id', 'id')->withPivot('value');
+    }
+
+    public function type()
+    {
+        return $this->belongsTo(Type::class);
     }
 }

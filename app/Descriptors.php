@@ -6,13 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Descriptors extends Model
 {
+    protected $fillable = ['name', 'value_type', 'default_value', 'allowed_values', 'icon'];
+
     public function spots()
     {
-        return $this->hasManyThrough(Spot::class, DescriptorSpot::class);
+        return $this->belongsToMany(Spot::class, 'descriptors_spot', 'descriptor_id', 'spot_id')->withPivot('value');
     }
 
     public function categories()
     {
-        return $this->hasManyThrough(Category::class, CategoryDescriptor::class);
+        return $this->belongsToMany(Category::class, 'category_descriptors', 'descriptor_id', 'category_id');
     }
 }

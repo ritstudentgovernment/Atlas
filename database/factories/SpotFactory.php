@@ -22,20 +22,24 @@ $factory->define(App\Spot::class, function (Faker $faker) {
     $lat_range = (float) env('GOOGLE_MAPS_LAT_CHANGE');
     $lng_range = (float) env('GOOGLE_MAPS_LNG_CHANGE');
 
+    $type = Type::first() ? Type::inRandomOrder()->first() : null;
+
+    $classification = Classification::first() ?
+        Classification::inRandomOrder()->get()->filter(function (Classification $classification) use ($type) {
+            return $type ? $classification->category->id == $type->category->id : false;
+        })->first() : null;
+
     return [
 
         'lat'       => $faker->randomFloat(5, $center_lat - $lat_range, $center_lat + $lat_range),
         'lng'       => $faker->randomFloat(5, $center_lng - $lng_range, $center_lng + $lng_range),
-        'building'  => '',
-        'floor'     => 1,
 
-        'title'     => $faker->name,
         'notes'     => $faker->text(100),
         'approved'  => $faker->boolean(),
 
         'user_id'           => User::first() ? User::inRandomOrder()->first()->id : null,
-        'type_id'           => Type::first() ? Type::inRandomOrder()->first()->id : null,
-        'classification_id' => Classification::first() ? Classification::inRandomOrder()->first()->id : null,
+        'type_id'           => $type ? $type->id : null,
+        'classification_id' => $classification ? $classification->id : null,
 
     ];
 });

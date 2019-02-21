@@ -7,9 +7,13 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+// window.Vue = require('vue');
+import Vue from 'vue';
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.prototype.$http = axios;
+Vue.use(ElementUI);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -17,19 +21,21 @@ Vue.prototype.$http = axios;
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
+Vue.component('new-spot-component', require('./components/NewSpotComponent.vue').default);
 
-const app = new Vue({
+window.vue = new Vue({
     el: '#app'
 });
 
-$.urlParam = function(name, value = false){
+const capitalize = (s) => {
+    if (typeof s !== 'string') return '';
+    return s.charAt(0).toUpperCase() + s.slice(1);
+}
 
-    let url = window.location.href;
+$.urlParam = (name, value = false) => {
 
-    // Check if we are just looking to get the value of a url parameter
-    if (!value) {
-        // We are, do some regex magic and get the value.
+    function getValue(name, url) {
+        // Do some regex magic to get the value.
         let results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(url);
         if (results){
             return decodeURI(results[1]) || 0;
@@ -37,10 +43,15 @@ $.urlParam = function(name, value = false){
         return null;
     }
 
+    let url = window.location.href,
+        currentValue = getValue(name, url);
+
+    // Check if we are just looking to get the value of a url parameter
+    if (!value) { return currentValue; }
+
     // We are trying to update the value of a url parameter (or set one)
-    let newUrl = "";
-    let splitUrl = [];
-    let currentValue = $.urlParam(name);
+    let newUrl = "",
+        splitUrl = [];
 
     // just return true if the current value matches the value we are tyring to set it to.
     if (value === currentValue) { return true; }
@@ -48,8 +59,9 @@ $.urlParam = function(name, value = false){
     // the value is different than what you want it to be, or not set at all, lets fix that.
     if (currentValue) {
         // The URL Parameter exists currently, we have to update it.
-        let regex = new RegExp("([?;&])" + name + "[^&;]*[;&]?");
-        let query = url.replace(regex, "$1").replace(/&$/, '');
+        let regex = new RegExp("([?;&])" + name + "[^&;]*[;&]?"),
+            query = url.replace(regex, "$1").replace(/&$/, '');
+
         splitUrl = url.split('&');
         newUrl = query + (splitUrl[1] ? '&' : '') + (value ? name + "=" + value : '');
     } else {
@@ -57,7 +69,13 @@ $.urlParam = function(name, value = false){
         splitUrl = url.split('?');
         newUrl = url + (splitUrl[1] ? '&' : '?') + name + '=' + value;
     }
+
+    // Set the current url to the updated one, return the value of the parameter
     window.history.pushState({}, '', newUrl);
-    return true;
+    return getValue(name);
 
 };
+
+$(document).ready(() => {
+    loaded();
+});
