@@ -109,7 +109,7 @@
 
   .infoWindowContentBox{
 
-    width: 300px;
+    .infoWindowTitle, .infoWindowBody{ max-width: 320px; }
 
     .infoWindowTitle{
 

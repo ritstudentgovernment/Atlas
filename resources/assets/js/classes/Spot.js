@@ -83,19 +83,19 @@ export default class Spot {
             }
 
             let contentString =
-                '<div class="infoWindowContentBox">'+
-                '<div class="infoWindowTitle">'+
-                '<div>'+spot.type.name+'</div>'+
-                '<span style="background-color: #'+spot.classification.color+'">'+spot.classification.name+' '+spot.type.category.name+' spot</span>'+
-                '</div>'+
-                '<div class="infoWindowBody">'+
-                '<div class="infoWindowIconDescriptors">'+
-                getDescriptorString(spot)+
-                '</div>'+
-                '<p>'+spot.type.category.description+'</p>'+
-                '<p>'+spot.notes+'</p>'+
-                '</div>'+
-                '</div>';
+                `<div class="infoWindowContentBox">
+                    <div class="infoWindowTitle">
+                        <div>${spot.type.name}</div>
+                        <span style="background-color: #${spot.classification.color}">${spot.classification.name} ${+spot.type.category.name} spot</span>
+                    </div>
+                    <div class="infoWindowBody">
+                        <div class="infoWindowIconDescriptors">
+                            ${getDescriptorString(spot)}
+                        </div>
+                        <p>${spot.type.category.description}</p>
+                        <p>${spot.notes}</p>
+                    </div>
+                </div>`;
 
             let infowindow = new google.maps.InfoWindow({
 
