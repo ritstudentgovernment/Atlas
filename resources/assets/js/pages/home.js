@@ -8,7 +8,12 @@ window.getMeta = (metaName) => {
     let metas = document.getElementsByTagName('meta');
     for (let i = 0; i < metas.length; i++) {
         if (metas[i].getAttribute('name') === metaName) {
-            return metas[i].getAttribute('content');
+            let content = metas[i].getAttribute('content');
+            try{
+                return JSON.parse(content);
+            } catch (e) {
+                return content;
+            }
         }
     }
     return '';
@@ -23,23 +28,24 @@ window.initMap = () => {
     /**
      * Function to show the google map at the appropriate location
      *
-     * @return void.
+     * @return Object.
      */
     function instantiateMap(){
+        let center = getMeta('googleMapsCenter');
         // Instantiate Google Maps on the page
         window.map = new google.maps.Map(document.getElementById('napMap'), {
-            center: JSON.parse(getMeta('googleMapsCenter')),
+            center: center,
             zoom: 16
         });
+        return center;
     }
     /**
      * Function to restrict the movement of the Google Map so that the user doesn't loose campus.
      *
      * @return void.
      */
-    function restrictMapMovement(){
+    function restrictMapMovement(center){
 
-        let center = JSON.parse(getMeta('googleMapsCenter'));
         let lastValidCenter = map.getCenter();
         let allowedBounds = new google.maps.LatLngBounds(
 
@@ -62,8 +68,8 @@ window.initMap = () => {
 
     }
 
-    instantiateMap();
-    restrictMapMovement();
+    let center = instantiateMap();
+    restrictMapMovement(center);
     loaded();
 
     window.builder = new Builder();

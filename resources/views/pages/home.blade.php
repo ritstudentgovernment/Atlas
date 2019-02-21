@@ -6,6 +6,7 @@
 
     <link rel="stylesheet" href="{{ mix('/css/home.css') }}">
     <meta name="googleMapsCenter" content='<?= json_encode($map["center"]); ?>'>
+    <meta name="user" content='<?= json_encode($user); ?>'>
     <script src="{{ mix('js/home.js') }}"></script>
 
 @endsection

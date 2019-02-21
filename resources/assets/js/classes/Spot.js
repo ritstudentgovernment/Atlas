@@ -53,34 +53,40 @@ export default class Spot {
             openInfoWindow = infowindow;
         }
 
+        function getDescriptorString(spot){
+
+            let string = '';
+            if (spot.hasOwnProperty('descriptors')) {
+
+                for(let i = 0; i < spot.descriptors.length; i++){
+
+                    let descriptor = spot.descriptors[i];
+
+                    string +=
+                        `<div>
+                                <span uk-icon="icon: ${descriptor.icon}; ratio: .9"></span>
+                                &nbsp;${descriptor.name}: ${descriptor.pivot.value}
+                            </div>`;
+
+                }
+
+            }
+            return string
+
+        }
+
+        function getAdministrativeString(spot){
+
+            //
+
+        }
+
         /**
          * Function to handle clicking on a particular spot and bringing up its infowindow.
          *
          * @return google.maps.InfoWindow
          */
         function addClickHandler(marker, spot){
-
-            function getDescriptorString(spot){
-
-                let string = '';
-                if (spot.hasOwnProperty('descriptors')) {
-
-                    for(let i = 0; i < spot.descriptors.length; i++){
-
-                        let descriptor = spot.descriptors[i];
-
-                        string +=
-                            '<div>' +
-                            '<span uk-icon="icon: '+descriptor.icon+ '; ratio: .9"></span>' +
-                            '&nbsp;'+descriptor.name+': '+descriptor.pivot.value+
-                            '</div>';
-
-                    }
-
-                }
-                return string
-
-            }
 
             let contentString =
                 `<div class="infoWindowContentBox">
