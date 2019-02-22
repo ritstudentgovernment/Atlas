@@ -26,7 +26,11 @@ export default class Builder{
     }
 
     approveSpot(spotId) {
-        this.spots.filter((spot)=>spot.data.id === spotId)[0].approve();
+        let self = this;
+        this.spots.filter((spot)=>spot.data.id === spotId)[0].approve(()=>{
+            window.openInfoWindow.close();
+            self.build(false);
+        });
     }
 
     instantiateSpots(json, animateDrop = true) {

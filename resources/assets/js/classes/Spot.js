@@ -9,7 +9,7 @@ export default class Spot {
         this.api = new SpotsAPI(window.api);
     }
 
-    approve(){
+    approve(callback = false){
         if (!this.data.approved) {
             this.api.approve(this.data.id).then(() => {
                 window.vue.$notify({
@@ -17,6 +17,7 @@ export default class Spot {
                     message: 'Spot Approved',
                     type: 'success'
                 });
+                if (callback) callback();
             });
         }
     }
