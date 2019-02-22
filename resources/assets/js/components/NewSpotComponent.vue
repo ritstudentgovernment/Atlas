@@ -265,7 +265,7 @@
                         lat: this.location.lat,
                         lng: this.location.lng
                     };
-                return window.builder.newSpot(spotData);
+                return Builder.newSpot(spotData);
             },
             plop() {
                 let self = this,

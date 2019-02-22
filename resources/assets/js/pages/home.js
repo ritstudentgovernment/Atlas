@@ -1,4 +1,7 @@
+import API from "../classes/api/API"
 import Builder from "../classes/Builder"
+
+window.api = new API(window.axios);
 
 window.markers = [];
 window.icons = {};
@@ -81,7 +84,7 @@ window.initMap = () => {
         if (window.map.tilesloading) {
 
             instantiateMap();
-            restrictMapMovement();
+            restrictMapMovement(center);
             builder.instantiateSpots(window.spotData);
 
         }

@@ -1,4 +1,5 @@
 import Spot from "./Spot"
+import SpotsAPI from "./api/SpotsAPI"
 import CanvasBuilder from "./CanvasBuilder"
 
 export default class Builder{
@@ -8,6 +9,7 @@ export default class Builder{
         this.legend = {};
         this.markers = [];
         this.canvasBuilder = {};
+        this.spotsApi = new SpotsAPI(window.api);
     }
 
     removeLastSpot() {
@@ -21,6 +23,10 @@ export default class Builder{
 
     newSpot(spotData) {
         return new Spot(spotData);
+    }
+
+    approveSpot(spotId) {
+        this.spots.filter((spot)=>spot.data.id === spotId)[0].approve();
     }
 
     instantiateSpots(json, animateDrop = true) {
@@ -91,7 +97,7 @@ export default class Builder{
 
         let reference = this;
 
-        axios.get('/api/spots').then(response => {
+        this.spotsApi.list().then(response => {
             let json = response.data;
             window.spotData = json;
             if (buildLegend) {

@@ -7,12 +7,12 @@
 
 require('./bootstrap');
 
-// window.Vue = require('vue');
+import API from "./classes/api/API"
 import Vue from 'vue';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
-Vue.prototype.$http = axios;
+Vue.prototype.$http = window.axios;
 Vue.use(ElementUI);
 
 /**
@@ -30,7 +30,7 @@ window.vue = new Vue({
 const capitalize = (s) => {
     if (typeof s !== 'string') return '';
     return s.charAt(0).toUpperCase() + s.slice(1);
-}
+};
 
 $.urlParam = (name, value = false) => {
 

@@ -1,10 +1,24 @@
 import CanvasBuilder from "./CanvasBuilder";
+import SpotsAPI from "./api/SpotsAPI";
 
 export default class Spot {
 
     constructor(data){
         this.data = data;
         this.icon = null;
+        this.api = new SpotsAPI(window.api);
+    }
+
+    approve(){
+        if (!this.data.approved) {
+            this.api.approve(this.data.id).then(() => {
+                window.vue.$notify({
+                    title: 'Success',
+                    message: 'Spot Approved',
+                    type: 'success'
+                });
+            });
+        }
     }
 
     buildIcon(canvasBuilder) {
@@ -43,6 +57,8 @@ export default class Spot {
      */
     drop(autoOpen = false, animate = true) {
 
+        let self = this;
+
         function openTooltip(infowindow){
             if(openInfoWindow)openInfoWindow.close();
 
@@ -64,9 +80,9 @@ export default class Spot {
 
                     string +=
                         `<div>
-                                <span uk-icon="icon: ${descriptor.icon}; ratio: .9"></span>
-                                &nbsp;${descriptor.name}: ${descriptor.pivot.value}
-                            </div>`;
+                            <span uk-icon="icon: ${descriptor.icon}; ratio: .9"></span>
+                            &nbsp;${descriptor.name}: ${descriptor.pivot.value}
+                        </div>`;
 
                 }
 
@@ -75,9 +91,24 @@ export default class Spot {
 
         }
 
-        function getAdministrativeString(spot){
+        function getAdministrativeString(spot) {
 
-            //
+            let user, string = '';
+            if (user = getMeta('user')) {
+                if (user.roles.length > 0) { // User is a member of at least one role (reviewer or admin currently)
+                    if (user.roles.some(role => (role.name === 'admin' || role.name === 'reviewer'))) {
+                        string += '<div class="infoWindowAdministrative"><hr />';
+                        if (!spot.approved) {
+                            string += `
+                                <button class="material-hover material-button transition center approve-spot" onclick="window.builder.approveSpot(${spot.id})">
+                                    Approve Spot
+                                </button>`;
+                        }
+                        string += '<div/>';
+                    }
+                }
+            }
+            return string;
 
         }
 
@@ -92,7 +123,7 @@ export default class Spot {
                 `<div class="infoWindowContentBox">
                     <div class="infoWindowTitle">
                         <div>${spot.type.name}</div>
-                        <span style="background-color: #${spot.classification.color}">${spot.classification.name} ${+spot.type.category.name} spot</span>
+                        <span style="background-color: #${spot.classification.color}">${spot.classification.name} ${spot.type.category.name} spot</span>
                     </div>
                     <div class="infoWindowBody">
                         <div class="infoWindowIconDescriptors">
@@ -100,6 +131,7 @@ export default class Spot {
                         </div>
                         <p>${spot.type.category.description}</p>
                         <p>${spot.notes}</p>
+                        ${getAdministrativeString(spot)}
                     </div>
                 </div>`;
 
@@ -109,7 +141,7 @@ export default class Spot {
 
             });
 
-            marker.addListener('click', function() {
+            marker.addListener('click', () => {
 
                 openTooltip(infowindow);
 
