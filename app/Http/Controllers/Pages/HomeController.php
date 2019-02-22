@@ -36,7 +36,7 @@ class HomeController extends Controller
                     'min_lng' => $center_lng - $lng_range,
                 ],
             ],
-            'user' => $user
+            'user' => $user,
         ]);
     }
 }
