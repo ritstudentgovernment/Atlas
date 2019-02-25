@@ -94,12 +94,13 @@ export default class Spot {
 
         function getAdministrativeString(spot) {
 
-            let user, string = '';
+            let user, string = '', display = false;
             if (user = getMeta('user')) {
                 if (user.roles.length > 0) { // User is a member of at least one role (reviewer or admin currently)
                     if (user.roles.some(role => (role.name === 'admin' || role.name === 'reviewer'))) {
                         string += '<div class="infoWindowAdministrative"><hr />';
                         if (!spot.approved) {
+                            display = true;
                             string += `
                                 <button class="material-hover material-button transition center approve-spot" onclick="window.builder.approveSpot(${spot.id})">
                                     Approve Spot
@@ -109,7 +110,7 @@ export default class Spot {
                     }
                 }
             }
-            return string;
+            return display ? string : '';
 
         }
 
