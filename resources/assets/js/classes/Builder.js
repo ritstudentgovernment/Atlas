@@ -21,8 +21,8 @@ export default class Builder{
         this.markers.splice(0, this.markers.length);
     }
 
-    newSpot(spotData) {
-        return new Spot(spotData);
+    newSpot(spotData, tempSpot = false) {
+        return new Spot(spotData, tempSpot);
     }
 
     approveSpot(spotId) {

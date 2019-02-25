@@ -3,10 +3,11 @@ import SpotsAPI from "./api/SpotsAPI";
 
 export default class Spot {
 
-    constructor(data){
+    constructor(data, tempSpot = false){
         this.data = data;
         this.icon = null;
         this.api = new SpotsAPI(window.api);
+        this.tempSpot = tempSpot;
     }
 
     approve(callback = false){
@@ -95,7 +96,8 @@ export default class Spot {
         function getAdministrativeString(spot) {
 
             let user, string = '', display = false;
-            if (user = getMeta('user')) {
+            if ((user = getMeta('user')) && !self.tempSpot) {
+                console.log(user);
                 if (user.roles.length > 0) { // User is a member of at least one role (reviewer or admin currently)
                     if (user.roles.some(role => (role.name === 'admin' || role.name === 'reviewer'))) {
                         string += '<div class="infoWindowAdministrative"><hr />';

@@ -131,7 +131,7 @@
         },
         computed: {
             formCompleted() {
-                return this.verifyInput() || this.isPlopped;
+                return this.verifyInput() && this.isPlopped;
             },
             formattedDescriptors() {
                 return this.requiredDescriptors.map((descriptor) => {
@@ -227,7 +227,7 @@
             getDefaultLocation(callback) {
                 let self = this;
                 if (!this.isPlopped) {
-                    this.location = JSON.parse(getMeta('googleMapsCenter'));
+                    this.location = getMeta('googleMapsCenter');
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition((position)=>{
                             self.location = {
@@ -265,7 +265,7 @@
                         lat: this.location.lat,
                         lng: this.location.lng
                     };
-                return Builder.newSpot(spotData);
+                return window.builder.newSpot(spotData, true);
             },
             plop() {
                 let self = this,
