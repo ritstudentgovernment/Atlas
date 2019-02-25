@@ -19,9 +19,15 @@ export default class Spot {
                     type: 'success'
                 });
                 if (callback) callback();
+            }).catch((error) => {
+                window.vue.$notify.error({
+                    title: 'Error',
+                    message: error.response.data.message
+                });
             });
         }
     }
+
 
     buildIcon(canvasBuilder) {
 
@@ -97,7 +103,6 @@ export default class Spot {
 
             let user, string = '', display = false;
             if ((user = getMeta('user')) && !self.tempSpot) {
-                console.log(user);
                 if (user.roles.length > 0) { // User is a member of at least one role (reviewer or admin currently)
                     if (user.roles.some(role => (role.name === 'admin' || role.name === 'reviewer'))) {
                         string += '<div class="infoWindowAdministrative"><hr />';
