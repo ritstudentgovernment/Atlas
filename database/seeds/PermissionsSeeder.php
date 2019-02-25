@@ -49,7 +49,6 @@ class PermissionsSeeder extends Seeder
                     $user->givePermissionTo('make designated spots');
                 }
             });
-
         }
     }
 }

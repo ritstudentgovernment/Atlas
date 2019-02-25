@@ -35,11 +35,12 @@ $factory->define(App\Spot::class, function (Faker $faker) {
 
     $classification = Classification::first() ?
         Classification::inRandomOrder()->get()->filter(function (Classification $classification) use ($type, $approved) {
-            if ($approved && $classification->name == "Under Review") {
+            if ($approved && $classification->name == 'Under Review') {
                 return false;
-            } elseif (!$approved && !($classification->name == "Under Review")) {
+            } elseif (!$approved && !($classification->name == 'Under Review')) {
                 return false;
             }
+
             return $type ? $classification->category->id == $type->category->id : false;
         })->first() : null;
 
