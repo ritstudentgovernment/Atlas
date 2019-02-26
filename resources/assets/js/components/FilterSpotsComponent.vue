@@ -1,9 +1,12 @@
 <template>
-    <div id="filter-spots" class="padding" :style="'bottom:'+position+'px'">
-        <h3>Filter Spots Visible</h3>
-        <el-checkbox-group v-model="selectedSpotCategories" @change="handleSpotsFilterChange">
-            <el-checkbox v-for="spot in spotCategories" :label="spot" :value="spot" :key="spot">{{ spot }}</el-checkbox>
-        </el-checkbox-group>
+    <div id="filter-spots" class="padding-left padding-right" :style="'bottom:'+position+'px'">
+        <el-collapse v-model="show">
+            <el-collapse-item title="Filter Spots Visible" name="list">
+                <el-checkbox-group v-model="selectedSpotCategories" @change="handleSpotsFilterChange">
+                    <el-checkbox v-for="spot in spotCategories" :label="spot" :value="spot" :key="spot" :border="true" size="mini">{{ spot }}</el-checkbox>
+                </el-checkbox-group>
+            </el-collapse-item>
+        </el-collapse>
     </div>
 </template>
 
@@ -28,6 +31,7 @@
         },
         data() {
             return {
+                show: [],
                 renderKey: 0,
                 spotCategories: [],
                 selectedSpotCategories: []
@@ -39,6 +43,9 @@
                     return val.indexOf(spot.type.category.name) !== -1;
                 });
                 window.builder.build(true, filteredSpotData);
+            },
+            toggleVisibility() {
+                this.show = !this.show;
             },
             forceRender(){
                 this.renderKey++;
@@ -62,12 +69,15 @@
         position: absolute;
         left: 10px;
         z-index: 1;
-    }
-    #filter-spots h3{
-        font-size: 13px;
-        margin-bottom: 0;
+        width: 140px;
     }
     #filter-spots label{
-        display: block;
+        width: 140px;
+        float: left;
+        margin: 0 auto 10px;
+        display: inline-block;
+    }
+    #filter-spots .el-collapse{
+        border: none;
     }
 </style>
