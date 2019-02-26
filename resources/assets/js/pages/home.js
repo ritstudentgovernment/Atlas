@@ -1,7 +1,7 @@
-import API from "../classes/api/API"
+import SpotsAPI from "../classes/api/SpotsAPI"
 import Builder from "../classes/Builder"
 
-window.api = new API(window.axios);
+window.spotsApi = new SpotsAPI(window.api);
 
 window.markers = [];
 window.icons = {};

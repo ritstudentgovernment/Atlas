@@ -1,4 +1,4 @@
-<script src="{{ mix('/js/app.js') }}" async></script>
+<script src="{{ mix('/js/app.js') }}"></script>
 <script>
     function loaded() {
         @if(session()->has('api_key'))
