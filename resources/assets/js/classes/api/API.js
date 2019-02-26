@@ -5,10 +5,10 @@ export default class API {
         this.errors = [];
     }
 
-    get(url, parameters = {}) {
+    request(axiosRequest) {
         let self = this;
         return new Promise((resolve, reject) => {
-            self.axios.get(`api/${url}`, parameters).then((response) => resolve(response)).catch((error) => {
+            axiosRequest.then((response) => resolve(response)).catch((error) => {
                 self.errors.push(error);
                 console.error(error);
                 reject(error);
@@ -16,15 +16,12 @@ export default class API {
         });
     }
 
+    get(url, parameters = {}) {
+        return this.request(this.axios.get(`api/${url}`, parameters));
+    }
+
     post(url, parameters = {}) {
-        let self = this;
-        return new Promise((resolve, reject) => {
-            self.axios.post(`api/${url}`, parameters).then((response) => resolve(response)).catch((error) => {
-                self.errors.push(error);
-                console.error(error);
-                reject(error);
-            });
-        });
+        return this.request(this.axios.post(`api/${url}`, parameters));
     }
 
 }
