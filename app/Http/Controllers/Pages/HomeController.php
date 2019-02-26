@@ -20,6 +20,10 @@ class HomeController extends Controller
         $lat_range = (float) env('GOOGLE_MAPS_LAT_CHANGE');
         $lng_range = (float) env('GOOGLE_MAPS_LNG_CHANGE');
 
+        if ($user = $request->user()) {
+            $user->getRoleNames(); // add roles to the user object
+        }
+
         return view('pages.home', [
             'map' => [
                 'api_key' => env('GOOGLE_MAPS_API_KEY'),
@@ -32,6 +36,7 @@ class HomeController extends Controller
                     'min_lng' => $center_lng - $lng_range,
                 ],
             ],
+            'user' => $user,
         ]);
     }
 }
