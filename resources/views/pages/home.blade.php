@@ -15,11 +15,13 @@
 
     <div id="map">
 
+        <filter-spots></filter-spots>
+
         <div id="legend"></div>
         <div id="napMap"></div>
 
         @auth
-            <new-spot-component></new-spot-component>
+            <new-spot></new-spot>
         @endauth
 
     </div>

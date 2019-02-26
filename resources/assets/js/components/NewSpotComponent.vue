@@ -104,7 +104,7 @@
     import 'element-ui/lib/theme-chalk/index.css';
 
     export default {
-        name: "new-spot-component",
+        name: "new-spot",
         components: {
             ElementUI
         },
@@ -158,7 +158,6 @@
                 });
             },
             loadData(data) {
-                console.log(data);
                 this.availableClassifications = data.availableClassifications;
                 this.activeClassification = this.availableClassifications.filter((classification) => {
                     return classification.name === "Public";
@@ -175,7 +174,7 @@
             setup() {
                 let self = this;
                 window.nsp = self;
-                window.axios.get('api/spots/create/').then((response) => {
+                window.spotsApi.get('create/').then((response) => {
                     let data = response.data;
                     self.availableCategories = data.availableCategories;
                     self.activeCategory = self.availableCategories[0];
@@ -193,7 +192,7 @@
                     return category.name === categoryName;
                 })[0];
 
-                window.axios.get('api/spots/create/?category='+categoryName).then((response) => {
+                window.spotsApi.get(`create/?category=${categoryName}`).then((response) => {
                     self.loadData(response.data);
                     self.$nextTick(()=>{
                         window.dispatchEvent(new Event('resize'));
@@ -327,8 +326,7 @@
                     'lng': self.location.lng,
                     'classification_id': self.activeClassification.id,
                 };
-                window.axios.post('api/spots/create/', data).then((response) => {
-                    console.log(response);
+                window.spotsApi.post('create/', data).then((response) => {
                     self.cancel();
                     window.builder.build(false);
                     if (response.status === 201) {

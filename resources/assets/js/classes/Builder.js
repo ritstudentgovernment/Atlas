@@ -18,7 +18,9 @@ export default class Builder{
     }
 
     removeAllSpots() {
-        this.markers.splice(0, this.markers.length);
+        this.markers.forEach((marker) => {
+            marker.setMap(null);
+        });
     }
 
     newSpot(spotData, tempSpot = false) {
@@ -95,28 +97,46 @@ export default class Builder{
 
         });
 
+        window.fsc.forceRender();
+
     };
 
-    build(buildLegend = true) {
+    clearLegend() {
+
+        this.legend = {};
+        document.getElementById('legend').innerHTML = "";
+
+    };
+
+    build(buildLegend = true, spots = false) {
 
         let reference = this;
 
-        this.spotsApi.list().then(response => {
-            let json = response.data;
-            window.spotData = json;
-            if (buildLegend) {
-                reference.instantiateSpots(json);
-                reference.buildLegend();
-            } else {
-                reference.removeAllSpots();
-                reference.instantiateSpots(json, false);
-            }
+        if (!spots) {
+            this.spotsApi.list().then(response => {
+                let json = response.data;
+                window.spotData = json;
+                if (buildLegend) {
+                    reference.instantiateSpots(json);
+                    reference.buildLegend();
+                } else {
+                    reference.removeAllSpots();
+                    reference.instantiateSpots(json, false);
+                }
 
-        }).catch(error => {
+            }).catch(error => {
 
-            console.error(error);
+                console.error(error);
 
-        });
+            });
+        } else {
+
+            reference.clearLegend();
+            reference.removeAllSpots();
+            reference.instantiateSpots(spots, false);
+            reference.buildLegend();
+
+        }
 
     };
 
