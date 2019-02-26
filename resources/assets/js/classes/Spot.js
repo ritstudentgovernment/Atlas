@@ -8,6 +8,8 @@ export default class Spot {
         this.icon = null;
         this.api = new SpotsAPI(window.api);
         this.tempSpot = tempSpot;
+        this.marker = null;
+        this.infowindow = null;
     }
 
     approve(callback = false){
@@ -58,6 +60,105 @@ export default class Spot {
 
     };
 
+    openTooltip(){
+        if(window.openInfoWindow)window.openInfoWindow.close();
+
+        window.map.setZoom(16);
+        window.map.panTo(this.marker.getPosition());
+
+        this.infowindow.open(this.marker.get('map'), this.marker);
+        window.openInfoWindow = this.infowindow;
+    }
+
+    getDescriptorString(){
+
+        let spot = this.data,
+            string = '';
+        if (spot.hasOwnProperty('descriptors')) {
+
+            for(let i = 0; i < spot.descriptors.length; i++){
+
+                let descriptor = spot.descriptors[i];
+
+                string +=
+                    `<div>
+                        <span uk-icon="icon: ${descriptor.icon}; ratio: .9"></span>
+                        &nbsp;${descriptor.name}: ${descriptor.pivot.value}
+                    </div>`;
+
+            }
+
+        }
+        return string
+
+    }
+
+    getAdministrativeString() {
+
+        let user,
+            string = '',
+            display = false,
+            spot = this.data;
+
+        if ((user = getMeta('user')) && !self.tempSpot) {
+            if (user.roles.length > 0) { // User is a member of at least one role (reviewer or admin currently)
+                if (user.roles.some(role => (role.name === 'admin' || role.name === 'reviewer'))) {
+                    string += '<div class="infoWindowAdministrative"><hr />';
+                    if (!spot.approved) {
+                        display = true;
+                        string += `
+                                <button class="material-hover material-button transition center approve-spot" onclick="window.builder.approveSpot(${spot.id})">
+                                    Approve Spot
+                                </button>`;
+                    }
+                    string += '<div/>';
+                }
+            }
+        }
+        return display ? string : '';
+
+    }
+
+    /**
+     * Function to handle clicking on a particular spot and bringing up its infowindow.
+     *
+     * @return google.maps.InfoWindow
+     */
+    addClickHandler(){
+
+        let spot = this.data,
+            contentString =
+                `<div class="infoWindowContentBox">
+                    <div class="infoWindowTitle">
+                        <div>${spot.type.name}</div>
+                        <span style="background-color: #${spot.classification.color}">${spot.classification.name} ${spot.type.category.name} spot</span>
+                    </div>
+                    <div class="infoWindowBody">
+                        <div class="infoWindowIconDescriptors">
+                            ${this.getDescriptorString()}
+                        </div>
+                        <p>${spot.type.category.description}</p>
+                        <p>${spot.notes}</p>
+                        ${this.getAdministrativeString()}
+                    </div>
+                </div>`;
+
+        this.infowindow = new google.maps.InfoWindow({
+
+            content: contentString
+
+        });
+
+        this.marker.addListener('click', () => {
+
+            this.openTooltip();
+
+        });
+
+        return this.infowindow;
+
+    }
+
     /**
      * Function to handle dropping a particular spot on the map
      *
@@ -67,100 +168,7 @@ export default class Spot {
 
         let self = this;
 
-        function openTooltip(infowindow){
-            if(openInfoWindow)openInfoWindow.close();
-
-            window.map.setZoom(16);
-            window.map.panTo(marker.getPosition());
-
-            infowindow.open(marker.get('map'), marker);
-            openInfoWindow = infowindow;
-        }
-
-        function getDescriptorString(spot){
-
-            let string = '';
-            if (spot.hasOwnProperty('descriptors')) {
-
-                for(let i = 0; i < spot.descriptors.length; i++){
-
-                    let descriptor = spot.descriptors[i];
-
-                    string +=
-                        `<div>
-                            <span uk-icon="icon: ${descriptor.icon}; ratio: .9"></span>
-                            &nbsp;${descriptor.name}: ${descriptor.pivot.value}
-                        </div>`;
-
-                }
-
-            }
-            return string
-
-        }
-
-        function getAdministrativeString(spot) {
-
-            let user, string = '', display = false;
-            if ((user = getMeta('user')) && !self.tempSpot) {
-                if (user.roles.length > 0) { // User is a member of at least one role (reviewer or admin currently)
-                    if (user.roles.some(role => (role.name === 'admin' || role.name === 'reviewer'))) {
-                        string += '<div class="infoWindowAdministrative"><hr />';
-                        if (!spot.approved) {
-                            display = true;
-                            string += `
-                                <button class="material-hover material-button transition center approve-spot" onclick="window.builder.approveSpot(${spot.id})">
-                                    Approve Spot
-                                </button>`;
-                        }
-                        string += '<div/>';
-                    }
-                }
-            }
-            return display ? string : '';
-
-        }
-
-        /**
-         * Function to handle clicking on a particular spot and bringing up its infowindow.
-         *
-         * @return google.maps.InfoWindow
-         */
-        function addClickHandler(marker, spot){
-
-            let contentString =
-                `<div class="infoWindowContentBox">
-                    <div class="infoWindowTitle">
-                        <div>${spot.type.name}</div>
-                        <span style="background-color: #${spot.classification.color}">${spot.classification.name} ${spot.type.category.name} spot</span>
-                    </div>
-                    <div class="infoWindowBody">
-                        <div class="infoWindowIconDescriptors">
-                            ${getDescriptorString(spot)}
-                        </div>
-                        <p>${spot.type.category.description}</p>
-                        <p>${spot.notes}</p>
-                        ${getAdministrativeString(spot)}
-                    </div>
-                </div>`;
-
-            let infowindow = new google.maps.InfoWindow({
-
-                content: contentString
-
-            });
-
-            marker.addListener('click', () => {
-
-                openTooltip(infowindow);
-
-            });
-
-            return infowindow;
-
-        }
-
-        let marker = new google.maps.Marker({
+        this.marker = new google.maps.Marker({
 
             position: {lat: Number(this.data.lat), lng: Number(this.data.lng)},
             animation: animate ? google.maps.Animation.DROP : null,
@@ -171,20 +179,20 @@ export default class Spot {
 
         });
 
-        marker.infoWindow = addClickHandler(marker, this.data);
-        markers.push(marker);
+        this.marker.infoWindow = this.addClickHandler();
+        window.markers.push(this.marker);
 
         if (autoOpen) {
 
             setTimeout(function(){
 
-                openTooltip(marker.infoWindow);
+                self.openTooltip();
 
             }, 400);
 
         }
 
-        return marker;
+        return this.marker;
 
     };
 
