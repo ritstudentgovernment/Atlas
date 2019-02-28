@@ -15,19 +15,22 @@ export default class CanvasBuilder {
 
     makeImage(icon, color) {
 
+        color = `#${color}`;
         let reference = this;
 
         function drawRectangle(color) {
             reference.context.fillStyle = color;
             reference.context.fillRect(0, 0, 300, 230);
         }
+
         function drawTriangle(color) {
             reference.context.fillStyle = color;
-            reference.context.beginPath();
-            reference.context.moveTo(150, 350);
-            reference.context.lineTo(90, 230);
-            reference.context.lineTo(210, 230);
-            reference.context.fill();
+            let region = new Path2D();
+            region.moveTo(150, 350);
+            region.lineTo(90, 230);
+            region.lineTo(210, 230);
+            region.closePath();
+            reference.context.fill(region);
         }
 
         function drawText(icon) {
