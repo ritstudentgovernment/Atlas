@@ -135,6 +135,7 @@ class SpotController extends Controller
                 $this->validator->errors()->add('Internal Error', 'Under review classification does not exist for the given category.');
             }
         }
+
         return $classification;
     }
 
@@ -144,11 +145,14 @@ class SpotController extends Controller
 
         if (!($this->validator instanceof Validator)) {
             $response->add('Internal Error', 'Invalid Validator');
+
             return response($response, 500);
         }
 
         // Initial validation, just that required fields are sent
-        if ($this->validator->fails()) { return null; }
+        if ($this->validator->fails()) {
+            return;
+        }
 
         $user = $request->user();
         $type = Type::where('name', $request->input('type_name'))->first();
@@ -163,12 +167,14 @@ class SpotController extends Controller
         $descriptors = $this->validateSentDescriptors($request, $type);
 
         // Final validation check before spot creation.
-        if ($this->validator->fails()) { return null; }
+        if ($this->validator->fails()) {
+            return;
+        }
 
         return [
-            'user' => $user,
-            'type' => $type,
-            'descriptors' => $descriptors,
+            'user'           => $user,
+            'type'           => $type,
+            'descriptors'    => $descriptors,
             'classification' => $classification,
         ];
     }
@@ -184,7 +190,9 @@ class SpotController extends Controller
     {
         $response = new MessageBag();
         $validatedData = $this->validateSentData($request, $response);
-        if ($this->validator->fails()) { return response($this->validator->errors(), 400); }
+        if ($this->validator->fails()) {
+            return response($this->validator->errors(), 400);
+        }
 
         $user = $validatedData['user'];
         $type = $validatedData['type'];
@@ -204,7 +212,9 @@ class SpotController extends Controller
 
         ]);
 
-        if ($spot instanceof Spot) { $spot->descriptors()->attach($descriptors); }
+        if ($spot instanceof Spot) {
+            $spot->descriptors()->attach($descriptors);
+        }
 
         $response->add('spot', $spot);
         if ($canApproveSpots) {
