@@ -5,17 +5,18 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
-
 import API from "./classes/api/API"
 import Vue from 'vue';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
-Vue.prototype.$http = window.axios;
-Vue.use(ElementUI);
+require('./bootstrap');
 
 window.api = new API(window.axios);
+
+Vue.prototype.$http = window.axios;
+
+Vue.use(ElementUI);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -29,6 +30,25 @@ Vue.component('filter-spots', require('./components/FilterSpotsComponent.vue').d
 window.vue = new Vue({
     el: '#app'
 });
+
+/**
+ * In order to deal with axios headers not being initialized properly (auth and csrf headers missing)
+ * early on in the execution trace of the app, specifically in the mounted or created methods of Vue
+ * components, use this queue to defer processing until the app.js script is finished loading.
+ * Each component should (if calling the API, and does so in its created method) implement API calls
+ * in a 'setup' method, and add that method to the onLoadedQueue for deferred processing.
+ */
+if (window.onLoadedQueue) {
+    if (window.spotsApi) {
+        let axiosHeaders = window.spotsApi.api.axios.defaults.headers;
+        if (!axiosHeaders.common.hasOwnProperty('Authorization')) {
+            window.spotsApi.api = window.api;
+        }
+    }
+    window.onLoadedQueue.forEach(methodToCall => {
+       methodToCall();
+    });
+}
 
 const capitalize = (s) => {
     if (typeof s !== 'string') return '';
@@ -78,7 +98,3 @@ $.urlParam = (name, value = false) => {
     return getValue(name);
 
 };
-
-$(document).ready(() => {
-    loaded();
-});
