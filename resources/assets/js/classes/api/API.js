@@ -15,7 +15,6 @@ export default class API {
                 .then((response) => resolve(response))
                 .catch((error) => {
                     self.errors.push(error);
-                    console.error(error);
                     reject(error);
                 });
             });

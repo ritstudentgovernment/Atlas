@@ -173,7 +173,6 @@
             },
             setup() {
                 let self = this;
-                window.nsp = self;
                 window.spotsApi.get('create/').then((response) => {
                     let data = response.data;
                     self.availableCategories = data.availableCategories;
@@ -346,9 +345,10 @@
                 });
             },
         },
-        created() {
-            window.loaded();
-            this.setup();
+        mounted() {
+            window.nsp = this;
+            window.onLoadedQueue = window.onLoadedQueue ? window.onLoadedQueue : [];
+            window.onLoadedQueue.push(this.setup);
         }
     }
 </script>
