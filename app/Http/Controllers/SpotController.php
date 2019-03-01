@@ -11,7 +11,6 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\MessageBag;
 use Illuminate\Validation\Validator;
 
@@ -87,8 +86,6 @@ class SpotController extends Controller
                     } else {
                         $this->validator->errors()->add('Descriptors', "Invalid value, $value, supplied for descriptor $descriptorId");
                     }
-                } else {
-                    Log::debug('Descriptor sent with creation of spot is not required for the sent type');
                 }
             } else {
                 $this->validator->errors()->add('Descriptors', "Descriptor $descriptorId does not exist");
