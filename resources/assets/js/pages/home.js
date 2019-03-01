@@ -7,21 +7,6 @@ window.markers = [];
 window.icons = {};
 window.openInfoWindow = false;
 
-window.getMeta = (metaName) => {
-    let metas = document.getElementsByTagName('meta');
-    for (let i = 0; i < metas.length; i++) {
-        if (metas[i].getAttribute('name') === metaName) {
-            let content = metas[i].getAttribute('content');
-            try{
-                return JSON.parse(content);
-            } catch (e) {
-                return content;
-            }
-        }
-    }
-    return '';
-};
-
 /**
  * Function google calls when the maps API is finally loaded.
  *
@@ -73,7 +58,6 @@ window.initMap = () => {
 
     let center = instantiateMap();
     restrictMapMovement(center);
-    loaded();
 
     window.builder = new Builder();
     builder.build();

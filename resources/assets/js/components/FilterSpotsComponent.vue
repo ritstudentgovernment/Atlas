@@ -49,16 +49,20 @@
             },
             forceRender(){
                 this.renderKey++;
+            },
+            setup() {
+                let self = this;
+                window.spotsApi.get('categories').then((response) => {
+                    let categories = response.data.map((category) => { return category.name; });
+                    self.spotCategories = categories;
+                    self.selectedSpotCategories = categories;
+                });
             }
         },
         created() {
-            let self = this;
-            window.fsc = self;
-            window.spotsApi.get('categories').then((response) => {
-                let categories = response.data.map((category) => { return category.name; });
-                self.spotCategories = categories;
-                self.selectedSpotCategories = categories;
-            });
+            window.fsc = this;
+            window.onLoadedQueue = window.onLoadedQueue ? window.onLoadedQueue : [];
+            window.onLoadedQueue.push(this.setup);
         }
     }
 </script>
