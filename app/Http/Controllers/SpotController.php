@@ -11,12 +11,13 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\MessageBag;
 use Illuminate\Validation\Validator;
 
 class SpotController extends Controller
 {
+    private $validator;
+
     /**
      * Constructor to prevent unauthenticated access to sensitive routes.
      */
@@ -66,7 +67,7 @@ class SpotController extends Controller
         return $this->filterSpotsVisible(Spot::all(), auth('api')->user());
     }
 
-    private function validateSentDescriptors(Request $request, Type $type, Validator $validator)
+    private function validateSentDescriptors(Request $request, Type $type)
     {
         $validatedDescriptors = [];
         $sentDescriptors = collect();
@@ -83,34 +84,99 @@ class SpotController extends Controller
                         $sentDescriptors->push($descriptor);
                         $validatedDescriptors[$descriptorId] = ['value' => $value];
                     } else {
-                        $validator->errors()->add('Descriptors', "Invalid value, $value, supplied for descriptor $descriptorId");
+                        $this->validator->errors()->add('Descriptors', "Invalid value, $value, supplied for descriptor $descriptorId");
                     }
-                } else {
-                    Log::debug('Descriptor sent with creation of spot is not required for the sent type');
                 }
             } else {
-                $validator->errors()->add('Descriptors', "Descriptor $descriptorId does not exist");
+                $this->validator->errors()->add('Descriptors', "Descriptor $descriptorId does not exist");
             }
         }
         // Compare the descriptors that the category requires with the sent descriptors to make sure no missing required descriptors
         $missingDescriptors = $categoryRequiredDescriptors->diff($sentDescriptors);
         if ($missingDescriptors->count()) {
-            $validator->errors()->add('Missing Descriptors', $missingDescriptors->pluck('name')->toJson());
+            $this->validator->errors()->add('Missing Descriptors', $missingDescriptors->pluck('name')->toJson());
         }
 
-        return ['descriptors' => $validatedDescriptors, 'validator' => $validator];
+        return $validatedDescriptors;
     }
 
-    private function checkUserCanMakeRequestedSpot(User $user, Category $category, Validator $validator)
+    private function checkUserCanMakeRequestedSpot(User $user, Category $category)
     {
-        if (!$user->can('make designated spots')) {
-            if ($category->croudsource) {
-                return $validator;
-            }
-            $validator->errors()->add('Permission Error', 'The category you specified does not allow croudsourced spots.');
+        $crowdsource = $category->crowdsource;
+        $canMakeDesignatedSpots = $user->can('make designated spots');
+
+        if (!($crowdsource || $canMakeDesignatedSpots)) {
+            $this->validator->errors()->add('Permission Error', 'The category you specified does not allow crowdsourced spots.');
         }
 
-        return $validator;
+        return $crowdsource ? true : $canMakeDesignatedSpots;
+    }
+
+    private function verifyRequestHasRequiredData(Request $request)
+    {
+        $rules = [
+            'notes'             => 'sometimes|string|nullable',
+            'descriptors'       => 'required',
+            'type_name'         => 'required',
+            'lat'               => 'required|numeric',
+            'lng'               => 'required|numeric',
+            'classification_id' => 'required|numeric',
+        ];
+        $this->validator = \Illuminate\Support\Facades\Validator::make(Input::all(), $rules);
+    }
+
+    private function getProperClassificationForUser(User $user, Classification $classification)
+    {
+        if (!$user->can('approve spots')) {
+            $newClassification = Classification::where('category_id', $classification->category_id)->where('name', 'Under Review')->first();
+            if ($newClassification) {
+                $classification = $newClassification;
+            } else {
+                $this->validator->errors()->add('Internal Error', 'Under review classification does not exist for the given category.');
+            }
+        }
+
+        return $classification;
+    }
+
+    private function validateSentData(Request $request, MessageBag $response)
+    {
+        $this->verifyRequestHasRequiredData($request);
+
+        if (!($this->validator instanceof Validator)) {
+            $response->add('Internal Error', 'Invalid Validator');
+
+            return response($response, 500);
+        }
+
+        // Initial validation, just that required fields are sent
+        if ($this->validator->fails()) {
+            return;
+        }
+
+        $user = $request->user();
+        $type = Type::where('name', $request->input('type_name'))->first();
+        $classification = Classification::find($request->input('classification_id'));
+        $classification = $this->getProperClassificationForUser($user, $classification);
+
+        if (!$type || !$classification) {
+            $this->validator->errors()->add('Invalid Error', 'You\'ve provided an invalid type or classification.');
+        }
+
+        $this->checkUserCanMakeRequestedSpot($user, $type->category);
+        $descriptors = $this->validateSentDescriptors($request, $type);
+
+        // Final validation check before spot creation.
+        if ($this->validator->fails()) {
+            return;
+        }
+
+        return [
+            'user'           => $user,
+            'type'           => $type,
+            'descriptors'    => $descriptors,
+            'classification' => $classification,
+        ];
     }
 
     /**
@@ -122,48 +188,17 @@ class SpotController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
-            'notes'             => 'sometimes|string|nullable',
-            'descriptors'       => 'required',
-            'type_name'         => 'required',
-            'lat'               => 'required|numeric',
-            'lng'               => 'required|numeric',
-            'classification_id' => 'required|numeric',
-        ];
-
-        $validator = \Illuminate\Support\Facades\Validator::make(Input::all(), $rules);
-
-        // Initial validation, just that required fields are sent
-        if ($validator->fails()) {
-            return response($validator->errors(), 400);
+        $response = new MessageBag();
+        $validatedData = $this->validateSentData($request, $response);
+        if ($this->validator->fails()) {
+            return response($this->validator->errors(), 400);
         }
 
-        $user = $request->user();
-        $type = Type::where('name', $request->input('type_name'))->first();
-        $classification = Classification::find($request->input('classification_id'));
+        $user = $validatedData['user'];
+        $type = $validatedData['type'];
+        $descriptors = $validatedData['descriptors'];
+        $classification = $validatedData['classification'];
         $canApproveSpots = $user->can('approve spots');
-
-        if (!$canApproveSpots) {
-            $classification = Classification::where('category_id', $classification->category_id)->where('name', 'Under Review')->first();
-            if (!$classification) {
-                $validator->errors()->add('Internal Error', 'Under review classification does not exist for the given category.');
-            }
-        }
-
-        if (!$type || !$classification) {
-            $validator->errors()->add('Invalid Error', 'You\'ve provided an invalid type or classification.');
-        }
-
-        $validatedRequestDescriptors = $this->validateSentDescriptors($request, $type, $validator);
-
-        $validatedDescriptors = $validatedRequestDescriptors['descriptors'];
-        $validator = $validatedRequestDescriptors['validator'];
-
-        $validator = $this->checkUserCanMakeRequestedSpot($user, $type->category, $validator);
-
-        if ($validator->fails()) {
-            return response($validator->errors(), 400);
-        }
 
         $spot = Spot::create([
 
@@ -178,10 +213,9 @@ class SpotController extends Controller
         ]);
 
         if ($spot instanceof Spot) {
-            $spot->descriptors()->attach($validatedDescriptors);
+            $spot->descriptors()->attach($descriptors);
         }
 
-        $response = new MessageBag();
         $response->add('spot', $spot);
         if ($canApproveSpots) {
             $response->add('message', 'Your spot has been created successfully!');
