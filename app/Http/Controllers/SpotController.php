@@ -151,7 +151,7 @@ class SpotController extends Controller
 
         // Initial validation, just that required fields are sent
         if ($this->validator->fails()) {
-            return;
+            return false;
         }
 
         $user = $request->user();
@@ -168,7 +168,7 @@ class SpotController extends Controller
 
         // Final validation check before spot creation.
         if ($this->validator->fails()) {
-            return;
+            return false;
         }
 
         return [
@@ -190,7 +190,7 @@ class SpotController extends Controller
     {
         $response = new MessageBag();
         $validatedData = $this->validateSentData($request, $response);
-        if ($this->validator->fails()) {
+        if (!$validatedData) {
             return response($this->validator->errors(), 400);
         }
 
@@ -201,7 +201,6 @@ class SpotController extends Controller
         $canApproveSpots = $user->can('approve spots');
 
         $spot = Spot::create([
-
             'notes'             => $request->input('notes'),
             'type_id'           => $type->id,
             'lat'               => $request->input('lat'),
@@ -209,7 +208,6 @@ class SpotController extends Controller
             'approved'          => $canApproveSpots ? 1 : 0,
             'user_id'           => $user->id,
             'classification_id' => $classification->id,
-
         ]);
 
         if ($spot instanceof Spot) {
@@ -241,16 +239,12 @@ class SpotController extends Controller
         $types = $category->types;
 
         $requiredSpotData = [
-
             'lat'               => 'number',
             'lng'               => 'number',
-
             'notes'             => 'string',
             'descriptors'       => 'object',
-
             'type_id'           => 'number',
             'classification_id' => 'number',
-
         ];
 
         return [
