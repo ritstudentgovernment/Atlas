@@ -24,9 +24,16 @@
 			@else
 			    <a>Hello, {{ Auth::user()->first_name }} <span uk-icon="icon: chevron-down; ratio:1.2;"></span></a>
 				<div class="uk-navbar-dropdown" uk-dropdown>
-                    <ul class="uk-nav uk-navbar-dropdown-nav">
+                    <ul class="uk-nav uk-dropdown-nav">
+                        @if(Auth::user()->can('administer'))
+                            <li class="padding-bottom">
+                                <a href="/admin" class="uk-link-text uk-link-reset">
+                                    Admin Panel
+                                </a>
+                            </li>
+                        @endif
 						<li>
-							<a href="/logout">
+							<a href="/logout" class="uk-link-text uk-link-reset">
 								Logout
 							</a>
 						</li>

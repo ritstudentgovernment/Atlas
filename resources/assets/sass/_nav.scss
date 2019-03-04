@@ -36,6 +36,29 @@
       color:$dark;
 
     }
+
+    .uk-navbar-right {
+
+      .uk-navbar-dropdown {
+
+        text-align: center;
+        min-width: 160px;
+        width: 160px;
+
+        a {
+
+          &:hover {
+
+            color: $dark !important;
+            text-decoration: underline !important;
+
+          }
+
+        }
+
+      }
+
+    }
 	
 	@media screen and (max-width: $mobile-breakpoint) {
 
