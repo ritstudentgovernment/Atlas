@@ -261,7 +261,8 @@
                         descriptors: this.formattedDescriptors,
                         draggable: true,
                         lat: this.location.lat,
-                        lng: this.location.lng
+                        lng: this.location.lng,
+                        approved: true,
                     };
                 return window.builder.newSpot(spotData, true);
             },
