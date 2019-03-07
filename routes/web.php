@@ -27,7 +27,5 @@ Route::get('logout', 'SAMLController@logout');
 /* Admin Pages */
 
 Route::prefix('admin')->group(function () {
-
     Route::get('/', 'Pages\AdminController@index')->name('admin');
-
 });
