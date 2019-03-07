@@ -9,21 +9,24 @@ export default class SpotsAPI{
         }
     }
 
-
-    list(){
-        return this.api.get('spots');
-    }
-
-    approve(spotId){
-        return this.api.post(`spots/approve/${spotId}`);
-    }
-
     get(url, parameters = {}){
         return this.api.get(`spots/${url}`, parameters);
     }
 
     post(url, parameters = {}){
         return this.api.post(`spots/${url}`, parameters);
+    }
+
+    categories(){
+        return this.get('categories');
+    }
+
+    list(){
+        return this.get('');
+    }
+
+    approve(spotId) {
+        return this.post(`approve/${spotId}`);
     }
 
 }

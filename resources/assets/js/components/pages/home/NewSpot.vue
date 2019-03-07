@@ -346,7 +346,7 @@
                 });
             },
         },
-        mounted() {
+        created() {
             window.nsp = this;
             window.onLoadedQueue = window.onLoadedQueue ? window.onLoadedQueue : [];
             window.onLoadedQueue.push(this.setup);

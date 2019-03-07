@@ -28,8 +28,6 @@ Route::get('logout', 'SAMLController@logout');
 
 Route::prefix('admin')->group(function () {
 
-    Route::get('/', function () {
-        return view('pages.admin');
-    });
+    Route::get('/', 'Pages\AdminController@index')->name('admin');
 
 });

@@ -24,11 +24,17 @@ Vue.use(ElementUI);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('new-spot', require('./components/NewSpotComponent.vue').default);
-Vue.component('filter-spots', require('./components/FilterSpotsComponent.vue').default);
+Vue.component('new-spot', require('./components/pages/home/NewSpot.vue').default);
+Vue.component('filter-spots', require('./components/pages/home/FilterSpots.vue').default);
+Vue.component('admin-nav', require('./components/pages/admin/Nav.vue').default);
+
+export const EventBus = new Vue();
 
 window.vue = new Vue({
-    el: '#app'
+    el: '#app',
+    components: {
+        ElementUI
+    }
 });
 
 /**
