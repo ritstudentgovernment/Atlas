@@ -27,6 +27,7 @@ Vue.use(ElementUI);
 Vue.component('new-spot', require('./components/pages/home/NewSpot.vue').default);
 Vue.component('filter-spots', require('./components/pages/home/FilterSpots.vue').default);
 Vue.component('admin-nav', require('./components/pages/admin/Nav.vue').default);
+Vue.component('admin-spots-types', require('./components/pages/admin/spots/Types.vue').default);
 
 export const EventBus = new Vue();
 

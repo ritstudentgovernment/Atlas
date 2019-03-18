@@ -1,6 +1,6 @@
 <template>
     <el-menu :default-openeds="defaultOpen" :default-active="defaultActive" :collapse="collapse" :style="menuWidth">
-        <el-menu-item index="0">
+        <el-menu-item index="0" @click="handleNavClick('dashboard')">
             <i class="uk-icon margin-right" uk-icon="icon:home;ratio:0.8;"></i>
             <span>Dashboard</span>
         </el-menu-item>
@@ -9,25 +9,25 @@
                 <i class="el-icon-location-outline"></i>
                 <span>Spots</span>
             </template>
-            <el-menu-item index="1-1">Types</el-menu-item>
-            <el-menu-item index="1-2">Classifications</el-menu-item>
-            <el-menu-item index="1-3">Categories</el-menu-item>
-            <el-menu-item index="1-4">Descriptors</el-menu-item>
+            <el-menu-item index="1-1" @click='handleNavClick("spots.types")'>Types</el-menu-item>
+            <el-menu-item index="1-2" @click='handleNavClick("spots.classifications")'>Classifications</el-menu-item>
+            <el-menu-item index="1-3" @click='handleNavClick("spots.categories")'>Categories</el-menu-item>
+            <el-menu-item index="1-4" @click='handleNavClick("spots.descriptors")'>Descriptors</el-menu-item>
         </el-submenu>
         <el-submenu index="2">
             <template slot="title">
                 <i class="uk-icon margin-right" uk-icon="icon:user;ratio:0.8;"></i>
                 <span>Users</span>
             </template>
-            <el-menu-item index="2-1">All Users</el-menu-item>
-            <el-menu-item index="2-2">Staff Manager</el-menu-item>
+            <el-menu-item index="2-1" @click="handleNavClick('users.all')">All Users</el-menu-item>
+            <el-menu-item index="2-2" @click="handleNavClick('users.staff')">Staff Manager</el-menu-item>
         </el-submenu>
-        <el-menu-item index="3-1">
+        <el-menu-item index="3-1" @click="handleNavClick('settings')">
             <i class="el-icon-setting"></i>
             <span>Settings</span>
         </el-menu-item>
         <div id="nav-visibility" class="center">
-            <el-button :icon="visibilityIcon" circle @click="manualCollapse = !manualCollapse"></el-button>
+            <el-button :icon="visibilityIcon" circle @click="toggleCollapse()"></el-button>
         </div>
     </el-menu>
 </template>
@@ -40,7 +40,7 @@
         components: {
             ElementUI,
         },
-        props: ['defaultActivated', 'defaultOpened'],
+        props: ['defaultActivated', 'defaultOpened', 'pageLinks'],
         data () {
             return {
                 window: {
@@ -64,20 +64,30 @@
             },
             menuWidth () {
                 return this.collapse ? '' : 'width: 200px';
+            },
+            navLinks () {
+                return JSON.parse(this.pageLinks);
+            }
+        },
+        methods: {
+            toggleCollapse () {
+                this.manualCollapse = !this.manualCollapse;
+            },
+            handleResize () {
+                this.window.width = window.innerWidth;
+            },
+            handleNavClick (toPage) {
+                window.location.href = this.navLinks["admin." + toPage];
             }
         },
         created() {
             window.addEventListener('resize', this.handleResize);
             this.handleResize();
+            console.log(this.navLinks);
         },
         destroyed() {
             window.removeEventListener('resize', this.handleResize);
         },
-        methods: {
-            handleResize() {
-                this.window.width = window.innerWidth;
-            }
-        }
     }
 </script>
 
@@ -91,5 +101,8 @@
             bottom: 120px;
             width: 100%; // Calc to prevent webkit bug
         }
+    }
+    a:hover {
+        text-decoration: none;
     }
 </style>

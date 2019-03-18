@@ -4,6 +4,20 @@
 
 @section('page_head')
 
+    <style>
+        #instantclick {
+
+            z-index: 10000;
+            display: block;
+
+        }
+
+        #instantclick-bar {
+
+            background: white;
+
+        }
+    </style>
     <link rel="stylesheet" href="{{ mix('/css/admin.css') }}">
 
 @endsection
@@ -14,7 +28,9 @@
         <el-aside width="auto">
             <admin-nav
                     default-activated="@yield('nav-active-index')"
-                    default-opened="@yield('nav-open-index')">
+                    default-opened="@yield('nav-open-index')"
+                    page-links="{{ $pageLinks }}"
+            >
             </admin-nav>
         </el-aside>
         <el-container>
