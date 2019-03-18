@@ -18,7 +18,7 @@ class AdminController extends Controller
         $allRoutes->filter(function (\Illuminate\Routing\Route $route) {
             return strpos($route->uri, 'admin') === 0;
         })->each(function (\Illuminate\Routing\Route $route) {
-            if (key_exists('as', $route->action)) {
+            if (array_key_exists('as', $route->action)) {
                 $page = $route->action['as'];
                 $prefix = ltrim(str_replace('/', '.', $route->action['prefix']), '.');
                 $this->pageLinks["$prefix.$page"] = "/$route->uri";
@@ -29,14 +29,14 @@ class AdminController extends Controller
     public function index()
     {
         return view('pages.admin.dashboard', [
-            'pageLinks' => json_encode($this->pageLinks)
+            'pageLinks' => json_encode($this->pageLinks),
         ]);
     }
 
     public function manageTypes()
     {
         return view('pages.admin.spots.types', [
-            'pageLinks' => json_encode($this->pageLinks)
+            'pageLinks' => json_encode($this->pageLinks),
         ]);
     }
 }
