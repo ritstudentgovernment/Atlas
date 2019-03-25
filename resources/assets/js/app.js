@@ -27,7 +27,8 @@ Vue.use(ElementUI);
 Vue.component('new-spot', require('./components/pages/home/NewSpot.vue').default);
 Vue.component('filter-spots', require('./components/pages/home/FilterSpots.vue').default);
 Vue.component('admin-nav', require('./components/pages/admin/Nav.vue').default);
-Vue.component('admin-spots-types', require('./components/pages/admin/spots/Types.vue').default);
+Vue.component('admin-category-card', require('./components/pages/admin/spots/CategoryCard.vue').default);
+Vue.component('admin-category-cards', require('./components/pages/admin/spots/CategoryCards').default);
 
 export const EventBus = new Vue();
 
@@ -45,13 +46,9 @@ window.vue = new Vue({
  * Each component should (if calling the API, and does so in its created method) implement API calls
  * in a 'setup' method, and add that method to the onLoadedQueue for deferred processing.
  */
+if (window.coreApiLoaded) { window.coreApiLoaded(window.api); }
+
 if (window.onLoadedQueue) {
-    if (window.spotsApi) {
-        let axiosHeaders = window.spotsApi.api.axios.defaults.headers;
-        if (!axiosHeaders.common.hasOwnProperty('Authorization')) {
-            window.spotsApi.api = window.api;
-        }
-    }
     window.onLoadedQueue.forEach(methodToCall => {
        methodToCall();
     });

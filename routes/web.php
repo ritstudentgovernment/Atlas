@@ -26,18 +26,22 @@ Route::get('logout', 'SAMLController@logout');
 
 /* Admin Pages */
 
-Route::prefix('admin')->group(function () {
-    Route::get('/', 'Pages\AdminController@index')->name('dashboard');
+Route::prefix('admin')->name('admin.')->namespace('Admin')->group(function () {
+    Route::get('/', 'DashboardController@index')->name('dashboard');
 
-    Route::prefix('spots')->group(function () {
-        Route::get('types', 'Pages\AdminController@manageTypes')->name('types');
-        Route::get('classification', 'Pages\AdminController@manageTypes')->name('classification');
-        Route::get('categories', 'Pages\AdminController@manageTypes')->name('categories');
-        Route::get('descriptors', 'Pages\AdminController@manageTypes')->name('descriptors');
+    Route::prefix('spots')->name('spots.')->group(function () {
+        Route::prefix('categories')->name('categories.')->group(function () {
+            Route::get('/', 'DashboardController@spotCategories')->name('all');
+            Route::prefix('{category}')->group(function () {
+                Route::get('/', 'DashboardController@showCategory')->name('category');
+            });
+        });
     });
 
-    Route::prefix('users')->group(function () {
-        Route::get('all', 'Pages\AdminController@manageTypes')->name('all');
-        Route::get('staff', 'Pages\AdminController@manageTypes')->name('staff');
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('all', 'DashboardController@index')->name('all');
+        Route::get('staff', 'DashboardController@index')->name('staff');
     });
+
+    Route::get('settings', 'DashboardController@index')->name('settings');
 });

@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Pages;
+namespace App\Http\Controllers\Admin;
 
+use App\Category;
 use App\Http\Controllers\Controller;
+use App\Type;
 
-class AdminController extends Controller
+class DashboardController extends Controller
 {
     private $pageLinks;
 
@@ -20,8 +22,7 @@ class AdminController extends Controller
         })->each(function (\Illuminate\Routing\Route $route) {
             if (array_key_exists('as', $route->action)) {
                 $page = $route->action['as'];
-                $prefix = ltrim(str_replace('/', '.', $route->action['prefix']), '.');
-                $this->pageLinks["$prefix.$page"] = "/$route->uri";
+                $this->pageLinks[$page] = "/$route->uri";
             }
         });
     }
@@ -33,10 +34,19 @@ class AdminController extends Controller
         ]);
     }
 
-    public function manageTypes()
+    public function spotCategories()
     {
-        return view('pages.admin.spots.types', [
+        return view('pages.admin.spots', [
             'pageLinks' => json_encode($this->pageLinks),
+            'categories' => json_encode(Category::with(['types', 'classifications', 'descriptors'])->get())
+        ]);
+    }
+
+    public function showCategory(Category $category)
+    {
+        return view('pages.admin.category', [
+            'category' => $category,
+            'pageLinks' => json_encode($this->pageLinks)
         ]);
     }
 }

@@ -4,16 +4,10 @@
             <i class="uk-icon margin-right" uk-icon="icon:home;ratio:0.8;"></i>
             <span>Dashboard</span>
         </el-menu-item>
-        <el-submenu index="1">
-            <template slot="title">
-                <i class="el-icon-location-outline"></i>
-                <span>Spots</span>
-            </template>
-            <el-menu-item index="1-1" @click='handleNavClick("spots.types")'>Types</el-menu-item>
-            <el-menu-item index="1-2" @click='handleNavClick("spots.classifications")'>Classifications</el-menu-item>
-            <el-menu-item index="1-3" @click='handleNavClick("spots.categories")'>Categories</el-menu-item>
-            <el-menu-item index="1-4" @click='handleNavClick("spots.descriptors")'>Descriptors</el-menu-item>
-        </el-submenu>
+        <el-menu-item index="1" @click='handleNavClick("spots.categories.all")'>
+            <i class="el-icon-location-outline"></i>
+            <span>Spot Categories</span>
+        </el-menu-item>
         <el-submenu index="2">
             <template slot="title">
                 <i class="uk-icon margin-right" uk-icon="icon:user;ratio:0.8;"></i>
@@ -81,9 +75,9 @@
             }
         },
         created() {
-            window.addEventListener('resize', this.handleResize);
+            window.snav = this;
             this.handleResize();
-            console.log(this.navLinks);
+            window.addEventListener('resize', this.handleResize);
         },
         destroyed() {
             window.removeEventListener('resize', this.handleResize);
@@ -99,7 +93,7 @@
             position: absolute;
             display: block;
             bottom: 120px;
-            width: 100%; // Calc to prevent webkit bug
+            width: 100%;
         }
     }
     a:hover {

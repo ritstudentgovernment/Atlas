@@ -35,7 +35,7 @@
         </el-aside>
         <el-container>
             <el-header style="text-align: right; font-size: 12px">
-                <h1 class="uk-heading-divider"><span>@yield('page-title')</span></h1>
+                <h1 class="uk-heading-divider">@yield('page-title')</h1>
             </el-header>
             <el-main>
                 @yield('page-content')
