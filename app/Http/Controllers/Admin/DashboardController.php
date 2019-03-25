@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Category;
 use App\Http\Controllers\Controller;
-use App\Type;
 
 class DashboardController extends Controller
 {
@@ -37,16 +36,16 @@ class DashboardController extends Controller
     public function spotCategories()
     {
         return view('pages.admin.spots', [
-            'pageLinks' => json_encode($this->pageLinks),
-            'categories' => json_encode(Category::with(['types', 'classifications', 'descriptors'])->get())
+            'pageLinks'  => json_encode($this->pageLinks),
+            'categories' => json_encode(Category::with(['types', 'classifications', 'descriptors'])->get()),
         ]);
     }
 
     public function showCategory(Category $category)
     {
         return view('pages.admin.category', [
-            'category' => $category,
-            'pageLinks' => json_encode($this->pageLinks)
+            'category'  => $category,
+            'pageLinks' => json_encode($this->pageLinks),
         ]);
     }
 }
