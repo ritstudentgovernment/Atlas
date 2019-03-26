@@ -7,11 +7,9 @@ export default class APIHelper {
 
     setApi(api) {
         this.api = api;
-        console.log(this);
     }
 
     get (url, parameters = {}) {
-        console.log(this);
         return this.api.get(`${this.prefix}/${url}`, parameters);
     }
 

@@ -27,8 +27,8 @@ Vue.use(ElementUI);
 Vue.component('new-spot', require('./components/pages/home/NewSpot.vue').default);
 Vue.component('filter-spots', require('./components/pages/home/FilterSpots.vue').default);
 Vue.component('admin-nav', require('./components/pages/admin/Nav.vue').default);
-Vue.component('admin-category-card', require('./components/pages/admin/spots/CategoryCard.vue').default);
-Vue.component('admin-category-cards', require('./components/pages/admin/spots/CategoryCards').default);
+Vue.component('admin-category-cards', require('./components/pages/admin/categories/CategoryCards.vue').default);
+Vue.component('admin-category-editor', require('./components/pages/admin/categories/CategoryEditor.vue').default);
 
 export const EventBus = new Vue();
 

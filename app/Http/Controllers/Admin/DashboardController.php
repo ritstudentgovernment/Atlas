@@ -36,7 +36,7 @@ class DashboardController extends Controller
 
     public function spotCategories()
     {
-        return view('pages.admin.spots', [
+        return view('pages.admin.categories', [
             'pageLinks' => json_encode($this->pageLinks),
             'categories' => json_encode(Category::with(['types', 'classifications', 'descriptors'])->get())
         ]);

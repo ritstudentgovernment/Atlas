@@ -6,7 +6,7 @@ export default class Spot {
     constructor(data, tempSpot = false){
         this.data = data;
         this.icon = null;
-        this.api = new SpotsAPI(window.api);
+        this.api = window.spotsApi instanceof SpotsAPI ? window.spotsApi : new SpotsAPI(window.api);
         this.tempSpot = tempSpot;
         this.marker = null;
         this.infowindow = null;

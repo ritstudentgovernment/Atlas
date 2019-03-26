@@ -26,6 +26,13 @@
  });
 
 Route::prefix('/admin')->middleware(['permission:administer'])->group(function () {
+    Route::prefix('/spots')->group(function () {
+        Route::prefix('/categories')->group(function () {
+            Route::prefix('/types')->group(function () {
+                Route::post('add', 'CategoryController@storeType');
+            });
+        });
+    });
     Route::prefix('/users')->group(function () {
         Route::get('/', 'UserController@index');
         Route::post('/promote/{user}/reviewer', 'UserController@promoteReviewer');

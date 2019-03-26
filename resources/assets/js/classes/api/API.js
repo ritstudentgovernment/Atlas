@@ -17,7 +17,6 @@ export default class API {
 
     makeRequest () {
         let self = this;
-        console.log(this);
         return new Promise((resolve, reject) => {
             self.axios[self.method](self.url, self.parameters)
                 .then((response) => resolve(response))

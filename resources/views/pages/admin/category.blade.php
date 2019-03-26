@@ -11,6 +11,6 @@
 
 @section('page-content')
 
-
+    <admin-category-editor></admin-category-editor>
 
 @endsection
