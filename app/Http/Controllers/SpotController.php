@@ -224,9 +224,19 @@ class SpotController extends Controller
         return response($response, 201);
     }
 
+    public function getAvailableCategoriesForUser(User $user = null)
+    {
+        $categories = Category::with(['classifications', 'descriptors', 'types']);
+        if ($user->can('create designated spots')) {
+            return $categories->get();
+        }
+        return $categories->where('crowdsource', true)->get();
+    }
+
     public function getDefaults(Request $request)
     {
-        $categories = Category::with(['classifications', 'descriptors', 'types'])->get();
+        $user = auth('api')->user();
+        $categories = $this->getAvailableCategoriesForUser($user);
 
         if ($categoryName = $request->input('category')) {
             $category = Category::where('name', $categoryName)->first();
@@ -251,7 +261,7 @@ class SpotController extends Controller
             'requiredData'              => $requiredSpotData,
             'availableTypes'            => $types,
             'requiredDescriptors'       => $descriptors,
-            'availableClassifications'  => $this->filterClassifications($classifications, auth('api')->user()),
+            'availableClassifications'  => $this->filterClassifications($classifications, $user),
             'availableCategories'       => $categories,
         ];
     }

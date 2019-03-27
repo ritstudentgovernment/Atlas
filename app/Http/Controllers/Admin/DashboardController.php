@@ -44,6 +44,9 @@ class DashboardController extends Controller
 
     public function showCategory(Category $category)
     {
+        $category->descriptors;
+        $category->types;
+        $category->setHidden([]);
         return view('pages.admin.category', [
             'category'  => $category,
             'pageLinks' => json_encode($this->pageLinks),

@@ -11,13 +11,18 @@
                     <el-form-item label="Crowdsource" class="left">
                         <el-switch v-model="category.crowdsource"></el-switch>
                     </el-form-item>
-                    <el-form-item label="Enabled" class="left">
-                        <el-switch v-model="category.enabled"></el-switch>
+                    <el-form-item label="Active" class="left">
+                        <el-switch v-model="category.active"></el-switch>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row>
-                <el-form-item label="Category Types" class="">
+                <el-form-item label="Description">
+                    <el-input type="textarea" v-model="category.description" :rows="4"></el-input>
+                </el-form-item>
+            </el-row>
+            <el-row>
+                <el-form-item label="Category Types">
                     <el-card shadow="never">
                         <el-tag
                                 v-for="(type, index) in category.types"
@@ -41,6 +46,38 @@
                     </el-card>
                 </el-form-item>
             </el-row>
+            <el-row>
+                <el-form-item label="Descriptors">
+                    <el-card shadow="never">
+                        <el-table :data="category.descriptors">
+                            <el-table-column type="expand">
+                                <template slot-scope="props">
+                                    <strong>Default Value:</strong> {{ props.row.default_value }} <br />
+                                    <strong>Allowed Values:</strong> {{ props.row.allowed_values.split('|').join(', ') }}
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="Name" prop="name"></el-table-column>
+                            <el-table-column label="Icon" prop="icon"></el-table-column>
+                            <el-table-column label="Type" prop="value_type"></el-table-column>
+                            <el-table-column align="right">
+                                <template slot-scope="scope">
+                                    <el-button
+                                            size="mini"
+                                            @click="handleEdit(scope.$index, scope.row)">
+                                        Edit
+                                    </el-button>
+                                    <el-button
+                                            size="mini"
+                                            type="danger"
+                                            @click="handleDelete(scope.$index, scope.row)">
+                                        Delete
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-card>
+                </el-form-item>
+            </el-row>
         </el-form>
     </el-card>
 </template>
@@ -54,26 +91,18 @@
                     typeInputVisible: false,
                     newTypeName: '',
                 },
-                form: {
-                    name: '',
-                    region: '',
-                    date1: '',
-                    date2: '',
-                    delivery: false,
-                    type: [],
-                    resource: '',
-                    desc: '',
-                },
                 category: {
                     icon: '',
                     crowdsource: true,
-                    enabled: false,
+                    active: false,
                     types: [],
                     classifications: [],
                     descriptors: [],
+                    description: '',
                 }
             }
         },
+        props: ["rawCategory"],
         methods: {
             showTypeInput () {
                 this.state.typeInputVisible = true;
@@ -94,6 +123,12 @@
                     return type.id !== id;
                 })
             }
+        },
+        created () {
+            let category = JSON.parse(this.rawCategory);
+            console.log(category);
+            this.category = Object.assign({}, this.category, category);
+            window.ace = this;
         },
     }
 </script>
