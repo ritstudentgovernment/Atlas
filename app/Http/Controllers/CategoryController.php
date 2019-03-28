@@ -38,6 +38,7 @@ class CategoryController extends Controller
         $type->name = $request->input('type_name');
         $type->category_id = $request->input('category');
         $type->save();
+
         return $type;
     }
 }
