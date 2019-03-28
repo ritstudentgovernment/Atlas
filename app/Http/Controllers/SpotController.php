@@ -230,6 +230,7 @@ class SpotController extends Controller
         if ($user && $user->can('create designated spots')) {
             return $categories->get();
         }
+
         return $categories->where('crowdsource', true)->get();
     }
 

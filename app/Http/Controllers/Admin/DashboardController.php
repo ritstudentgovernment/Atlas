@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Category;
 use App\Http\Controllers\Controller;
-use App\Type;
 
 class DashboardController extends Controller
 {
@@ -47,6 +46,7 @@ class DashboardController extends Controller
         $category->descriptors;
         $category->types;
         $category->setHidden([]);
+
         return view('pages.admin.category', [
             'category'  => $category,
             'pageLinks' => json_encode($this->pageLinks),
