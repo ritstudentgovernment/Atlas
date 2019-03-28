@@ -88,15 +88,22 @@
 <style scoped lang="scss">
     @import '~element-ui/lib/theme-chalk/index.css';
     .el-menu {
-        height: 100vh;
+
+        height: calc(100vh - 103px);
+
         #nav-visibility {
+
             position: absolute;
             display: block;
-            bottom: 120px;
+            bottom: 30px;
             width: 100%;
+
         }
+
     }
     a:hover {
+
         text-decoration: none;
+
     }
 </style>

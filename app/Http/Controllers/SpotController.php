@@ -227,7 +227,7 @@ class SpotController extends Controller
     public function getAvailableCategoriesForUser(User $user = null)
     {
         $categories = Category::with(['classifications', 'descriptors', 'types']);
-        if ($user->can('create designated spots')) {
+        if ($user && $user->can('create designated spots')) {
             return $categories->get();
         }
         return $categories->where('crowdsource', true)->get();

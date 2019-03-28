@@ -1,6 +1,6 @@
 <template>
     <el-card shadow="never">
-        <el-form ref="form" :model="form" label-width="120px">
+        <el-form ref="form" :model="category" label-width="120px">
             <el-row>
                 <el-col :md="6" :lg="4" :xl="3">
                     <el-form-item label="Icon">
