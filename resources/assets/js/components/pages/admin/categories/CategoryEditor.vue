@@ -47,6 +47,59 @@
                 </el-form-item>
             </el-row>
             <el-row>
+                <el-form-item label="Classifications">
+                    <el-card shadow="never">
+                        <el-table :data="category.classifications">
+                            <el-table-column type="expand">
+                                <template slot-scope="scope">
+                                    <el-form-item label="View Permission" label-width="140px">
+                                        <el-input v-model="scope.row.view_permission" @change="handleUpdateClassification(scope.row)"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="Create Permission" label-width="140px" class="margin-top">
+                                        <el-input v-model="scope.row.create_permission" @change="handleUpdateClassification(scope.row)"></el-input>
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="Name">
+                                <template slot-scope="scope">
+                                    <el-input v-model="scope.row.name" @change="handleUpdateClassification(scope.row)"></el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="Color">
+                                <template slot-scope="scope">
+                                    <el-color-picker v-model="scope.row.color"></el-color-picker>
+                                </template>
+                            </el-table-column>
+                            <el-table-column align="right">
+                                <template slot-scope="scope">
+                                    <el-button
+                                            v-if="scope.row.temp"
+                                            size="mini"
+                                            :disabled="!newClassificationIsValid"
+                                            @click="handleNewClassification(scope.row)">
+                                        Save
+                                    </el-button>
+                                    <el-button
+                                            size="mini"
+                                            type="danger"
+                                            @click="handleDelete(scope.$index, scope.row)">
+                                        Delete
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <div style="margin-top: 20px">
+                            <el-button
+                                    type="text"
+                                    v-if="!hasTempClassification"
+                                    @click="insertTempClassification()">
+                                Add New Classification
+                            </el-button>
+                        </div>
+                    </el-card>
+                </el-form-item>
+            </el-row>
+            <el-row>
                 <el-form-item label="Descriptors">
                     <el-card shadow="never">
                         <el-table :data="category.descriptors">
@@ -103,6 +156,24 @@
             }
         },
         props: ["rawCategory"],
+        computed: {
+            hasTempClassification () {
+                let classifications = this.category.classifications,
+                    classification = classifications[classifications.length - 1];
+
+                return classification.temp ? classification : false;
+            },
+            newClassificationIsValid () {
+                let classification = this.hasTempClassification;
+
+                if (classification) {
+                    if (classification.name.trim() === "" || classification.color === null) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        },
         methods: {
             handleUpdateCategory (property) {
                 let modified = {};
@@ -155,7 +226,7 @@
                 this.$confirm('This will permanently delete the type. Continue?', 'Warning', {
                     confirmButtonText: 'Delete',
                     cancelButtonText: 'Cancel',
-                    type: 'danger',
+                    type: 'danger'
                 }).then(() => {
                     if (id < (new Date).getTime() - 86400000) {
                         window.adminApi.post(`spots/type/${id}/delete/`)
@@ -178,15 +249,33 @@
                 }).catch(() => {
                     this.$message({
                         type: 'info',
-                        message: 'Delete canceled',
+                        message: 'Delete canceled'
                     });
                 });
-            }
+            },
+            handleUpdateClassification (updatedClassification) {
+                console.log(updatedClassification);
+            },
+            insertTempClassification () {
+                this.category.classifications.push({
+                    category_id: this.category.id,
+                    color: null,
+                    create_permission: null,
+                    id: (new Date()).getTime(),
+                    name: "",
+                    view_permission: null,
+                    temp: true
+                });
+            },
         },
         created () {
             let category = JSON.parse(this.rawCategory);
             console.log(category);
             this.category = Object.assign({}, this.category, category);
+            this.category.classifications.map((classification)=>{
+                classification.color = `#${classification.color}`;
+                return classification;
+            });
             window.ace = this;
         },
     }

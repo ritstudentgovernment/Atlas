@@ -45,6 +45,7 @@ class DashboardController extends Controller
     {
         $category->descriptors;
         $category->types;
+        $category->classifications;
         $category->setHidden([]);
 
         return view('pages.admin.category', [

@@ -8,15 +8,17 @@
 import API from "./classes/api/API"
 import Vue from 'vue';
 import ElementUI from 'element-ui';
+import locale from 'element-ui/lib/locale/lang/en'
 import 'element-ui/lib/theme-chalk/index.css';
 
 require('./bootstrap');
 
 window.api = new API(window.axios);
 
+Vue.use(ElementUI, { locale });
+
 Vue.prototype.$http = window.axios;
 
-Vue.use(ElementUI);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
