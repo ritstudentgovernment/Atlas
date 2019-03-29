@@ -4,21 +4,21 @@
             <el-row>
                 <el-col :md="6" :lg="4" :xl="3">
                     <el-form-item label="Icon">
-                        <el-input v-model="category.icon" maxlength="1"></el-input>
+                        <el-input v-model="category.icon" maxlength="1" @change="handleUpdateCategory('icon')"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :sm="22" :md="16" :lg="18" :xl="19">
                     <el-form-item label="Crowdsource" class="left">
-                        <el-switch v-model="category.crowdsource"></el-switch>
+                        <el-switch v-model="category.crowdsource" @change="handleUpdateCategory('crowdsource')"></el-switch>
                     </el-form-item>
                     <el-form-item label="Active" class="left">
-                        <el-switch v-model="category.active"></el-switch>
+                        <el-switch v-model="category.active" @change="handleUpdateCategory('active')"></el-switch>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row>
                 <el-form-item label="Description">
-                    <el-input type="textarea" v-model="category.description" :rows="4"></el-input>
+                    <el-input type="textarea" v-model="category.description" :rows="4" @change="handleUpdateCategory('description')"></el-input>
                 </el-form-item>
             </el-row>
             <el-row>
@@ -104,6 +104,23 @@
         },
         props: ["rawCategory"],
         methods: {
+            handleUpdateCategory (property) {
+                let modified = {};
+                modified[property] = this.category[property];
+                window.adminApi.post(`spots/category/${this.category.name}/update`, modified)
+                    .then(() => {
+                        this.$notify.success({
+                            title: 'Updated Successfully',
+                            message: `Changed category ${property.toLowerCase()}.`
+                        });
+                    })
+                    .catch(() => {
+                        this.$notify.error({
+                            title: 'Error',
+                            message: `Failed updating category ${property.toLowerCase()}.`
+                        });
+                    });
+            },
             showTypeInput () {
                 this.state.typeInputVisible = true;
                 this.$nextTick(() => {
@@ -111,17 +128,59 @@
                 });
             },
             handleNewType () {
-                let name = this.state.newTypeName;
+                let name = this.state.newTypeName,
+                    category = this.category.id;
                 if (name.trim() !== '') {
-                    this.category.types.push({'name': this.state.newTypeName, 'id': (new Date).getTime()});
+                    window.adminApi.post('spots/type/create', {
+                        name: name,
+                        category: category
+                    })
+                        .then((response) => {
+                            this.category.types.push({
+                                'name': response.data.name,
+                                'id': response.data.id
+                            });
+                        })
+                        .catch((error) => {
+                            this.$notify.error({
+                                title: 'Error',
+                                message: 'Failed to create type'
+                            });
+                        });
                 }
                 this.state.newTypeName = '';
                 this.state.typeInputVisible = false;
             },
             handleRemoveType (id) {
-                this.category.types = this.category.types.filter((type) => {
-                    return type.id !== id;
-                })
+                this.$confirm('This will permanently delete the type. Continue?', 'Warning', {
+                    confirmButtonText: 'Delete',
+                    cancelButtonText: 'Cancel',
+                    type: 'danger',
+                }).then(() => {
+                    if (id < (new Date).getTime() - 86400000) {
+                        window.adminApi.post(`spots/type/${id}/delete/`)
+                            .then(() => {
+                                this.category.types = this.category.types.filter((type) => {
+                                    return type.id !== id;
+                                });
+                            })
+                            .catch(() => {
+                                this.$notify.error({
+                                    title: 'Error',
+                                    message: 'Failed to delete type'
+                                });
+                            });
+                    } else {
+                        this.category.types = this.category.types.filter((type) => {
+                            return type.id !== id;
+                        });
+                    }
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: 'Delete canceled',
+                    });
+                });
             }
         },
         created () {

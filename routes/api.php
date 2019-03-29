@@ -25,11 +25,17 @@
      });
  });
 
-Route::prefix('/admin')->middleware(['permission:administer'])->group(function () {
-    Route::prefix('/spots')->group(function () {
-        Route::prefix('/categories')->group(function () {
-            Route::prefix('/types')->group(function () {
-                Route::post('add', 'CategoryController@storeType');
+Route::prefix('admin')->middleware(['permission:administer'])->group(function () {
+    Route::prefix('spots')->group(function () {
+        Route::prefix('category')->group(function () {
+            Route::prefix('{category}')->group(function () {
+                Route::post('update', 'CategoryController@update');
+            });
+        });
+        Route::prefix('type')->group(function () {
+            Route::post('create', 'TypeController@store');
+            Route::prefix('{type}')->group(function () {
+                Route::post('delete', 'TypeController@delete');
             });
         });
     });

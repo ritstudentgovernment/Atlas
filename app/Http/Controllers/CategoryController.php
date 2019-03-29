@@ -24,21 +24,28 @@ class CategoryController extends Controller
         return Category::all();
     }
 
-    public function storeType(Request $request)
+    public function update(Request $request, Category $category)
     {
         $rules = [
-            'category'          => 'required|numeric',
-            'type_name'         => 'required|string',
+            'icon'          => 'sometimes|required|string',
+            'active'        => 'sometimes|required|boolean',
+            'crowdsource'   => 'sometimes|required|boolean',
+            'description'   => 'sometimes|required|string',
         ];
         $validator = Validator::make(Input::all(), $rules);
         if ($validator->fails()) {
             return response($validator->errors(), 400);
         }
-        $type = new Type();
-        $type->name = $request->input('type_name');
-        $type->category_id = $request->input('category');
-        $type->save();
-
-        return $type;
+        $updatedOne = false;
+        foreach ($rules as $property => $rule){
+            if (Input::has($property)) {
+                $category->$property = $request->input($property);
+                $category->save();
+                $updatedOne = true;
+            }
+        }
+        if (!$updatedOne) {
+            return response("User did not supply any parameters that can be updated.", 400);
+        }
     }
 }

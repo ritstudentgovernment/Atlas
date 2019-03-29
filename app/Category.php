@@ -12,7 +12,7 @@ class Category extends Model
 
     public function types()
     {
-        return $this->hasMany(Type::class);
+        return $this->hasMany(Type::class)->where('deleted', false);
     }
 
     public function descriptors()

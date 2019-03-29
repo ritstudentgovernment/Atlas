@@ -18,6 +18,7 @@ class CreateTypesTable extends Migration
             $table->string('name');
             $table->integer('category_id')->unsigned();
             $table->foreign('category_id')->references('id')->on('categories');
+            $table->boolean('deleted')->default(false);
             $table->timestamps();
         });
 

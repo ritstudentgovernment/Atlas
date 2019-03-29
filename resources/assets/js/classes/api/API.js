@@ -9,10 +9,8 @@ export default class API {
     }
 
     handleError (error) {
+        console.error(error);
         this.errors.push(error);
-        if (error.response.status === 401) {
-            window.location.href = "/login";
-        }
     }
 
     makeRequest () {
@@ -28,9 +26,10 @@ export default class API {
     }
 
     setState (url, parameters, method) {
-        this.url = `api/${url}`;
+        this.url = `/api/${url}`;
         this.method = method;
         this.parameters = parameters;
+        console.log(this);
     }
 
     get (url, parameters = {}) {
