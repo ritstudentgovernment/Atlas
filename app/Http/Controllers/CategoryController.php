@@ -36,6 +36,7 @@ class CategoryController extends Controller
         if ($validator->fails()) {
             return response($validator->errors(), 400);
         }
+
         $updatedOne = false;
         foreach ($rules as $property => $rule){
             if (Input::has($property)) {
@@ -47,5 +48,6 @@ class CategoryController extends Controller
         if (!$updatedOne) {
             return response("User did not supply any parameters that can be updated.", 400);
         }
+        return response("Update Success", 200);
     }
 }

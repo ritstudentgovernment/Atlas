@@ -43,7 +43,7 @@ class PermissionsSeeder extends Seeder
         if ($tempAdminUser = User::where('email', 'scooper@samltest.id')->first()) {
             $tempAdminUser->assignRole(['admin', 'reviewer']);
 
-            // For seeding purposes some users able to create designated spots
+            // For seeding purposes make some users able to make designated spots
             User::all()->each(function (User $user) {
                 if (mt_rand(0, 2) == 0) {
                     $user->givePermissionTo('make designated spots');

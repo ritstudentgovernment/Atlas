@@ -1,6 +1,6 @@
 <template>
     <el-card shadow="never">
-        <el-table :data="classifications">
+        <el-table :data="classifications" :default-sort = "{prop: 'id', order: 'ascending'}">
             <el-table-column type="expand">
                 <template slot-scope="scope">
                     <el-form-item label="View Permission" label-width="140px">
@@ -11,6 +11,7 @@
                     </el-form-item>
                 </template>
             </el-table-column>
+            <el-table-column label="ID" type="index" prop="id" sortable></el-table-column>
             <el-table-column label="Name">
                 <template slot-scope="scope">
                     <el-input v-model="scope.row.name" @change="handleUpdateClassification(scope.row)"></el-input>
@@ -18,7 +19,7 @@
             </el-table-column>
             <el-table-column label="Color">
                 <template slot-scope="scope">
-                    <el-color-picker v-model="scope.row.color"></el-color-picker>
+                    <el-color-picker v-model="scope.row.color" @change="handleUpdateClassification(scope.row)"></el-color-picker>
                 </template>
             </el-table-column>
             <el-table-column align="right">
@@ -70,7 +71,10 @@
                 let classification = this.hasTempClassification;
 
                 if (classification) {
-                    if (classification.name.trim() === "" || classification.color === null) {
+                    if (
+                        classification.name.trim() === "" ||
+                        classification.color === null
+                    ) {
                         return false;
                     }
                 }
@@ -78,19 +82,40 @@
             }
         },
         methods: {
-            handleUpdateClassification (updatedClassification) {
-                console.log(updatedClassification);
-            },
             insertTempClassification () {
                 this.classifications.push({
-                    category_id: this.categoryId,
-                    color: null,
-                    create_permission: null,
                     id: (new Date()).getTime(),
-                    name: "",
+                    category_id: this.categoryId,
+                    create_permission: null,
                     view_permission: null,
-                    temp: true
+                    color: null,
+                    temp: true,
+                    name: ""
                 });
+            },
+            handleUpdateClassification (updatedClassification) {
+                if (!updatedClassification.temp) {
+                    let classification = {
+                        create_permission: updatedClassification.create_permission,
+                        view_permission: updatedClassification.view_permission,
+                        color: updatedClassification.color.replace('#', ''),
+                        name: updatedClassification.name,
+                    };
+                    window.adminApi.post(`spots/classification/${updatedClassification.id}/update`, classification)
+                        .then(() => {
+                            this.$notify.success({
+                                title: "Updated Classification",
+                                message: ""
+                            });
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            this.$notify.error({
+                                title: "Error Updating Classification",
+                                message: error
+                            })
+                        });
+                }
             },
             handleDeleteClassification (index, classification) {
                 // classification.temp ?:
@@ -99,14 +124,81 @@
                 //     Api -> delete (classification.id):
                 //       success -> remove index
                 //       failure -> display error
+                if (classification.temp) {
+                    this.classifications.splice(index, 1);
+                } else {
+                    this.$confirm('Choose Delete Method:', 'This action is irreversible!', {
+                        type: 'warning',
+                        distinguishCancelAndClose: true,
+                        confirmButtonText: 'Delete Classifications and Spots',
+                        confirmButtonClass: 'el-button--danger margin-top-important',
+                        cancelButtonText: 'Delete Classifications Only',
+                        center: true
+                    })
+                        .then(() => {
+                            window.adminApi.post(`spots/classification/${classification.id}/delete`)
+                                .then(() => {
+                                    this.$notify.success({
+                                        title: "Deleted Classification and Spots Successfully",
+                                        message: ""
+                                    });
+                                    this.classifications.splice(index, 1);
+                                })
+                                .catch((error) => {
+                                    this.$notify.error({
+                                        title: "Error Deleting Classifications and Spots",
+                                        message: error
+                                    });
+                                });
+                        })
+                        .catch((action) => {
+                            if (action === 'cancel') { // soft delete
+                                window.adminApi.post(`spots/classification/${classification.id}/delete/soft`)
+                                    .then(() => {
+                                        this.$notify.success({
+                                            title: "Deleted Classification Successfully",
+                                            message: "Spots with the classification remain unchanged."
+                                        });
+                                        this.classifications.splice(index, 1);
+                                    })
+                                    .catch((error) => {
+                                        this.$notify.error({
+                                            title: "Error Deleting Classifications",
+                                            message: error
+                                        });
+                                    });
+                            }
+                        });
+                }
             },
             handleNewClassification (index, classification) {
-                // filter out classification.id
                 // Api -> create(classification):
                 //   success:
                 //     update classification.id to response.id
                 //     set classification.temp to false
                 //   failure -> display error
+                let newClassification = {
+                    category_id: this.categoryId,
+                    create_permission: classification.create_permission,
+                    view_permission: classification.view_permission,
+                    color: classification.color.replace('#', ''),
+                    name: classification.name
+                };
+                window.adminApi.post('spots/classification/create', newClassification)
+                    .then((response) => {
+                        this.$notify.success({
+                            title: "Classification Created Successfully",
+                            message: ""
+                        });
+                        this.classifications[index].id = response.id;
+                        this.classifications[index].temp = false;
+                    })
+                    .catch((error) => {
+                        this.$notify.error({
+                            title: "Error Creating Classification",
+                            message: error
+                        });
+                    });
             }
         },
         created () {
@@ -115,6 +207,6 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
 </style>

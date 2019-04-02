@@ -11,6 +11,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\MessageBag;
 use Illuminate\Validation\Validator;
 
@@ -50,7 +51,7 @@ class SpotController extends Controller
                 // The user is not logged in, filter out all classifications. (should never happen)
                 return false;
             } else {
-                return $user->can($requiredCreatePermission);
+                return $user->can($requiredCreatePermission) && !$classification->deleted;
             }
         })->values()->all();
     }
@@ -227,7 +228,7 @@ class SpotController extends Controller
     public function getAvailableCategoriesForUser(User $user = null)
     {
         $categories = Category::with(['classifications', 'descriptors', 'types']);
-        if ($user && $user->can('create designated spots')) {
+        if ($user && $user->can('make designated spots')) {
             return $categories->get();
         }
 
@@ -278,11 +279,26 @@ class SpotController extends Controller
     public function approve(Request $request, Spot $spot)
     {
         $spot->approved = true;
-        if (!$spot->author->can('create designated spots')) {
+        if (!$spot->author->can('make designated spots')) {
             $classification = $spot->classification;
             $classification = Classification::where('category_id', $classification->category_id)->where('name', 'Public')->first();
             $spot->classification_id = $classification->id;
         }
         $spot->save();
+    }
+
+    public function delete(Request $request, Spot $spot)
+    {
+        $user = auth('api')->user();
+        if ($user instanceof User && $user->can('approve spots')) {
+            try {
+                $spot->delete();
+                return response("Deletion successful", 200);
+            } catch (\Exception $e) {
+                Log::error($e);
+                return response("Error deleting spot",500);
+            }
+        }
+        return response("Not authorized", 401);
     }
 }

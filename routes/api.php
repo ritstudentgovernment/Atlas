@@ -38,6 +38,14 @@ Route::prefix('admin')->middleware(['permission:administer'])->group(function ()
                 Route::post('delete', 'TypeController@delete');
             });
         });
+        Route::prefix('classification')->group(function () {
+            Route::post('create', 'ClassificationController@store');
+            Route::prefix('{classification}')->group(function () {
+                Route::post('update', 'ClassificationController@update');
+                Route::post('delete', 'ClassificationController@delete');
+                Route::post('delete/soft', 'ClassificationController@softDelete');
+            });
+        });
     });
     Route::prefix('/users')->group(function () {
         Route::get('/', 'UserController@index');

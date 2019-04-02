@@ -31,6 +31,7 @@ class TypeController extends Controller
         if ($validator->fails()) {
             return response($validator->errors(), 400);
         }
+
         $type = new Type();
         $type->name = $request->input('name');
         $type->category_id = $request->input('category');

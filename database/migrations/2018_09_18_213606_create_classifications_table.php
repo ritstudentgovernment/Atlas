@@ -21,6 +21,7 @@ class CreateClassificationsTable extends Migration
             $table->string('create_permission')->nullable();
             $table->integer('category_id')->unsigned();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->boolean('deleted')->default(false);
             $table->timestamps();
         });
     }

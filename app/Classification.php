@@ -10,4 +10,9 @@ class Classification extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function spots()
+    {
+        return $this->hasMany(Spot::class);
+    }
 }
