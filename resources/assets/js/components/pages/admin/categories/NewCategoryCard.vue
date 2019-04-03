@@ -18,8 +18,6 @@
                             :rows="3"
                             v-model="newCategory.description"
                             placeholder="category description (optional)">
-                        <el-option label="Zone one" value="shanghai"></el-option>
-                        <el-option label="Zone two" value="beijing"></el-option>
                     </el-input>
                 </el-form-item>
                 <el-form-item size="large">
