@@ -24,6 +24,29 @@ class CategoryController extends Controller
         return Category::all();
     }
 
+    public function store(Request $request)
+    {
+        $rules = [
+            'name'          => 'required|integer',
+            'icon'          => 'nullable|string',
+            'description'   => 'nullable|string',
+        ];
+        $validator = Validator::make(Input::all(), $rules);
+        if ($validator->fails()) {
+            return response($validator->errors(), 400);
+        }
+
+        $category = new Category();
+        $category->name = $request->input('name');
+        $category->icon = $request->input('icon');
+        $category->description = $request->input('description');
+        $category->crowdsource = true;
+        $category->active = false;
+        $category->save();
+
+        return $category;
+    }
+
     public function update(Request $request, Category $category)
     {
         $rules = [

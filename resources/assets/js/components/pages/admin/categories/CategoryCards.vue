@@ -1,9 +1,18 @@
 <template>
     <el-row :gutter="20">
-        <el-col v-for="(category, index) in categories" :key="'category-'+index" :span="4">
-            <category-card :category="category" class="material-hover"></category-card>
+        <el-col
+                v-for="(category, index) in categories"
+                :key="'category-'+index"
+                :xl="6"
+                :lg="7"
+                :md="8"
+                :sm="12"
+                :xs="24">
+            <category-card :category="category" class="material-hover margin-bottom"></category-card>
         </el-col>
-        <new-category-card></new-category-card>
+        <el-col :sx="24" :sm="12" :md="8" :lg="7" :xl="6">
+            <new-category-card class="margin-bottom"></new-category-card>
+        </el-col>
     </el-row>
 </template>
 
