@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Category;
-use App\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
@@ -61,7 +60,7 @@ class CategoryController extends Controller
         }
 
         $updatedOne = false;
-        foreach ($rules as $property => $rule){
+        foreach ($rules as $property => $rule) {
             if (Input::has($property)) {
                 $category->$property = $request->input($property);
                 $category->save();
@@ -69,8 +68,9 @@ class CategoryController extends Controller
             }
         }
         if (!$updatedOne) {
-            return response("User did not supply any parameters that can be updated.", 400);
+            return response('User did not supply any parameters that can be updated.', 400);
         }
-        return response("Update Success", 200);
+
+        return response('Update Success', 200);
     }
 }

@@ -30,10 +30,12 @@ class ClassificationController extends Controller
         try {
             $classification->spots()->delete();
             $classification->delete();
-            return response("Deletion successful", 200);
+
+            return response('Deletion successful', 200);
         } catch (\Exception $e) {
             Log::error($e);
-            return response("Error deleting Classification",500);
+
+            return response('Error deleting Classification', 500);
         }
     }
 
@@ -44,7 +46,7 @@ class ClassificationController extends Controller
             'create_permission' => 'nullable|string',
             'view_permission'   => 'nullable|string',
             'color'             => 'required|string',
-            'name'              => 'required|string'
+            'name'              => 'required|string',
         ];
         $validator = Validator::make(Input::all(), $rules);
         if ($validator->fails()) {
@@ -69,7 +71,7 @@ class ClassificationController extends Controller
             'create_permission' => 'sometimes|nullable|string',
             'view_permission'   => 'sometimes|nullable|string',
             'color'             => 'sometimes|required|string',
-            'name'              => 'sometimes|required|string'
+            'name'              => 'sometimes|required|string',
         ];
         $validator = Validator::make(Input::all(), $rules);
         if ($validator->fails()) {
@@ -77,7 +79,7 @@ class ClassificationController extends Controller
         }
 
         $updatedOne = false;
-        foreach ($rules as $property => $rule){
+        foreach ($rules as $property => $rule) {
             if (Input::has($property)) {
                 $classification->$property = $request->input($property);
                 $classification->save();
@@ -85,9 +87,9 @@ class ClassificationController extends Controller
             }
         }
         if (!$updatedOne) {
-            return response("User did not supply any parameters that can be updated.", 400);
+            return response('User did not supply any parameters that can be updated.', 400);
         }
-        return response("Update Success", 200);
-    }
 
+        return response('Update Success', 200);
+    }
 }
