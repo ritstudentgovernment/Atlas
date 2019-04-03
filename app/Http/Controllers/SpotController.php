@@ -293,12 +293,15 @@ class SpotController extends Controller
         if ($user instanceof User && $user->can('approve spots')) {
             try {
                 $spot->delete();
-                return response("Deletion successful", 200);
+
+                return response('Deletion successful', 200);
             } catch (\Exception $e) {
                 Log::error($e);
-                return response("Error deleting spot",500);
+
+                return response('Error deleting spot', 500);
             }
         }
-        return response("Not authorized", 401);
+
+        return response('Not authorized', 401);
     }
 }
