@@ -6,6 +6,7 @@
                 <el-badge class="mark" :value="category.numSpots" />
                 <span class="right">
                     <img v-for="image in classificationImages" :src="image" />
+                    <el-button icon="el-icon-delete" size="small" circle></el-button>
                 </span>
             </h4>
         </div>
@@ -70,6 +71,14 @@
                     height: 30px;
                     width: 27px;
                     margin-right: 10px;
+
+                }
+
+                .el-button {
+
+                    height: 30px;
+                    width: 30px;
+                    padding: 0 !important;
 
                 }
 

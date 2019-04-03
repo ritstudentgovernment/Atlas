@@ -26,8 +26,8 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'name'          => 'required|integer',
-            'icon'          => 'nullable|string',
+            'name'          => 'required|string',
+            'icon'          => 'required|string',
             'description'   => 'nullable|string',
         ];
         $validator = Validator::make(Input::all(), $rules);

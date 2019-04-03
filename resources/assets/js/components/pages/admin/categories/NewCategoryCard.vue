@@ -1,7 +1,7 @@
 <template>
     <el-card :shadow="shadow">
         <div v-if="!clicked" class="text-center">
-            <el-button round icon="el-icon-plus" @click="handleNewCategory"></el-button>
+            <el-button round icon="el-icon-plus" @click="toggleClicked"></el-button>
         </div>
         <div v-else>
             <h4 class="text-center">New Category</h4>
@@ -23,17 +23,15 @@
                 <el-form-item size="large">
                     <el-row :gutter="20">
                         <el-col :span="12">
-                            <div class="margin-bottom">
-                                <el-button
-                                        type="primary"
-                                        :disabled="!validCategory"
-                                        @click="handleCreate()">
-                                    Create
-                                </el-button>
-                            </div>
+                            <el-button
+                                    type="primary"
+                                    :disabled="!validCategory"
+                                    @click="handleCreate()">
+                                Create
+                            </el-button>
                         </el-col>
                         <el-col :span="12">
-                            <el-button class="right">Cancel</el-button>
+                            <el-button class="right" @click="toggleClicked">Cancel</el-button>
                         </el-col>
                     </el-row>
                 </el-form-item>
@@ -60,15 +58,24 @@
                 return this.clicked ? "hover" : "never";
             },
             validCategory () {
-                return !(this.newCategory.name.trim() === '' || this.newCategory.icon.trim === '');
+                return !(this.newCategory.name.trim() === '' || this.newCategory.icon.trim() === '');
             }
         },
         methods: {
-            handleNewCategory () {
+            toggleClicked () {
                 this.clicked = !this.clicked;
             },
             handleCreate () {
-                
+                window.adminApi.post('spots/category/create', this.newCategory)
+                    .then(() => {
+                        window.location.href = `categories/${this.newCategory.name}`;
+                    })
+                    .catch((error) => {
+                        this.$notify({
+                            title: "Error Creating Category",
+                            message: error
+                        });
+                    });
             }
         },
     }
