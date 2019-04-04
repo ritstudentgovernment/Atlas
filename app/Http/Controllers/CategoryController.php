@@ -84,11 +84,12 @@ class CategoryController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Category $category
+     *
      * @throws \Exception
      */
-    public function delete(Request$request, Category $category)
+    public function delete(Request $request, Category $category)
     {
         $category->spots()->delete();
         $category->delete();
