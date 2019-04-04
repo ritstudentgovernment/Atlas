@@ -23,12 +23,14 @@ class PermissionsSeeder extends Seeder
         $approve_spots = Permission::create(['name' => 'approve spots']);
         $make_designated_spots = Permission::create(['name' => 'make designated spots']);
         $view_unapproved_spots = Permission::create(['name' => 'view unapproved spots']);
+        $view_inactive_spots = Permission::create(['name' => 'view inactive spots']);
         $mass_upload_spots = Permission::create(['name' => 'mass upload spots']);
         $edit_categories = Permission::create(['name' => 'edit categories']);
         $administer = Permission::create(['name' => 'administer']);
 
         // Relate permissions to roles
         $admin->syncPermissions([
+            $view_inactive_spots,
             $mass_upload_spots,
             $edit_categories,
             $administer,

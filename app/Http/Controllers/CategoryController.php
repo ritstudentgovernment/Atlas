@@ -92,6 +92,7 @@ class CategoryController extends Controller
     public function delete(Request $request, Category $category)
     {
         $category->spots()->delete();
+        $category->types()->delete();
         $category->delete();
     }
 }
