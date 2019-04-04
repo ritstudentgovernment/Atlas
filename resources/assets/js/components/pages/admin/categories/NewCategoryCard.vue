@@ -22,6 +22,8 @@
                 </el-form-item>
                 <el-form-item size="large">
                     <el-row :gutter="20">
+
+
                         <el-col :span="12">
                             <el-button
                                     type="primary"
@@ -88,19 +90,21 @@
 
             background-color: transparent;
             border: 1px solid #d7d7d9;
-            padding: 14px;
+            padding: 37px;
 
             button {
+
                 margin: 0 auto;
                 border-radius: 50% !important;
                 padding: 22px !important;
+
+                &:hover {
+
+                    cursor: pointer;
+
+                }
+
             }
-
-        }
-
-        &:hover {
-
-            cursor: pointer;
 
         }
 

@@ -15,6 +15,11 @@ class Category extends Model
         return $this->hasMany(Type::class)->where('deleted', false);
     }
 
+    public function spots()
+    {
+        return $this->hasManyThrough(Spot::class, Type::class);
+    }
+
     public function descriptors()
     {
         return $this->belongsToMany(Descriptors::class, 'category_descriptors', 'category_id', 'descriptor_id');
@@ -27,11 +32,7 @@ class Category extends Model
 
     public function getNumSpotsAttribute()
     {
-        /*$numSpots = 0;
-        $this->types->each(function (Type $type) use ($numSpots) {
-            $numSpots += $type->spots->count();
-        });
-        return $numSpots;*/
+        return $this->spots()->count();
     }
 
     public function getRouteKeyName()

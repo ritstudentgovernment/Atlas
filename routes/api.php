@@ -31,6 +31,7 @@ Route::prefix('admin')->middleware(['permission:administer'])->group(function ()
             Route::post('create', 'CategoryController@store');
             Route::prefix('{category}')->group(function () {
                 Route::post('update', 'CategoryController@update');
+                Route::post('delete', 'CategoryController@delete');
             });
         });
         Route::prefix('type')->group(function () {

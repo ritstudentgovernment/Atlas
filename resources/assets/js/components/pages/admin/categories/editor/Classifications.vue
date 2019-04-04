@@ -127,8 +127,7 @@
                 if (classification.temp) {
                     this.classifications.splice(index, 1);
                 } else {
-                    this.$confirm('Choose Delete Method:', 'This action is irreversible!', {
-                        type: 'warning',
+                    this.$confirm('Choose Delete Method:', 'Warning: This action is irreversible!', {
                         distinguishCancelAndClose: true,
                         confirmButtonText: 'Delete Classifications and Spots',
                         confirmButtonClass: 'el-button--danger margin-top-important',
@@ -202,7 +201,9 @@
             }
         },
         created () {
-            this.classifications = this.rawClassifications;
+            this.classifications = this.rawClassifications.filter((classification) => {
+                return classification.name !== 'Under Review';
+            });
         }
     }
 </script>

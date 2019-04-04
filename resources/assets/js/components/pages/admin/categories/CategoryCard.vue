@@ -3,20 +3,27 @@
         <div slot="header">
             <h4>
                 {{ category.name }} Spots
-                <el-badge class="mark" :value="category.numSpots" />
                 <span class="right">
-                    <img v-for="image in classificationImages" :src="image" />
-                    <el-button icon="el-icon-delete" size="small" circle></el-button>
+                    <el-button
+                            @click.stop="handleDelete"
+                            icon="el-icon-delete"
+                            size="small"
+                            circle>
+                    </el-button>
                 </span>
             </h4>
         </div>
         <div>
-            <p>
+            <p v-if="category.types.length > 0">
                 Types:
                 <span v-for="(type, index) in category.types">
                     {{ type.name }}<span v-if="(index < category.types.length - 1)">,</span>
                 </span>
             </p>
+            <div class="images" v-if="classificationImages.length > 0">
+                <img v-for="image in classificationImages" :src="image" />
+                <el-badge class="mark right" :value="category.numSpots + ' Spots'" />
+            </div>
         </div>
     </el-card>
 </template>
@@ -26,7 +33,7 @@
     import CanvasBuilder from "../../../../classes/CanvasBuilder";
 
     export default {
-        name: "category-card",
+        name: 'category-card',
         components: {
             ElementUI
         },
@@ -39,13 +46,35 @@
         methods: {
             handleClick () {
                 window.location.href = window.location.href + '/' + this.category.name;
+            },
+            handleDelete () {
+                let self = this;
+                let cname = this.category.name;
+                this.$confirm(`This will permanently delete the '${cname}' category and all spots associated with it.`, 'Warning', {
+                    confirmButtonText: 'Delete',
+                    confirmButtonClass: 'el-button--danger',
+                    cancelButtonText: 'Cancel',
+                }).then(() => {
+                    window.adminApi.post(`spots/category/${this.category.name}/delete`)
+                        .then(() => {
+                            this.$emit('deleted', this.category.name);
+                        })
+                        .catch((error) => {
+                            this.$notify.error({
+                                title: "Error Celeting Category",
+                                message: error
+                            });
+                        });
+                }).catch((error) => {
+
+                });
             }
         },
         mounted () {
             let builder = new CanvasBuilder();
             builder.initialize();
             this.category.classifications.forEach((classification) => {
-                if (classification.name !== "Under Review") {
+                if (classification.name !== 'Under Review') {
                     this.classificationImages.push(builder.makeImage(this.category.icon, classification.color));
                 }
             });
@@ -65,20 +94,16 @@
             h4 {
 
                 margin: 0;
-
-                img {
-
-                    height: 30px;
-                    width: 27px;
-                    margin-right: 10px;
-
-                }
+                position: relative;
 
                 .el-button {
 
-                    height: 30px;
-                    width: 30px;
                     padding: 0 !important;
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    width: 30px;
+                    height: 30px;
 
                 }
 
@@ -89,6 +114,26 @@
         p {
 
             margin: 0;
+
+        }
+
+        .images {
+
+            margin-top: 15px;
+
+            img {
+
+                width: 27px;
+                height: 30px;
+                margin-right: 10px;
+
+            }
+
+            .el-badge {
+
+                line-height: 2.5;
+
+            }
 
         }
 

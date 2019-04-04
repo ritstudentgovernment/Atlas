@@ -8,7 +8,7 @@
                 :md="8"
                 :sm="12"
                 :xs="24">
-            <category-card :category="category" class="material-hover margin-bottom"></category-card>
+            <category-card :category="category" @deleted="handleDeleted" class="material-hover margin-bottom"></category-card>
         </el-col>
         <el-col :sx="24" :sm="12" :md="8" :lg="7" :xl="6">
             <new-category-card class="margin-bottom"></new-category-card>
@@ -22,18 +22,28 @@
     import NewCategoryCard from "./NewCategoryCard";
 
     export default {
-        name: "CategoryCards",
+        name: 'CategoryCards',
         components: {
             NewCategoryCard,
             CategoryCard,
             ElementUI
         },
-        props: ["rawCategories"],
-        computed: {
-            categories () {
-                return JSON.parse(this.rawCategories);
-            },
+        props: ['rawCategories'],
+        data () {
+            return {
+                categories: []
+            };
         },
+        methods: {
+            handleDeleted (name) {
+                this.categories = this.categories.filter((category) => {
+                    return category.name !== name;
+                });
+            }
+        },
+        created () {
+            this.categories = JSON.parse(this.rawCategories);
+        }
     }
 </script>
 

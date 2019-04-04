@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Classification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
@@ -43,6 +44,14 @@ class CategoryController extends Controller
         $category->active = false;
         $category->save();
 
+        Classification::create([
+            'name'              => 'Under Review',
+            'color'             => 'cb0020',
+            'category_id'       => $category->id,
+            'view_permission'   => 'view unapproved spots',
+            'create_permission' => 'create under review spots',
+        ]);
+
         return $category;
     }
 
@@ -72,5 +81,16 @@ class CategoryController extends Controller
         }
 
         return response('Update Success', 200);
+    }
+
+    /**
+     * @param Request $request
+     * @param Category $category
+     * @throws \Exception
+     */
+    public function delete(Request$request, Category $category)
+    {
+        $category->spots()->delete();
+        $category->delete();
     }
 }
