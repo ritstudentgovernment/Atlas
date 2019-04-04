@@ -12,7 +12,7 @@
                         <el-switch v-model="category.crowdsource" @change="handleUpdateCategory('crowdsource')"></el-switch>
                     </el-form-item>
                     <el-form-item label="Active" class="left">
-                        <el-switch v-model="category.active" @change="handleUpdateCategory('active')"></el-switch>
+                        <el-switch v-model="category.active" :disabled="!categoryIsValid" @change="handleUpdateCategory('active')"></el-switch>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -58,6 +58,21 @@
                     descriptors: [],
                     description: '',
                 }
+            }
+        },
+        computed: {
+            categoryIsValid () {
+                let category = this.category;
+                return !(
+                    category.icon.trim() === "" ||
+                    category.types.length === 0 ||
+                    category.descriptors.length === 0 ||
+                    category.classifications.length === 0 ||
+                    (category.types.length === 1 && category.types[0].temp) ||
+                    (category.descriptors.length === 1 && category.descriptors[0].temp) ||
+                    (category.classifications.length === 1 && category.classifications[0].temp)
+                );
+
             }
         },
         props: ["rawCategory"],

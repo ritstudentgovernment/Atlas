@@ -41,6 +41,7 @@
                     <el-button
                             size="mini"
                             type="danger"
+                            :disabled="scope.row.temp && descriptors.length === 1"
                             @click="handleDelete(scope.$index, scope.row)">
                         Delete
                     </el-button>
@@ -76,15 +77,13 @@
                 let descriptor = this.hasTempDescriptor;
 
                 if (descriptor) {
-                    if (
+                    return !(
                         descriptor.name.trim() === "" ||
                         descriptor.icon.trim() === "" ||
                         descriptor.type.trim() === "" ||
                         descriptor.default_value.trim() === "" ||
                         descriptor.allowed_values.trim() === ""
-                    ) {
-                        return false;
-                    }
+                    );
                 }
                 return true;
             },
@@ -117,6 +116,9 @@
                 descriptor.allowed_values = descriptor.allowed_values.split("|").join(", ");
                 return descriptor;
             });
+            if (this.descriptors.length === 0) {
+                this.insertTempDescriptor();
+            }
         }
     }
 </script>

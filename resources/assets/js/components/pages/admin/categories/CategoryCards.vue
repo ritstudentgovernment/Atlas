@@ -43,6 +43,7 @@
         },
         created () {
             this.categories = JSON.parse(this.rawCategories);
+            window.cc = this;
         }
     }
 </script>

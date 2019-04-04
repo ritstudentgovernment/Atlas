@@ -34,6 +34,7 @@
                     <el-button
                             size="mini"
                             type="danger"
+                            :disabled="scope.row.temp && classifications.length === 1"
                             @click="handleDeleteClassification(scope.$index, scope.row)">
                         Delete
                     </el-button>
@@ -71,12 +72,11 @@
                 let classification = this.hasTempClassification;
 
                 if (classification) {
-                    if (
+                    return !(
                         classification.name.trim() === "" ||
                         classification.color === null
-                    ) {
-                        return false;
-                    }
+                    );
+
                 }
                 return true;
             }
@@ -204,6 +204,9 @@
             this.classifications = this.rawClassifications.filter((classification) => {
                 return classification.name !== 'Under Review';
             });
+            if (this.classifications.length === 0) {
+                this.insertTempClassification();
+            }
         }
     }
 </script>
