@@ -57,15 +57,15 @@ class Category extends Model
     }
 
     /**
-     * All ForUser methods get all instances of a model that a person may use
+     * All ForUser methods get all instances of a model that a person may use.
      *
      * @param User/null the user to get categories for
      *
      * @return Collection
      */
-    static public function forUser(User $user = null)
+    public static function forUser(User $user = null)
     {
-        $categories = Category::with(['classifications', 'descriptors', 'types']);
+        $categories = self::with(['classifications', 'descriptors', 'types']);
         if ($user && $user->can('make designated spots')) {
             return $categories->get();
         }

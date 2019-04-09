@@ -48,6 +48,7 @@ $factory->define(App\Spot::class, function (Faker $faker) {
         Classification::inRandomOrder()->get()->filter(function (Classification $classification) use ($type) {
             $properType = $type ? $classification->category->id == $type->category->id : false;
             $notUnderReview = $classification->type != 'under review';
+
             return $properType && $notUnderReview;
         })->first() : null;
 
