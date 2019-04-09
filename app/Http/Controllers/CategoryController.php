@@ -31,6 +31,7 @@ class CategoryController extends Controller
             'icon'          => 'required|string',
             'description'   => 'nullable|string',
         ];
+
         $validator = Validator::make(Input::all(), $rules);
         if ($validator->fails()) {
             return response($validator->errors(), 400);
@@ -44,13 +45,7 @@ class CategoryController extends Controller
         $category->active = false;
         $category->save();
 
-        Classification::create([
-            'name'              => 'Under Review',
-            'color'             => 'cb0020',
-            'category_id'       => $category->id,
-            'view_permission'   => 'view unapproved spots',
-            'create_permission' => 'create under review spots',
-        ]);
+        Classification::makeDefaultsForCategory($category);
 
         return $category;
     }
@@ -63,6 +58,7 @@ class CategoryController extends Controller
             'crowdsource'   => 'sometimes|required|boolean',
             'description'   => 'sometimes|required|string',
         ];
+
         $validator = Validator::make(Input::all(), $rules);
         if ($validator->fails()) {
             return response($validator->errors(), 400);

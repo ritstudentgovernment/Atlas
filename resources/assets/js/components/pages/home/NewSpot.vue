@@ -55,23 +55,38 @@
             </div>
             <div>
                 <h5>Descriptors</h5>
-                <el-select
-                        value=""
-                        size="small"
-                        v-for="(descriptor, index) in requiredDescriptors"
-                        v-model="spotDescriptors[descriptor.name]"
-                        :key="index"
-                        :placeholder="descriptor.name"
-                        @change="updatePloppedSpot"
-                >
-                    <el-option
-                            v-for="(item, index) in descriptor.allowed_values.split('|')"
-                            :key="index"
-                            :label="item"
-                            :value="item"
+                <div v-for="(descriptor, index) in requiredDescriptors">
+                    <el-select
+                            value=""
+                            size="small"
+                            class="full-width"
+                            v-if="descriptor.value_type === 'select'"
+                            v-model="spotDescriptors[descriptor.name]"
+                            :placeholder="descriptor.name"
+                            @change="updatePloppedSpot"
                     >
-                    </el-option>
-                </el-select>
+                        <el-option
+                                v-for="(item, index) in descriptor.allowed_values.split('|')"
+                                :key="index"
+                                :label="item"
+                                :value="item"
+                        >
+                        </el-option>
+                    </el-select>
+                    <!--<div v-if="descriptor.value_type === 'number'" class="overflow-hidden">
+                        <el-input-number
+                                size="small"
+                                class="right"
+                                controls-position="right"
+                                :value="Number(descriptor.default_value)"
+                                :min="Number(descriptor.allowed_values.split('|')[0].split(':')[1])"
+                                :max="Number(descriptor.allowed_values.split('|')[1].split(':')[1])"
+                                v-model="spotDescriptors[descriptor.name]"
+                                @change="updatePloppedSpot"
+                        ></el-input-number>
+                        <span class="right">{{ descriptor.name }}:</span>
+                    </div>-->
+                </div>
             </div>
             <div>
                 <h5>Notes</h5>
@@ -160,7 +175,7 @@
             loadData(data) {
                 this.availableClassifications = data.availableClassifications;
                 this.activeClassification = this.availableClassifications.filter((classification) => {
-                    return classification.name === "Public";
+                    return classification.type === "public";
                 })[0];
                 this.spotClassification = this.activeClassification.name;
                 this.availableTypes = data.availableTypes;

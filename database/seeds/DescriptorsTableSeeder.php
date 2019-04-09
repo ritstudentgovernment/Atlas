@@ -67,8 +67,8 @@ class DescriptorsTableSeeder extends BaseSeeder
         ];
 
         $categoryDescriptorsMap = [
-            'Energy'    => ['Fuel', 'Building'],
-            'Nap'       => ['Sound Level', 'Comfort Level', 'Building'],
+            'Energy'    => ['Fuel', 'Building', 'Floor'],
+            'Nap'       => ['Sound Level', 'Comfort Level', 'Building', 'Floor'],
         ];
 
         $this->seed(Descriptors::class);

@@ -29,7 +29,6 @@ export default class API {
         this.url = `/api/${url}`;
         this.method = method;
         this.parameters = parameters;
-        console.log(this);
     }
 
     get (url, parameters = {}) {

@@ -47,6 +47,7 @@ class ClassificationController extends Controller
             'view_permission'   => 'nullable|string',
             'color'             => 'required|string',
             'name'              => 'required|string',
+            'type'              => 'required|string',
         ];
         $validator = Validator::make(Input::all(), $rules);
         if ($validator->fails()) {
@@ -55,6 +56,7 @@ class ClassificationController extends Controller
 
         $classification = new Classification();
         $classification->name = $request->input('name');
+        $classification->type = $request->input('type');
         $classification->color = $request->input('color');
         $classification->view_permission = $request->input('view_permission');
         $classification->create_permission = $request->input('create_permission');
@@ -72,6 +74,7 @@ class ClassificationController extends Controller
             'view_permission'   => 'sometimes|nullable|string',
             'color'             => 'sometimes|required|string',
             'name'              => 'sometimes|required|string',
+            'type'              => 'sometimes|required|string',
         ];
         $validator = Validator::make(Input::all(), $rules);
         if ($validator->fails()) {

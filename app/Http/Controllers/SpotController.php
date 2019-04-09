@@ -69,19 +69,6 @@ class SpotController extends Controller
         })->values()->all();
     }
 
-    private function filterClassifications(Collection $classifications, User $user = null)
-    {
-        return $classifications->filter(function (Classification $classification) use ($user) {
-            $requiredCreatePermission = $classification->create_permission;
-            if ($user == null) {
-                // The user is not logged in, filter out all classifications. (should never happen)
-                return false;
-            } else {
-                return $user->can($requiredCreatePermission) && !$classification->deleted;
-            }
-        })->values()->all();
-    }
-
     /**
      * Function to get the nap spots the current user may see.
      *
@@ -155,7 +142,7 @@ class SpotController extends Controller
     private function getProperClassificationForUser(User $user, Classification $classification)
     {
         if (!$user->can('approve spots')) {
-            $newClassification = Classification::where('category_id', $classification->category_id)->where('name', 'Under Review')->first();
+            $newClassification = Category::find($classification->category_id)->underReviewClassification();
             if ($newClassification) {
                 $classification = $newClassification;
             } else {
@@ -183,8 +170,8 @@ class SpotController extends Controller
 
         $user = $request->user();
         $type = Type::where('name', $request->input('type_name'))->first();
-        $classification = Classification::find($request->input('classification_id'));
-        $classification = $this->getProperClassificationForUser($user, $classification);
+        $approvedClassification = Classification::find($request->input('classification_id'));
+        $classification = $this->getProperClassificationForUser($user, $approvedClassification);
 
         if (!$type || !$classification) {
             $this->validator->errors()->add('Invalid Error', 'You\'ve provided an invalid type or classification.');
@@ -199,10 +186,11 @@ class SpotController extends Controller
         }
 
         return [
-            'user'           => $user,
-            'type'           => $type,
-            'descriptors'    => $descriptors,
-            'classification' => $classification,
+            'user'                      => $user,
+            'type'                      => $type,
+            'descriptors'               => $descriptors,
+            'classification'            => $classification,
+            'approvedClassification'    => $approvedClassification,
         ];
     }
 
@@ -225,16 +213,18 @@ class SpotController extends Controller
         $type = $validatedData['type'];
         $descriptors = $validatedData['descriptors'];
         $classification = $validatedData['classification'];
+        $approvedClassification = $validatedData['approvedClassification'];
         $canApproveSpots = $user->can('approve spots');
 
         $spot = Spot::create([
-            'notes'             => $request->input('notes'),
-            'type_id'           => $type->id,
-            'lat'               => $request->input('lat'),
-            'lng'               => $request->input('lng'),
-            'approved'          => $canApproveSpots ? 1 : 0,
-            'user_id'           => $user->id,
-            'classification_id' => $classification->id,
+            'lat'                           => $request->input('lat'),
+            'lng'                           => $request->input('lng'),
+            'notes'                         => $request->input('notes'),
+            'type_id'                       => $type->id,
+            'user_id'                       => $user->id,
+            'classification_id'             => $classification->id,
+            'approved_classification_id'    => $approvedClassification->id,
+            'approved'                      => $canApproveSpots ? 1 : 0,
         ]);
 
         if ($spot instanceof Spot) {
@@ -251,20 +241,10 @@ class SpotController extends Controller
         return response($response, 201);
     }
 
-    public function getAvailableCategoriesForUser(User $user = null)
-    {
-        $categories = Category::with(['classifications', 'descriptors', 'types']);
-        if ($user && $user->can('make designated spots')) {
-            return $categories->get();
-        }
-
-        return $categories->where('crowdsource', true)->get();
-    }
-
     public function getDefaults(Request $request)
     {
         $user = auth('api')->user();
-        $categories = $this->getAvailableCategoriesForUser($user);
+        $categories = Category::forUser($user);
 
         if ($categoryName = $request->input('category')) {
             $category = Category::where('name', $categoryName)->first();
@@ -272,11 +252,14 @@ class SpotController extends Controller
             $category = $categories->first();
         }
 
+        $classifications = Classification::forUser($user);
+        $classifications = $classifications->filter(function (Classification $classification) use ($category) {
+            return $classification->category_id == $category->id;
+        })->values()->all();
         $descriptors = $category->descriptors;
-        $classifications = $category->classifications;
         $types = $category->types;
 
-        $requiredSpotData = [
+        $requiredData = [
             'lat'               => 'number',
             'lng'               => 'number',
             'notes'             => 'string',
@@ -286,11 +269,11 @@ class SpotController extends Controller
         ];
 
         return [
-            'requiredData'              => $requiredSpotData,
             'availableTypes'            => $types,
-            'requiredDescriptors'       => $descriptors,
-            'availableClassifications'  => $this->filterClassifications($classifications, $user),
             'availableCategories'       => $categories,
+            'availableClassifications'  => $classifications,
+            'requiredDescriptors'       => $descriptors,
+            'requiredData'              => $requiredData,
         ];
     }
 
@@ -305,10 +288,8 @@ class SpotController extends Controller
     public function approve(Request $request, Spot $spot)
     {
         $spot->approved = true;
-        if (!$spot->author->can('make designated spots')) {
-            $classification = $spot->classification;
-            $classification = Classification::where('category_id', $classification->category_id)->where('name', 'Public')->first();
-            $spot->classification_id = $classification->id;
+        if ($spot->approvedClassification) {
+            $spot->classification_id = $spot->approvedClassification->id;
         }
         $spot->save();
     }

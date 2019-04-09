@@ -48,7 +48,6 @@
                 window.location.href = window.location.href + '/' + this.category.name;
             },
             handleDelete () {
-                let self = this;
                 let cname = this.category.name;
                 this.$confirm(`This will permanently delete the '${cname}' category and all spots associated with it.`, 'Warning', {
                     confirmButtonText: 'Delete',
@@ -61,7 +60,7 @@
                         })
                         .catch((error) => {
                             this.$notify.error({
-                                title: "Error Celeting Category",
+                                title: "Error Creating Category",
                                 message: error
                             });
                         });
@@ -73,10 +72,8 @@
         mounted () {
             let builder = new CanvasBuilder();
             builder.initialize();
-            this.category.classifications.forEach((classification) => {
-                if (classification.name !== 'Under Review') {
-                    this.classificationImages.push(builder.makeImage(this.category.icon, classification.color));
-                }
+            this.category.classifications.sort((a, b) => b.type < a.type ? 1 : -1).forEach((classification) => {
+                this.classificationImages.push(builder.makeImage(this.category.icon, classification.color));
             });
         }
     }

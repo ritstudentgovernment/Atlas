@@ -9,7 +9,7 @@ class Spot extends Model
 {
     protected $appends = ['type', 'classification', 'descriptors', 'authored'];
     protected $hidden = ['user_id', 'author', 'created_at', 'updated_at', 'type_id'];
-    protected $fillable = ['notes', 'classification_id', 'approved', 'user_id', 'type_id', 'lat', 'lng'];
+    protected $fillable = ['notes', 'classification_id', 'approved_classification_id', 'approved', 'user_id', 'type_id', 'lat', 'lng'];
 
     public function getAuthoredAttribute()
     {
@@ -56,6 +56,11 @@ class Spot extends Model
     public function classification()
     {
         return $this->belongsTo(Classification::class);
+    }
+
+    public function approvedClassification()
+    {
+        return $this->belongsTo(Classification::class, 'approved_classification_id');
     }
 
     public function descriptors()

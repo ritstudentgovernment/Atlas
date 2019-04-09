@@ -1,6 +1,6 @@
 <template>
     <el-card shadow="never">
-        <el-table :data="classifications" :default-sort = "{prop: 'id', order: 'ascending'}">
+        <el-table :data="classifications" :default-sort="{prop: 'id', order: 'ascending'}">
             <el-table-column type="expand">
                 <template slot-scope="scope">
                     <el-form-item label="View Permission" label-width="140px">
@@ -15,6 +15,15 @@
             <el-table-column label="Name">
                 <template slot-scope="scope">
                     <el-input v-model="scope.row.name" @change="handleUpdateClassification(scope.row)"></el-input>
+                </template>
+            </el-table-column>
+            <el-table-column label="Type">
+                <template slot-scope="scope">
+                    <el-select v-model="scope.row.type" @change="handleUpdateClassification(scope.row)">
+                        <el-option label="Public" value="public"></el-option>
+                        <el-option label="Designated" value="designated"></el-option>
+                        <el-option label="Under Review" value="under review"></el-option>
+                    </el-select>
                 </template>
             </el-table-column>
             <el-table-column label="Color">
@@ -90,16 +99,19 @@
                     view_permission: null,
                     color: null,
                     temp: true,
+                    type: "",
                     name: ""
                 });
             },
             handleUpdateClassification (updatedClassification) {
                 if (!updatedClassification.temp) {
-                    let classification = {
+                    let color = updatedClassification.color ? updatedClassification.color : "",
+                        classification = {
                         create_permission: updatedClassification.create_permission,
                         view_permission: updatedClassification.view_permission,
-                        color: updatedClassification.color.replace('#', ''),
-                        name: updatedClassification.name,
+                        color: color.replace("#", ""),
+                        type: updatedClassification.type,
+                        name: updatedClassification.name
                     };
                     window.adminApi.post(`spots/classification/${updatedClassification.id}/update`, classification)
                         .then(() => {
@@ -118,12 +130,6 @@
                 }
             },
             handleDeleteClassification (index, classification) {
-                // classification.temp ?:
-                //   true -> remove index
-                //   false:
-                //     Api -> delete (classification.id):
-                //       success -> remove index
-                //       failure -> display error
                 if (classification.temp) {
                     this.classifications.splice(index, 1);
                 } else {
@@ -171,11 +177,6 @@
                 }
             },
             handleNewClassification (index, classification) {
-                // Api -> create(classification):
-                //   success:
-                //     update classification.id to response.id
-                //     set classification.temp to false
-                //   failure -> display error
                 let newClassification = {
                     category_id: this.categoryId,
                     create_permission: classification.create_permission,
@@ -201,9 +202,7 @@
             }
         },
         created () {
-            this.classifications = this.rawClassifications.filter((classification) => {
-                return classification.name !== 'Under Review';
-            });
+            this.classifications = this.rawClassifications;
             if (this.classifications.length === 0) {
                 this.insertTempClassification();
             }

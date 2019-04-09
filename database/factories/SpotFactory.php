@@ -35,13 +35,20 @@ $factory->define(App\Spot::class, function (Faker $faker) {
 
     $classification = Classification::first() ?
         Classification::inRandomOrder()->get()->filter(function (Classification $classification) use ($type, $approved) {
-            if ($approved && $classification->name == 'Under Review') {
+            if ($approved && $classification->type == 'under review') {
                 return false;
-            } elseif (!$approved && !($classification->name == 'Under Review')) {
+            } elseif (!$approved && !($classification->type == 'under review')) {
                 return false;
             }
 
             return $type ? $classification->category->id == $type->category->id : false;
+        })->first() : null;
+
+    $approvedClassification = Classification::first() ?
+        Classification::inRandomOrder()->get()->filter(function (Classification $classification) use ($type) {
+            $properType = $type ? $classification->category->id == $type->category->id : false;
+            $notUnderReview = $classification->type != 'under review';
+            return $properType && $notUnderReview;
         })->first() : null;
 
     return [
@@ -52,9 +59,10 @@ $factory->define(App\Spot::class, function (Faker $faker) {
         'notes'     => $faker->text(100),
         'approved'  => $approved,
 
-        'user_id'           => $user ? $user->id : null,
-        'type_id'           => $type ? $type->id : null,
-        'classification_id' => $classification ? $classification->id : null,
+        'user_id'                       => $user ? $user->id : null,
+        'type_id'                       => $type ? $type->id : null,
+        'classification_id'             => $classification ? $classification->id : null,
+        'approved_classification_id'    => $approved ? null : $approvedClassification->id,
 
     ];
 });
