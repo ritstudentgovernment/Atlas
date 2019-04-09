@@ -16,7 +16,11 @@ export default class SpotsAPI extends APIHelper {
     }
 
     approve(spotId) {
-        return this.post(`approve/${spotId}`);
+        return this.post(`${spotId}/approve`);
+    }
+
+    delete(spotId) {
+        return this.post(`${spotId}/delete`);
     }
 
 }

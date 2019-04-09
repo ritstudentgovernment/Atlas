@@ -4,7 +4,7 @@ import CanvasBuilder from "./CanvasBuilder"
 
 export default class Builder{
 
-    constructor(){
+    constructor() {
         this.spots = [];
         this.legend = {};
         this.markers = [];
@@ -12,19 +12,37 @@ export default class Builder{
         this.spotsApi = new SpotsAPI(window.api);
     }
 
+    getSpot(id) {
+        return this.spots.filter((spot) => spot.data.id === id)[0];
+    }
+
+    removeSpot(marker) {
+        marker.setMap(null);
+    }
+
     removeLastSpot() {
         let marker = this.markers.splice(this.markers.length - 1, 1)[0];
-        marker.setMap(null);
+        this.spots.splice(this.spots.length - 1, 1);
+        this.removeSpot(marker);
+    }
+
+    removeSpotById(id) {
+        let spot = this.getSpot(id),
+            index = this.spots.indexOf(spot),
+            marker = this.markers.splice(index, 1)[0];
+        this.removeSpot(marker);
     }
 
     removeAllSpots() {
         this.markers.forEach((marker) => {
-            marker.setMap(null);
+            this.removeSpot(marker);
         });
     }
 
     newSpot(spotData, tempSpot = false) {
-        return new Spot(spotData, tempSpot);
+        let spot = new Spot(spotData, tempSpot);
+        this.spots.push(spot);
+        return spot;
     }
 
     approveSpot(spotId) {
@@ -33,6 +51,21 @@ export default class Builder{
             window.openInfoWindow.close();
             self.build(false);
         });
+    }
+
+    deleteSpot(spotId) {
+        let self = this;
+        window.vue.$confirm('Are you sure you want to delete this spot?', 'Warning: This action is irreversible!', {
+            confirmButtonText: 'Yes, I\'m Sure!',
+            confirmButtonClass: 'el-button--danger',
+            cancelButtonText: 'No, that was a mistake.',
+            center: true
+        }).then(() => {
+            self.spots.filter((spot)=>spot.data.id === spotId)[0].delete()
+                .then(() => {
+                    self.removeSpotById(spotId)
+                });
+        }).catch(() => {});
     }
 
     instantiateSpots(json, animateDrop = true) {

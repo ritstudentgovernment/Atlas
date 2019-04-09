@@ -21,7 +21,10 @@
              Route::post('/', 'SpotController@store');
              Route::get('/', 'SpotController@getDefaults');
          });
-         Route::post('/approve/{spot}', 'SpotController@approve')->middleware(['permission:approve spots']);
+         Route::prefix('{spot}')->middleware(['permission:approve spots'])->group(function () {
+             Route::post('/approve', 'SpotController@approve');
+             Route::post('/delete', 'SpotController@delete');
+         });
      });
  });
 

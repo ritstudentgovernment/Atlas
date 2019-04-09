@@ -27,19 +27,45 @@ class SpotController extends Controller
         $this->middleware('auth:api')->except(['get']);
     }
 
+    /**
+     * This function is responsible for figuring out what spots a user can see based on their permissions and the status
+     * of each spot.
+     *
+     * It produces the following output:
+     *
+     * 1. If a user is not logged in, this function will only return approved spots with active categories and no
+     *    required view permission.
+     * 2. If a normal user is logged in, this function will return spots they have authored, whether approved or not,
+     *    and approved spots with active categories and no required view permission (unless a user has been granted a
+     *    special permission, in which case they will see approved and active spots restricted to that permission too).
+     * 3. Reviewers / Admins / people with the 'view unapproved spots' permission will see all spots that are not
+     *    approved.
+     * 4. Admins / people with the 'view inactive spots' permission will see all spots.
+     *
+     * @param Collection $spots
+     * @param User|null $user
+     *
+     * @return array
+     */
     private function filterSpotsVisible(Collection $spots, User $user = null)
     {
         return $spots->filter(function (Spot $spot) use ($user) {
+            $spotIsApproved = $spot->approved;
+            $spotCategoryIsActive = $spot->category->active;
             $requiredViewPermission = $spot->classification->view_permission;
             if ($user) {
-                if (!$spot->approved && $user->can('view unapproved spots')) {
+                if (!$spotIsApproved && $user->can('view unapproved spots')) {
+                    return true;
+                } else if (!$spotCategoryIsActive && $user->can('view inactive spots')) {
                     return true;
                 }
 
-                return ($spot->approved && $user->can($requiredViewPermission)) || ($spot->author->id == $user->id);
+                $userIsAuthor = ($spot->author->id == $user->id);
+                $userMeetsViewPermission = ($spotIsApproved && $user->can($requiredViewPermission));
+                return ($userMeetsViewPermission || $userIsAuthor) && $spotCategoryIsActive;
             }
 
-            return $spot->approved && !$requiredViewPermission;
+            return $spotIsApproved && $spotCategoryIsActive && !$requiredViewPermission;
         })->values()->all();
     }
 
@@ -289,19 +315,15 @@ class SpotController extends Controller
 
     public function delete(Request $request, Spot $spot)
     {
-        $user = auth('api')->user();
-        if ($user instanceof User && $user->can('approve spots')) {
-            try {
-                $spot->delete();
+        try {
+            $spot->delete();
 
-                return response('Deletion successful', 200);
-            } catch (\Exception $e) {
-                Log::error($e);
+            return response('Deletion successful', 200);
+        } catch (\Exception $e) {
+            Log::error($e);
 
-                return response('Error deleting spot', 500);
-            }
+            return response('Error deleting spot', 500);
         }
 
-        return response('Not authorized', 401);
     }
 }

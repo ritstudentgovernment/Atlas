@@ -168,7 +168,7 @@ class APITest extends TestCase
      */
     public function testNonAdminApproveSpot()
     {
-        $response = $this->actingAs($this->user, 'api')->post('/api/spots/approve/'.$this->spot->id);
+        $response = $this->actingAs($this->user, 'api')->post('/api/spots/'.$this->spot->id.'/approve');
         // Make sure the request failed with a 403
         $response->assertStatus(403);
         // Given that the request failed, the spot should still be unapproved, check
@@ -182,10 +182,38 @@ class APITest extends TestCase
      */
     public function testAdminApproveSpot()
     {
-        $response = $this->actingAs($this->adminUser, 'api')->post('/api/spots/approve/'.$this->spot->id);
+        $response = $this->actingAs($this->adminUser, 'api')->post('/api/spots/'.$this->spot->id.'/approve');
         // Make sure the request was successful.
         $response->assertStatus(200);
         // Given that the request was successful, find the spot and check to make sure that it is approved.
         $this->assertTrue(Spot::find($this->spot->id)->approved);
+    }
+
+    /**
+     * Test to make sure that the api returns a 403 when a non-admin tries to approve a spot.
+     *
+     * @return void
+     */
+    public function testNonAdminDeleteSpot()
+    {
+        $response = $this->actingAs($this->user, 'api')->post('/api/spots/'.$this->spot->id.'/delete');
+        // Make sure the request failed with a 403
+        $response->assertStatus(403);
+        // Given that the request failed, the spot should still exist, check
+        $this->assertNotNull(Spot::find($this->spot->id));
+    }
+
+    /**
+     * Test to make sure that the api allows an admin to approve a spot.
+     *
+     * @return void
+     */
+    public function testAdminDeleteSpot()
+    {
+        $response = $this->actingAs($this->adminUser, 'api')->post('/api/spots/'.$this->spot->id.'/delete');
+        // Make sure the request was successful.
+        $response->assertStatus(200);
+        // Given that the request failed, the spot should still exist, check
+        $this->assertNull(Spot::find($this->spot->id));
     }
 }
