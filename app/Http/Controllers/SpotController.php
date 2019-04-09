@@ -43,7 +43,7 @@ class SpotController extends Controller
      * 4. Admins / people with the 'view inactive spots' permission will see all spots.
      *
      * @param Collection $spots
-     * @param User|null $user
+     * @param User|null  $user
      *
      * @return array
      */
@@ -56,12 +56,13 @@ class SpotController extends Controller
             if ($user) {
                 if (!$spotIsApproved && $user->can('view unapproved spots')) {
                     return true;
-                } else if (!$spotCategoryIsActive && $user->can('view inactive spots')) {
+                } elseif (!$spotCategoryIsActive && $user->can('view inactive spots')) {
                     return true;
                 }
 
                 $userIsAuthor = ($spot->author->id == $user->id);
                 $userMeetsViewPermission = ($spotIsApproved && $user->can($requiredViewPermission));
+
                 return ($userMeetsViewPermission || $userIsAuthor) && $spotCategoryIsActive;
             }
 
@@ -305,6 +306,5 @@ class SpotController extends Controller
 
             return response('Error deleting spot', 500);
         }
-
     }
 }

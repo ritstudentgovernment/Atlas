@@ -20,24 +20,25 @@ class Classification extends Model
     }
 
     /**
-     * All ForUser methods get all instances of a model that a person may use
+     * All ForUser methods get all instances of a model that a person may use.
      *
      * @param User/null the user to get Classifications for
      *
      * @return Collection
      */
-    static public function forUser(User $user = null)
+    public static function forUser(User $user = null)
     {
-        return Classification::all()->filter(function (Classification $classification) use ($user) {
+        return self::all()->filter(function (Classification $classification) use ($user) {
             $requiredCreatePermission = $classification->create_permission;
             if ($user == null || $requiredCreatePermission == null) {
                 return $requiredCreatePermission ? false : true;
             }
+
             return $user->can($requiredCreatePermission) && !$classification->deleted;
         })->values();
     }
 
-    static public function makeDefaultsForCategory(Category $category)
+    public static function makeDefaultsForCategory(Category $category)
     {
         $defaults = collect([
             [
@@ -61,7 +62,7 @@ class Classification extends Model
         ]);
         $defaults->each(function ($data) use ($category) {
             $data = array_merge($data, [
-               'category_id' => $category->id
+               'category_id' => $category->id,
             ]);
             Classification::create($data);
         });
