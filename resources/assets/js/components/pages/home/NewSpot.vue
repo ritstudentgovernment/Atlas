@@ -4,6 +4,7 @@
             trigger="manual"
             :visible="visible"
             v-model="visible"
+            v-if="availableCategories.length > 0"
     >
         <button
                 slot="reference"
@@ -191,10 +192,12 @@
                 window.spotsApi.get('create/').then((response) => {
                     let data = response.data;
                     self.availableCategories = data.availableCategories;
-                    self.activeCategory = self.availableCategories[0];
-                    self.spotCategory = self.activeCategory.name;
-                    self.availableClassifications = data.availableClassifications;
-                    self.loadData(data);
+                    if (self.availableCategories.length > 0) {
+                        self.activeCategory = self.availableCategories[0];
+                        self.spotCategory = self.activeCategory.name;
+                        self.availableClassifications = data.availableClassifications;
+                        self.loadData(data);
+                    }
                 }).catch((error) => {
                     console.error(error);
                 });

@@ -255,10 +255,10 @@ class SpotController extends Controller
 
         $classifications = Classification::forUser($user);
         $classifications = $classifications->filter(function (Classification $classification) use ($category) {
-            return $classification->category_id == $category->id;
+            return $category ? $classification->category_id == $category->id : false;
         })->values()->all();
-        $descriptors = $category->descriptors;
-        $types = $category->types;
+        $descriptors = $category ? $category->descriptors : [];
+        $types = $category ? $category->types : [];
 
         $requiredData = [
             'lat'               => 'number',
