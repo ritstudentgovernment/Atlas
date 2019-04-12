@@ -15,7 +15,7 @@ class TypeAPITest extends TestCase
 
     private $newTypeData = [
         'name'      => 'Test',
-        'category'  => 1
+        'category'  => 1,
     ];
 
     public function testCreateTypeAdmin()
@@ -55,6 +55,7 @@ class TypeAPITest extends TestCase
         $this->newTypeData['category_id'] = $this->newTypeData['category'];
         $this->type = Type::create($this->newTypeData);
         $this->assertNotNull($this->type);
+
         return $this->type->id;
     }
 
