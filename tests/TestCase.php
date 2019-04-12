@@ -48,7 +48,7 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * Helper function to act as the admin user and use the api driver
+     * Helper function to act as the admin user and use the api driver.
      */
     protected function adminApi()
     {
@@ -56,7 +56,7 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * Helper function to act as the normal user and use the api driver
+     * Helper function to act as the normal user and use the api driver.
      */
     protected function userApi()
     {

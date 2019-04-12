@@ -16,7 +16,7 @@ class CategoryAPITest extends TestCase
     private $newCategoryData = [
         'name'          => 'Test',
         'icon'          => 'T',
-        'description'   => 'This is a test, don\'t expect much!'
+        'description'   => 'This is a test, don\'t expect much!',
     ];
 
     public function testCreateCategoryAdmin()
@@ -54,6 +54,7 @@ class CategoryAPITest extends TestCase
     {
         $this->category = Category::create($this->newCategoryData);
         $this->assertNotNull($this->category);
+
         return $this->category->name;
     }
 
