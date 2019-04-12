@@ -80,6 +80,7 @@ class Spot extends Model
             $this->classification_id = $this->approvedClassification->id;
         }
         $this->save();
+
         return $this;
     }
 }

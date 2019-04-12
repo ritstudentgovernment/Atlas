@@ -58,6 +58,7 @@ class ClassificationAPITest extends TestCase
     {
         $this->classification = Classification::create($this->newClassificationData);
         $this->assertNotNull($this->classification);
+
         return $this->classification->id;
     }
 
