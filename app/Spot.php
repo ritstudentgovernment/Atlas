@@ -72,4 +72,14 @@ class Spot extends Model
     {
         return $this->belongsTo(Type::class);
     }
+
+    public function approve()
+    {
+        $this->approved = true;
+        if ($this->approvedClassification) {
+            $this->classification_id = $this->approvedClassification->id;
+        }
+        $this->save();
+        return $this;
+    }
 }

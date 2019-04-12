@@ -38,7 +38,7 @@ class Category extends Model
 
     public function classifications()
     {
-        return $this->hasMany(Classification::class);
+        return $this->hasMany(Classification::class)->where('deleted', false);
     }
 
     public function designatedClassifications()

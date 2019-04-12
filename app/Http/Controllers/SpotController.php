@@ -288,11 +288,7 @@ class SpotController extends Controller
      */
     public function approve(Request $request, Spot $spot)
     {
-        $spot->approved = true;
-        if ($spot->approvedClassification) {
-            $spot->classification_id = $spot->approvedClassification->id;
-        }
-        $spot->save();
+        $spot->approve();
     }
 
     public function delete(Request $request, Spot $spot)

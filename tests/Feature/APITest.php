@@ -10,8 +10,6 @@ use Tests\TestCase;
 class APITest extends TestCase
 {
     protected $spot;
-    protected $user;
-    protected $adminUser;
     protected $newSpotData;
 
     protected $deletes = ['spot'];
@@ -21,12 +19,10 @@ class APITest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->spot = (factory(Spot::class))->create(['approved' => false]);
-        $this->user = User::where('first_name', 'Morty')->first();
-        $this->adminUser = User::where('first_name', 'Sheldon')->first();
         $type = Type::first() ? Type::inRandomOrder()->first() : null;
         $descriptors = [];
         $categoryDescriptors = $type == null ?: $type->category->descriptors;
@@ -213,7 +209,7 @@ class APITest extends TestCase
         $response = $this->actingAs($this->adminUser, 'api')->post('/api/spots/'.$this->spot->id.'/delete');
         // Make sure the request was successful.
         $response->assertStatus(200);
-        // Given that the request failed, the spot should still exist, check
+        // Given that the request was successful, the spot should not exist, check
         $this->assertNull(Spot::find($this->spot->id));
     }
 }
