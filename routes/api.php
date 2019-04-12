@@ -51,6 +51,13 @@ Route::prefix('admin')->middleware(['permission:administer'])->group(function ()
                 Route::post('delete/soft', 'ClassificationController@softDelete');
             });
         });
+        Route::prefix('descriptor')->group(function () {
+            Route::post('create', 'DescriptorController@store');
+            Route::prefix('{descriptor}')->group(function () {
+                Route::post('update', 'DescriptorController@update');
+                Route::post('delete', 'DescriptorController@delete');
+            });
+        });
     });
     Route::prefix('/users')->group(function () {
         Route::get('/', 'UserController@index');
