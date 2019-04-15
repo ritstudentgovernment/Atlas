@@ -47,6 +47,6 @@
 
 @section('scripts')
 
-    <script src="{{ mix('/js/admin.js') }}" async defer></script>
+    <script src="{{ mix('/js/admin.js') }}"></script>
 
 @endsection

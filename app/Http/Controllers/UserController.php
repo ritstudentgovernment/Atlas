@@ -7,14 +7,24 @@ use Illuminate\Support\Collection;
 
 class UserController extends Controller
 {
+
+    /**
+     * Constructor to prevent unauthenticated access to sensitive routes.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+        $this->middleware('role_or_permission:admin|administer');
+    }
+
     /**
      * Function to get all of the users of this application.
      *
      * @return Collection The collection of users.
      */
-    public function index()
+    public function get()
     {
-        return User::select('id', 'first_name', 'last_name', 'email')->get();
+        return User::allUsers()->get();
     }
 
     /**

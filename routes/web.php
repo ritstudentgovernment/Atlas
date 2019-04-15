@@ -28,20 +28,17 @@ Route::get('logout', 'SAMLController@logout');
 
 Route::prefix('admin')->name('admin.')->namespace('Admin')->group(function () {
     Route::get('/', 'DashboardController@index')->name('dashboard');
-
     Route::prefix('spots')->name('spots.')->group(function () {
         Route::prefix('categories')->name('categories.')->group(function () {
-            Route::get('/', 'DashboardController@spotCategories')->name('all');
+            Route::get('/', 'DashboardController@categories')->name('all');
             Route::prefix('{category}')->group(function () {
-                Route::get('/', 'DashboardController@showCategory')->name('category');
+                Route::get('/', 'DashboardController@category')->name('category');
             });
         });
     });
-
     Route::prefix('users')->name('users.')->group(function () {
-        Route::get('all', 'DashboardController@index')->name('all');
-        Route::get('staff', 'DashboardController@index')->name('staff');
+        Route::get('all', 'DashboardController@users')->name('all');
+        Route::get('staff', 'DashboardController@staff')->name('staff');
     });
-
     Route::get('settings', 'DashboardController@index')->name('settings');
 });

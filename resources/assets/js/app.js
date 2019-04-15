@@ -31,6 +31,7 @@ Vue.component('filter-spots', require('./components/pages/home/FilterSpots.vue')
 Vue.component('admin-nav', require('./components/pages/admin/Nav.vue').default);
 Vue.component('admin-category-cards', require('./components/pages/admin/categories/CategoryCards.vue').default);
 Vue.component('admin-category-editor', require('./components/pages/admin/categories/editor/CategoryEditor.vue').default);
+Vue.component('admin-search-users', require('./components/pages/admin/users/SearchAllUsers.vue').default);
 
 export const EventBus = new Vue();
 
@@ -48,9 +49,10 @@ window.vue = new Vue({
  * Each component should (if calling the API, and does so in its created method) implement API calls
  * in a 'setup' method, and add that method to the onLoadedQueue for deferred processing.
  */
-if (window.coreApiLoaded) { window.coreApiLoaded(window.api); }
+if (window.coreApiLoaded) { console.log('loaded'); window.coreApiLoaded(window.api); }
 
 if (window.onLoadedQueue) {
+    console.log('loaded queue');
     window.onLoadedQueue.forEach(methodToCall => {
        methodToCall();
     });

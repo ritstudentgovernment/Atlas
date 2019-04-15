@@ -31,6 +31,19 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Spot::class);
     }
 
+    public static function allUsers()
+    {
+        return User::select(['id', 'first_name', 'last_name', 'email']);
+    }
+
+    public static function staff()
+    {
+        $users = User::allUsers()->get();
+        return $users->filter(function (User $user) {
+            return $user->hasAnyRole(['admin', 'reviewer']);
+        });
+    }
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Category;
 use App\Http\Controllers\Controller;
+use App\User;
 
 class DashboardController extends Controller
 {
@@ -33,24 +34,40 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function spotCategories()
+    public function categories()
     {
-        return view('pages.admin.categories', [
+        return view('pages.admin.categories.categories', [
             'pageLinks'  => json_encode($this->pageLinks),
             'categories' => json_encode(Category::with(['types', 'classifications', 'descriptors'])->get()),
         ]);
     }
 
-    public function showCategory(Category $category)
+    public function category(Category $category)
     {
         $category->descriptors;
         $category->types;
         $category->classifications;
         $category->setHidden([]);
 
-        return view('pages.admin.category', [
+        return view('pages.admin.categories.category', [
             'category'  => $category,
             'pageLinks' => json_encode($this->pageLinks),
+        ]);
+    }
+
+    public function users()
+    {
+        return view('pages.admin.users.users', [
+            'pageLinks'  => json_encode($this->pageLinks),
+            'users'      => json_encode(User::allUsers()->get()),
+        ]);
+    }
+
+    public function staff()
+    {
+        return view('pages.admin.users.staff', [
+            'pageLinks'  => json_encode($this->pageLinks),
+            'users'      => json_encode(User::staff()),
         ]);
     }
 }
