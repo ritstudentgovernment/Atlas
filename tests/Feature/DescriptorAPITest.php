@@ -57,6 +57,7 @@ class DescriptorAPITest extends TestCase
     {
         $this->descriptor = Descriptors::create($this->newDescriptorData);
         $this->assertNotNull($this->descriptor);
+
         return $this->descriptor->id;
     }
 
