@@ -23,7 +23,7 @@
             </el-table-column>
             <el-table-column label="Type">
                 <template slot-scope="scope">
-                    <el-select v-model="scope.row.value_type">
+                    <el-select v-model="scope.row.value_type" @change="handleUpdate(scope.row)">
                         <el-option label="Select" value="select"></el-option>
                         <el-option label="Number" value="number"></el-option>
                     </el-select>
@@ -80,7 +80,7 @@
                     return !(
                         descriptor.name.trim() === "" ||
                         descriptor.icon.trim() === "" ||
-                        descriptor.type.trim() === "" ||
+                        descriptor.value_type.trim() === "" ||
                         descriptor.default_value.trim() === "" ||
                         descriptor.allowed_values.trim() === ""
                     );
@@ -100,14 +100,89 @@
                     icon: ""
                 });
             },
-            handleNewDescriptor (index, descriptor) {
-
+            parseAllowedValues (descriptor) {
+                return descriptor.allowed_values.split(", ").join("|");
             },
-            handleUpdate (index, descriptor) {
-
+            handleNewDescriptor (index, descriptor) {
+                let newDescriptor = {
+                    category_id: this.categoryId,
+                    name: descriptor.name,
+                    value_type: descriptor.value_type,
+                    default_value: descriptor.default_value,
+                    allowed_values: this.parseAllowedValues(descriptor),
+                    icon: descriptor.icon
+                };
+                window.adminApi.post('spots/descriptor/create', newDescriptor)
+                    .then((response) => {
+                        this.$notify.success({
+                            title: "Descriptor Created Successfully",
+                            message: ""
+                        });
+                        this.descriptors[index].id = response.id;
+                        this.descriptors[index].temp = false;
+                    })
+                    .catch((error) => {
+                        this.$notify.error({
+                            title: "Error Creating Descriptor",
+                            message: error
+                        });
+                    });
+            },
+            handleUpdate (descriptor) {
+                if (!descriptor.temp) {
+                    let updatedDescriptor = {
+                        name: descriptor.name,
+                        value_type: descriptor.value_type,
+                        default_value: descriptor.default_value,
+                        allowed_values: this.parseAllowedValues(descriptor),
+                        icon: descriptor.icon
+                    };
+                    window.adminApi.post(`spots/descriptor/${descriptor.id}/update`, updatedDescriptor)
+                        .then(() => {
+                            this.$notify.success({
+                                title: "Updated Descriptor",
+                                message: ""
+                            });
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            this.$notify.error({
+                                title: "Error Updating Descriptor",
+                                message: error
+                            })
+                        });
+                }
             },
             handleDelete (index, descriptor) {
-
+                if (descriptor.temp) {
+                    this.descriptors.splice(index, 1);
+                } else {
+                    this.$confirm(`Delete Descriptor: ${descriptor.name}`, 'Warning: This action is irreversible!', {
+                        confirmButtonText: 'Delete',
+                        confirmButtonClass: 'el-button--danger margin-top-important',
+                        cancelButtonText: 'Cancel',
+                        center: true
+                    })
+                        .then(() => {
+                            window.adminApi.post(`spots/descriptor/${descriptor.id}/delete`)
+                                .then(() => {
+                                    this.$notify.success({
+                                        title: "Deleted Descriptor Successfully",
+                                        message: ""
+                                    });
+                                    this.descriptors.splice(index, 1);
+                                })
+                                .catch((error) => {
+                                    this.$notify.error({
+                                        title: "Error Deleting Descriptor",
+                                        message: error
+                                    });
+                                });
+                        })
+                        .catch(() => {
+                            this.$notify.info('Delete canceled');
+                        });
+                }
             }
         },
         created () {

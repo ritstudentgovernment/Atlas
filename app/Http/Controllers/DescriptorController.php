@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Descriptors;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -34,6 +35,7 @@ class DescriptorController extends Controller
     public function store(Request $request)
     {
         $rules = [
+            'category_id'       => 'sometimes|required|integer',
             'name'              => 'required|string',
             'value_type'        => 'required|string',
             'default_value'     => 'required|string',
@@ -52,6 +54,10 @@ class DescriptorController extends Controller
         $descriptor->allowed_values = $request->input('allowed_values');
         $descriptor->icon = $request->input('icon');
         $descriptor->save();
+
+        if ($request->has('category_id')) {
+            $descriptor->categories()->attach($request->input('category_id'));
+        }
 
         return $descriptor;
     }
