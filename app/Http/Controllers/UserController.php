@@ -7,7 +7,6 @@ use Illuminate\Support\Collection;
 
 class UserController extends Controller
 {
-
     /**
      * Constructor to prevent unauthenticated access to sensitive routes.
      */

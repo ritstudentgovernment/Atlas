@@ -33,12 +33,13 @@ class User extends Authenticatable implements JWTSubject
 
     public static function allUsers()
     {
-        return User::select(['id', 'first_name', 'last_name', 'email']);
+        return self::select(['id', 'first_name', 'last_name', 'email']);
     }
 
     public static function staff()
     {
-        $users = User::allUsers()->get();
+        $users = self::allUsers()->get();
+
         return $users->filter(function (User $user) {
             return $user->hasAnyRole(['admin', 'reviewer']);
         });

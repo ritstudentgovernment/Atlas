@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
 use App\Descriptors;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
