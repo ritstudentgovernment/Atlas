@@ -6,13 +6,12 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item><a href="/admin">Admin</a></el-breadcrumb-item>
         <el-breadcrumb-item>Users</el-breadcrumb-item>
-        <el-breadcrumb-item>All</el-breadcrumb-item>
     </el-breadcrumb>
 @endsection
 
 @section('page-content')
 
-    <admin-search-users></admin-search-users>
+    <admin-user-manager :raw-users="{{ $users }}"></admin-user-manager>
 
 @endsection
 <script>

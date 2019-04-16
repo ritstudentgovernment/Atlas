@@ -31,7 +31,8 @@ Vue.component('filter-spots', require('./components/pages/home/FilterSpots.vue')
 Vue.component('admin-nav', require('./components/pages/admin/Nav.vue').default);
 Vue.component('admin-category-cards', require('./components/pages/admin/categories/CategoryCards.vue').default);
 Vue.component('admin-category-editor', require('./components/pages/admin/categories/editor/CategoryEditor.vue').default);
-Vue.component('admin-search-users', require('./components/pages/admin/users/SearchAllUsers.vue').default);
+Vue.component('admin-user-manager', require('./components/pages/admin/users/UserManager.vue').default);
+Vue.component('admin-staff-manager', require('./components/pages/admin/users/StaffManager.vue').default);
 
 export const EventBus = new Vue();
 
@@ -52,7 +53,6 @@ window.vue = new Vue({
 if (window.coreApiLoaded) { console.log('loaded'); window.coreApiLoaded(window.api); }
 
 if (window.onLoadedQueue) {
-    console.log('loaded queue');
     window.onLoadedQueue.forEach(methodToCall => {
        methodToCall();
     });

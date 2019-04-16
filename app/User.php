@@ -42,7 +42,7 @@ class User extends Authenticatable implements JWTSubject
 
         return $users->filter(function (User $user) {
             return $user->hasAnyRole(['admin', 'reviewer']);
-        });
+        })->values()->all();
     }
 
     /**

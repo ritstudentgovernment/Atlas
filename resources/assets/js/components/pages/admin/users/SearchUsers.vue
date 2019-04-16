@@ -12,7 +12,19 @@
 
 <script>
     export default {
-        name: "SearchAllUsers",
+        name: "SearchUsers",
+        props: {
+            remote: {
+                type: [Boolean, String],
+                default: false
+            },
+            rawUsers: {
+                type: Array,
+                required () {
+                    return !this.props.remote;
+                }
+            }
+        },
         data () {
             return {
                 user: "",
@@ -34,22 +46,29 @@
             handleSelect (user) {
                 this.$emit('user-selected', user);
             },
+            mapRawUsers (users) {
+                return users.map((user) => {
+                    return {
+                        "value": `${user.first_name} ${user.last_name} (${user.email})`,
+                        "user": user
+                    };
+                });
+            },
             loadUsers () {
                 let self = this;
-                window.adminApi.get('users/').then((response) => {
-                    self.users = response.data.map((user) => {
-                        return {
-                            "value": `${user.first_name} ${user.last_name} (${user.email})`,
-                            "user": user
-                        };
-                    });
+                window.adminApi.get(this.remote).then((response) => {
+                    self.users = this.mapRawUsers(response.data)
                 });
             }
         },
         created () {
             window.sau = this;
-            window.onLoadedQueue = window.onLoadedQueue ? window.onLoadedQueue : [];
-            window.onLoadedQueue.push(this.loadUsers);
+            if (this.remote) {
+                window.onLoadedQueue = window.onLoadedQueue ? window.onLoadedQueue : [];
+                window.onLoadedQueue.push(this.loadUsers);
+            } else {
+                this.users = this.mapRawUsers(this.rawUsers);
+            }
         }
     }
 </script>

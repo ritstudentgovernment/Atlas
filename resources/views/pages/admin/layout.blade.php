@@ -3,21 +3,6 @@
 @section('title', 'Admin Panel')
 
 @section('page_head')
-
-    <style>
-        #instantclick {
-
-            z-index: 10000;
-            display: block;
-
-        }
-
-        #instantclick-bar {
-
-            background: white;
-
-        }
-    </style>
     <link rel="stylesheet" href="{{ mix('/css/admin.css') }}">
 
 @endsection
