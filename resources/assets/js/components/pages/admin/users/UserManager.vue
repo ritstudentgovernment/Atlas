@@ -1,5 +1,53 @@
 <template>
-    <search-users :raw-users="users" @user-selected="handleUserSelected"></search-users>
+    <el-card>
+        <el-table
+                :default-sort="{prop: 'id', order: 'ascending'}"
+                :data="users.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+                style="width: 100%">
+            <el-table-column
+                    label="User ID"
+                    prop="id"
+                    sortable>
+            </el-table-column>
+            <el-table-column
+                    label="First Name"
+                    prop="first_name"
+                    sortable>
+            </el-table-column>
+            <el-table-column
+                    label="Last Name"
+                    prop="last_name"
+                    sortable>
+            </el-table-column>
+            <el-table-column
+                    label="Email"
+                    prop="email"
+                    sortable>
+            </el-table-column>
+            <el-table-column
+                    label="Number of Spots"
+                    prop="numSpotsCreated"
+                    sortable>
+            </el-table-column>
+            <el-table-column align="right">
+                <template slot="header">
+                    <el-input
+                            v-model="search"
+                            size="mini"
+                            placeholder="Type to search"/>
+                </template>
+                <template>
+                    <el-button
+                            size="mini"
+                            @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-card>
 </template>
 
 <script>
@@ -12,6 +60,7 @@
             return {
                 user: null,
                 users: [],
+                search: "",
             };
         },
         methods: {
