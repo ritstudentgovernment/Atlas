@@ -41,7 +41,7 @@ class UserController extends Controller
      * Function to get a specific users data.
      *
      * @param Request $request
-     * @param User $user
+     * @param User    $user
      *
      * @return User The collection of users.
      */
@@ -49,6 +49,7 @@ class UserController extends Controller
     {
         // Add roles to user response
         $user->hasAnyRole(['admin', 'reviewer']);
+
         return $user;
     }
 
@@ -90,6 +91,7 @@ class UserController extends Controller
      * Function to demote a user from the admin role.
      *
      * @param User $user
+     *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function demoteAdmin(Request $request, User $user)
@@ -98,6 +100,7 @@ class UserController extends Controller
             return response('You cannot remove yourself from the admin role', 400);
         }
         $user->removeRole('admin');
+
         return response(200);
     }
 }
