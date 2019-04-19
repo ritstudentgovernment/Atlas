@@ -49,7 +49,7 @@ window.vue = new Vue({
  * Each component should (if calling the API, and does so in its created method) implement API calls
  * in a 'setup' method, and add that method to the onLoadedQueue for deferred processing.
  */
-if (window.coreApiLoaded) { console.log('loaded'); window.coreApiLoaded(window.api); }
+if (window.coreApiLoaded) { window.coreApiLoaded(window.api); }
 
 if (window.onLoadedQueue) {
     window.onLoadedQueue.forEach(methodToCall => {
