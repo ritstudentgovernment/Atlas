@@ -30,9 +30,12 @@ class PermissionsSeeder extends Seeder
 
         // Relate permissions to roles
         $admin->syncPermissions([
+            $make_designated_spots,
+            $view_unapproved_spots,
             $view_inactive_spots,
             $mass_upload_spots,
             $edit_categories,
+            $approve_spots,
             $administer,
         ]);
         $reviewer->syncPermissions([
@@ -43,7 +46,7 @@ class PermissionsSeeder extends Seeder
 
         // If the seeds were run in a dev environment, the test admin user will exist. Give them admin rights.
         if ($tempAdminUser = User::where('email', 'scooper@samltest.id')->first()) {
-            $tempAdminUser->assignRole(['admin', 'reviewer']);
+            $tempAdminUser->assignRole('admin');
 
             // For seeding purposes make some users able to make designated spots
             User::all()->each(function (User $user) {

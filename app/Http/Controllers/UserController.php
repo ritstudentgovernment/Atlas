@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 class UserController extends Controller
@@ -21,25 +22,82 @@ class UserController extends Controller
      *
      * @return Collection The collection of users.
      */
-    public function get()
+    public function all()
     {
         return User::allUsers()->get();
     }
 
     /**
+     * Function to get all of the staff users of this application.
+     *
+     * @return Collection The collection of users.
+     */
+    public function staff()
+    {
+        return User::staff();
+    }
+
+    /**
+     * Function to get a specific users data.
+     *
+     * @param Request $request
+     * @param User $user
+     *
+     * @return User The collection of users.
+     */
+    public function get(Request $request, User $user)
+    {
+        // Add roles to user response
+        $user->hasAnyRole(['admin', 'reviewer']);
+        return $user;
+    }
+
+    /**
      * Function to promote a user to a reviewer role.
+     *
+     * @param User $user
+     *
+     * @return User
      */
     public function promoteReviewer(User $user)
     {
         return $user->assignRole('reviewer');
     }
 
+    /**
+     * Function to promote a user to the admin role.
+     *
+     * @param User $user
+     *
+     * @return User
+     */
     public function promoteAdmin(User $user)
     {
-        if (!$user->hasRole('reviewer')) {
-            $this->promoteReviewer($user);
-        }
-
         return $user->assignRole('admin');
+    }
+
+    /**
+     * Function to demote a user from the reviewer role.
+     *
+     * @param User $user
+     */
+    public function demoteReviewer(User $user)
+    {
+        $user->removeRole('reviewer');
+    }
+
+    /**
+     * Function to demote a user from the admin role.
+     *
+     * @param User $user
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function demoteAdmin(Request $request, User $user)
+    {
+        if ($request->user('api')->id == $user->id) {
+            return response('You cannot remove yourself from the admin role', 400);
+        }
+        $user->removeRole('admin');
+        return response(200);
     }
 }

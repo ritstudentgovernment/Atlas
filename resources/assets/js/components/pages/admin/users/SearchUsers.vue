@@ -1,13 +1,12 @@
 <template>
-    <el-card>
-        <el-autocomplete
-                class="full-width"
-                v-model="user"
-                :fetch-suggestions="queryUser"
-                placeholder="User Search"
-                @select="handleSelect"
-        ></el-autocomplete>
-    </el-card>
+    <el-autocomplete
+            class="full-width"
+            v-model="user"
+            :fetch-suggestions="queryUser"
+            placeholder="User Search"
+            @select="handleSelect"
+            :clearable="true"
+    ></el-autocomplete>
 </template>
 
 <script>
@@ -19,10 +18,11 @@
                 default: false
             },
             rawUsers: {
-                type: Array,
-                required () {
-                    return !this.props.remote;
-                }
+                type: Array
+            },
+            selected: {
+                type: Object,
+                default: null
             }
         },
         data () {
@@ -30,6 +30,16 @@
                 user: "",
                 users: []
             };
+        },
+        watch: {
+            selected (user) {
+                this.user = user ? `${user.first_name} ${user.last_name} (${user.email})` : "";
+            },
+            user (user) {
+                if (!user) {
+                    this.$emit('user-selected', null);
+                }
+            }
         },
         methods: {
             queryUser (searchString, cb) {
@@ -39,7 +49,7 @@
             },
             createFilter (searchString) {
                 return (row) => {
-                    let searchSpace = (row.user.first_name + row.user.last_name + row.user.email).toLowerCase();
+                    let searchSpace = `${row.user.first_name} ${row.user.last_name} (${row.user.email})`.toLowerCase();
                     return searchSpace.indexOf(searchString.toLowerCase()) > -1;
                 };
             },

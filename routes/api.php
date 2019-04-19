@@ -60,10 +60,18 @@ Route::prefix('admin')->middleware(['permission:administer'])->group(function ()
         });
     });
     Route::prefix('users')->group(function () {
-        Route::get('/', 'UserController@get');
-        Route::prefix('promote/{user}')->group(function () {
-            Route::post('reviewer', 'UserController@promoteReviewer');
-            Route::post('admin', 'UserController@promoteAdmin');
+        Route::get('/', 'UserController@all');
+        Route::get('/staff', 'UserController@staff');
+        Route::prefix('{user}')->group(function () {
+            Route::get('/', 'UserController@get');
+            Route::prefix('promote')->group(function () {
+                Route::post('reviewer', 'UserController@promoteReviewer');
+                Route::post('admin', 'UserController@promoteAdmin');
+            });
+            Route::prefix('demote')->group(function () {
+                Route::post('reviewer', 'UserController@demoteReviewer');
+                Route::post('admin', 'UserController@demoteAdmin');
+            });
         });
     });
 });

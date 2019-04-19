@@ -18,7 +18,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = ['first_name', 'last_name', 'email', 'password'];
-    protected $appends = ['numSpotsCreated'];
+    protected $appends = ['numSpotsCreated', 'isAdmin', 'isReviewer'];
     protected $hidden = ['password', 'remember_token'];
 
     public function spots()
@@ -43,6 +43,16 @@ class User extends Authenticatable implements JWTSubject
     public function getNumSpotsCreatedAttribute()
     {
         return $this->spots->count();
+    }
+
+    public function getIsAdminAttribute()
+    {
+        return $this->hasRole('admin');
+    }
+
+    public function getIsReviewerAttribute()
+    {
+        return $this->hasRole('reviewer');
     }
 
     /**

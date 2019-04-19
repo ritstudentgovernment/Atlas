@@ -9,7 +9,6 @@ import API from "./classes/api/API"
 import Vue from 'vue';
 import ElementUI from 'element-ui';
 import locale from 'element-ui/lib/locale/lang/en'
-import 'element-ui/lib/theme-chalk/index.css';
 
 require('./bootstrap');
 
@@ -58,7 +57,7 @@ if (window.onLoadedQueue) {
     });
 }
 
-const capitalize = (s) => {
+window.capitalize = (s) => {
     if (typeof s !== 'string') return '';
     return s.charAt(0).toUpperCase() + s.slice(1);
 };

@@ -36,15 +36,6 @@
                             size="mini"
                             placeholder="Type to search"/>
                 </template>
-                <template>
-                    <el-button
-                            size="mini"
-                            @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
-                    <el-button
-                            size="mini"
-                            type="danger"
-                            @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
-                </template>
             </el-table-column>
         </el-table>
     </el-card>
