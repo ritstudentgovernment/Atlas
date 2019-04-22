@@ -67,10 +67,10 @@
                         <h4>Pioneering Advanced Technologies</h4>
                         <p>Naps relies on the following advanced technologies to deliver a cutting-edge high performance experience to students. See below for a partial list:</p>
                         <ul>
-                            <li>Laravel</li>
-                            <li>Google Maps</li>
-                            <li>UIKit</li>
                             <li>Vue JS</li>
+                            <li>Laravel</li>
+                            <li>ElementUI</li>
+                            <li>Google Maps</li>
                         </ul>
                     </li>
                 </ul>
