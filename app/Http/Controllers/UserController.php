@@ -77,6 +77,7 @@ class UserController extends Controller
         if ($user->hasRole('reviewer')) {
             $user->removeRole('reviewer');
         }
+
         return $user->assignRole('admin');
     }
 
@@ -90,6 +91,7 @@ class UserController extends Controller
     public function demoteReviewer(User $user)
     {
         $user->removeRole('reviewer');
+
         return $user;
     }
 
