@@ -372,20 +372,35 @@
     }
 </script>
 
-<style scoped>
-    #new-spot-popup *{
-        color: inherit;
-    }
-    #new-spot-popup div:not(:last-of-type){
-        padding-bottom: 10px;
-    }
-    #new-spot-popup h4{
-        border-bottom: 1px solid #ccc;
-        text-align: center;
-        margin-bottom: 10px;
-        padding-bottom: .5em;
-    }
-    #new-spot-popup h5{
-        margin-bottom: 5px;
+<style scoped lang="scss">
+    #new-spot-popup {
+
+        * {
+
+            color: inherit;
+
+        }
+
+        div:not(:last-of-type) {
+
+            padding-bottom: 10px;
+
+        }
+
+        h4 {
+
+            text-align: center;
+            margin-bottom: 10px;
+            padding-bottom: .5em;
+            border-bottom: 1px solid #ccc;
+
+        }
+
+        h5 {
+
+            margin-bottom: 5px;
+
+        }
+
     }
 </style>

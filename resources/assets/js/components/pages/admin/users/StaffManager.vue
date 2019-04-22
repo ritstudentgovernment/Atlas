@@ -9,7 +9,7 @@
                 <el-col :sm="12" :md="10" :lg="6">
                     <el-row :gutter="20">
                         <el-col :span="12">
-                            <el-button v-if="user == null || !isAdmin" :disabled="user == null" @click="updateUserRole('admin', true)" type="primary" class="full-width">Make Admin</el-button>
+                            <el-button v-if="user == null || !isAdmin" :disabled="user == null || isReviewer" @click="updateUserRole('admin', true)" type="primary" class="full-width">Make Admin</el-button>
                             <el-button v-else @click="updateUserRole('admin', false)" type="primary" class="full-width">Remove Admin</el-button>
                         </el-col>
                         <el-col :span="12">
@@ -41,17 +41,18 @@
                         prop="email"
                         sortable>
                 </el-table-column>
-                <el-table-column
-                        label="Admin"
-                        prop="isAdmin"
-                        :formatter="adminFormatter"
-                        sortable>
-                </el-table-column>
-                <el-table-column
-                        label="Reviewer"
-                        prop="isReviewer"
-                        :formatter="reviewerFormatter"
-                        sortable>
+                <el-table-column label="Role">
+                    <template slot-scope="scope">
+                        <el-tag
+                                v-for="role in scope.row.roles"
+                                :key="'role-' + role.name"
+                                closable
+                                class="capitalize"
+                                :type="role.name === 'admin' ? 'primary' : 'success'"
+                                @close="updateUserRole(role.name, false, scope.row)">
+                            {{role.name}}
+                        </el-tag>
+                    </template>
                 </el-table-column>
                 <el-table-column align="right">
                     <template slot="header">
@@ -96,17 +97,18 @@
         },
         methods: {
             handleUserSelected (selected) {
+                this.user = null;
+
                 if (selected) {
                     this.user = selected.user;
-                } else {
-                    this.user = null;
                 }
             },
-            updateUserRole (role, value) {
+            updateUserRole (role, value, row = null) {
+                this.user = row ? row : this.user;
                 let promoteOrDemote = value ? "promote" : "demote";
                 window.adminApi.post(`users/${this.user.id}/${promoteOrDemote}/${role}`)
-                    .then(() => {
-                        this.user[`is${capitalize(role)}`] = value;
+                    .then((response) => {
+                        this.updateUserProperties(response.data, this);
                         let userWasStaff = this.users.indexOf(this.user) !== -1;
                         if (value && !userWasStaff) {
                             this.users.push(this.user);
@@ -116,7 +118,6 @@
                         });
                     })
                     .catch((error) => {
-                        console.log(error);
                         this.$notify.error({
                             title: "Error changing user role",
                             message: error.response.data
@@ -127,19 +128,22 @@
                 this.user = user;
             },
             adminFormatter (value) {
-                return value.isAdmin ? "True" : "False";
+                return value.isAdmin ? "Yes" : "No";
             },
             reviewerFormatter (value) {
-                return value.isReviewer ? "True" : "False";
+                return value.isReviewer ? "Yes" : "No";
+            },
+            updateUserProperties (newUser, reference) {
+                Object.keys(newUser).forEach(function(key, _) {
+                   reference.user[key] = newUser[key];
+                });
             }
         },
         created () {
-            window.sm = this;
             this.users = this.rawUsers.map((user) => {
                 user.name = `${user.first_name} ${user.last_name}`;
                 return user;
             });
-            console.log(this.users);
         }
     }
 </script>

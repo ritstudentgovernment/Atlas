@@ -74,6 +74,9 @@ class UserController extends Controller
      */
     public function promoteAdmin(User $user)
     {
+        if ($user->hasRole('reviewer')) {
+            $user->removeRole('reviewer');
+        }
         return $user->assignRole('admin');
     }
 
@@ -81,10 +84,13 @@ class UserController extends Controller
      * Function to demote a user from the reviewer role.
      *
      * @param User $user
+     *
+     * @return User
      */
     public function demoteReviewer(User $user)
     {
         $user->removeRole('reviewer');
+        return $user;
     }
 
     /**
@@ -92,7 +98,7 @@ class UserController extends Controller
      *
      * @param User $user
      *
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response | User
      */
     public function demoteAdmin(Request $request, User $user)
     {
@@ -101,6 +107,6 @@ class UserController extends Controller
         }
         $user->removeRole('admin');
 
-        return response(200);
+        return $user;
     }
 }
