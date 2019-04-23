@@ -154,4 +154,12 @@
         margin-top: 20px;
 
     }
+
+    .el-button.full-width {
+
+        padding-left: 0;
+        padding-right: 0;
+        text-align: center;
+
+    }
 </style>
