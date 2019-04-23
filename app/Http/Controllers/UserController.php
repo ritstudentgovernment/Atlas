@@ -62,7 +62,13 @@ class UserController extends Controller
      */
     public function promoteReviewer(User $user)
     {
-        return $user->assignRole('reviewer');
+        if ($user->hasRole('admin')) {
+            $user->removeRole('admin');
+        }
+
+        $user->assignRole('reviewer');
+
+        return User::find($user->id);
     }
 
     /**
@@ -78,7 +84,9 @@ class UserController extends Controller
             $user->removeRole('reviewer');
         }
 
-        return $user->assignRole('admin');
+        $user->assignRole('admin');
+
+        return User::find($user->id);
     }
 
     /**
