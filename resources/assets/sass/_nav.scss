@@ -13,21 +13,33 @@
     min-height: 30px;
     margin: 0 auto;
 
-    #logo, #left-logo {
+    &:first-child {
 
-      overflow: hidden;
+      height: 30px;
+
+    }
+
+    .logo {
 
       img {
 
+        display: inline-block;
+        margin-top: 5px;
         height: 30px;
 
       }
 
     }
 
-    #left-logo, #mobile-menu-button {
+    .mobile {
 
       display: none;
+
+      .uk-open {
+
+        top: 45px !important;
+
+      }
 
     }
 
@@ -62,13 +74,20 @@
 	
 	@media screen and (max-width: $mobile-breakpoint) {
 
-      #logo, a:not(#left-logo) {
+      & {
+
+        width: 100%;
+        padding-right: 0;
+
+      }
+
+      .desktop {
 
         display: none;
 
       }
 
-      #left-logo {
+      .mobile {
 
         display: block;
 
