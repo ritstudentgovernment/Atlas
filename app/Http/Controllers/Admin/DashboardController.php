@@ -74,7 +74,7 @@ class DashboardController extends Controller
     public function settings()
     {
         return view('pages.admin.settings', [
-            'pageLinks'  => json_encode($this->pageLinks)
+            'pageLinks'  => json_encode($this->pageLinks),
         ]);
     }
 }
