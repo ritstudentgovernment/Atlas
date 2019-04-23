@@ -11,7 +11,7 @@
             <category-card :category="category" @deleted="handleDeleted" class="material-hover margin-bottom"></category-card>
         </el-col>
         <el-col :sx="24" :sm="12" :md="8" :lg="7" :xl="6">
-            <new-category-card class="margin-bottom"></new-category-card>
+            <new-category-card class="margin-bottom" :active="newCategoryOpen"></new-category-card>
         </el-col>
     </el-row>
 </template>
@@ -31,7 +31,8 @@
         props: ['rawCategories'],
         data () {
             return {
-                categories: []
+                categories: [],
+                newCategoryOpen: false,
             };
         },
         methods: {
@@ -39,11 +40,18 @@
                 this.categories = this.categories.filter((category) => {
                     return category.name !== name;
                 });
+            },
+            setup () {
+                if ($.urlParam('newCategory')) {
+                    this.newCategoryOpen = true;
+                }
             }
         },
         created () {
-            this.categories = JSON.parse(this.rawCategories);
             window.cc = this;
+            this.categories = JSON.parse(this.rawCategories);
+            window.onLoadedQueue = window.onLoadedQueue ? window.onLoadedQueue : [];
+            window.onLoadedQueue.push(this.setup);
         }
     }
 </script>

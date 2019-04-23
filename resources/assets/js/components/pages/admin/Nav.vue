@@ -16,7 +16,7 @@
             <el-menu-item index="2-1" @click="handleNavClick('users.staff')">Staff Manager</el-menu-item>
             <el-menu-item index="2-2" @click="handleNavClick('users.all')">All Users</el-menu-item>
         </el-submenu>
-        <el-menu-item index="3-1" @click="handleNavClick('settings')">
+        <el-menu-item index="3" @click="handleNavClick('settings')">
             <i class="el-icon-setting"></i>
             <span>Settings</span>
         </el-menu-item>

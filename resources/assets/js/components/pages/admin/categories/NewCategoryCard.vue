@@ -45,6 +45,12 @@
 <script>
     export default {
         name: "NewCategoryCard",
+        props: {
+            active: {
+                type: Boolean,
+                default: false
+            }
+        },
         data () {
             return {
                 clicked: false,
@@ -80,6 +86,14 @@
                     });
             }
         },
+        watch: {
+            active () {
+                this.clicked = this.active;
+            }
+        },
+        created () {
+            this.clicked = this.active;
+        }
     }
 </script>
 

@@ -32,6 +32,7 @@ Vue.component('admin-category-cards', require('./components/pages/admin/categori
 Vue.component('admin-category-editor', require('./components/pages/admin/categories/editor/CategoryEditor.vue').default);
 Vue.component('admin-user-manager', require('./components/pages/admin/users/UserManager.vue').default);
 Vue.component('admin-staff-manager', require('./components/pages/admin/users/StaffManager.vue').default);
+Vue.component('admin-settings-bulk-spots', require('./components/pages/admin/settings/BulkSpotUpload').default);
 
 export const EventBus = new Vue();
 
@@ -41,21 +42,6 @@ window.vue = new Vue({
         ElementUI
     }
 });
-
-/**
- * In order to deal with axios headers not being initialized properly (auth and csrf headers missing)
- * early on in the execution trace of the app, specifically in the mounted or created methods of Vue
- * components, use this queue to defer processing until the app.js script is finished loading.
- * Each component should (if calling the API, and does so in its created method) implement API calls
- * in a 'setup' method, and add that method to the onLoadedQueue for deferred processing.
- */
-if (window.coreApiLoaded) { window.coreApiLoaded(window.api); }
-
-if (window.onLoadedQueue) {
-    window.onLoadedQueue.forEach(methodToCall => {
-       methodToCall();
-    });
-}
 
 window.capitalize = (s) => {
     if (typeof s !== 'string') return '';
@@ -105,3 +91,18 @@ $.urlParam = (name, value = false) => {
     return getValue(name);
 
 };
+
+/**
+ * In order to deal with axios headers not being initialized properly (auth and csrf headers missing)
+ * early on in the execution trace of the app, specifically in the mounted or created methods of Vue
+ * components, use this queue to defer processing until the app.js script is finished loading.
+ * Each component should (if calling the API, and does so in its created method) implement API calls
+ * in a 'setup' method, and add that method to the onLoadedQueue for deferred processing.
+ */
+if (window.coreApiLoaded) { window.coreApiLoaded(window.api); }
+
+if (window.onLoadedQueue) {
+    window.onLoadedQueue.forEach(methodToCall => {
+        methodToCall();
+    });
+}

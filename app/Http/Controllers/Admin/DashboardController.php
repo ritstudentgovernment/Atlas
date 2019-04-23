@@ -70,4 +70,11 @@ class DashboardController extends Controller
             'users'      => json_encode(User::staff()),
         ]);
     }
+
+    public function settings()
+    {
+        return view('pages.admin.settings', [
+            'pageLinks'  => json_encode($this->pageLinks)
+        ]);
+    }
 }

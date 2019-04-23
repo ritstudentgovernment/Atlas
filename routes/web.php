@@ -40,5 +40,5 @@ Route::prefix('admin')->name('admin.')->namespace('Admin')->group(function () {
         Route::get('all', 'DashboardController@users')->name('all');
         Route::get('staff', 'DashboardController@staff')->name('staff');
     });
-    Route::get('settings', 'DashboardController@index')->name('settings');
+    Route::get('settings', 'DashboardController@settings')->name('settings');
 });
