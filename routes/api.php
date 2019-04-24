@@ -18,8 +18,8 @@
      // Routes protected by authentication
      Route::middleware(['auth:api'])->group(function () {
          Route::prefix('/create')->group(function () {
-             Route::post('/', 'SpotController@store');
              Route::get('/', 'SpotController@getDefaults');
+             Route::post('/', 'SpotController@store');
          });
          Route::prefix('{spot}')->middleware(['permission:approve spots'])->group(function () {
              Route::post('/approve', 'SpotController@approve');

@@ -21,7 +21,7 @@ class CategoryController extends Controller
 
     public function get()
     {
-        return Category::all();
+        return Category::with(['classifications', 'types'])->get();
     }
 
     public function store(Request $request)

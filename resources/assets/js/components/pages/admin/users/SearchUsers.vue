@@ -74,8 +74,12 @@
         created () {
             window.sau = this;
             if (this.remote) {
-                window.onLoadedQueue = window.onLoadedQueue ? window.onLoadedQueue : [];
-                window.onLoadedQueue.push(this.loadUsers);
+                if (window.adminApi && window.adminApi.api) {
+                    this.loadUsers();
+                } else {
+                    window.onLoadedQueue = window.onLoadedQueue ? window.onLoadedQueue : [];
+                    window.onLoadedQueue.push(this.loadUsers);
+                }
             } else {
                 this.users = this.mapRawUsers(this.rawUsers);
             }
