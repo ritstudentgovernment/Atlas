@@ -101,7 +101,9 @@
                 });
             },
             parseAllowedValues (descriptor) {
-                return descriptor.allowed_values.split(", ").join("|");
+                return descriptor.allowed_values.split(",").join("|").map((value) => {
+                    return value.trim();
+                });
             },
             handleNewDescriptor (index, descriptor) {
                 let newDescriptor = {

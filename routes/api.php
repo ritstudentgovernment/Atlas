@@ -58,6 +58,11 @@ Route::prefix('admin')->middleware(['permission:administer'])->group(function ()
                 Route::post('delete', 'DescriptorController@delete');
             });
         });
+        Route::prefix('upload')->group(function () {
+            Route::post('/', 'SpotController@uploadSpotCSV');
+            Route::post('descriptors', 'SpotController@uploadDescriptorCSV');
+            Route::post('run', 'SpotController@runImport');
+        });
     });
     Route::prefix('users')->group(function () {
         Route::get('/', 'UserController@all');
