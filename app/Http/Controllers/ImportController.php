@@ -6,11 +6,9 @@ use App\Category;
 use App\Descriptors;
 use App\Spot;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 use League\Csv\Reader;
-use Maatwebsite\Excel\Facades\Excel;
 
 class ImportController extends Controller
 {
@@ -40,9 +38,11 @@ class ImportController extends Controller
         return $path;
     }
 
-    private function initReader($path){
+    private function initReader($path)
+    {
         $reader = Reader::createFromString(Storage::get($path));
         $reader->setHeaderOffset(0);
+
         return $reader;
     }
 
@@ -52,7 +52,6 @@ class ImportController extends Controller
         $spotsCsv = $this->initReader($csvPath);
 
         foreach ($spotsCsv as $csvLine) {
-
             $spotData = array_merge($commonData, [
                 'lat'   => $csvLine['lat'],
                 'lng'   => $csvLine['lng'],
@@ -60,7 +59,6 @@ class ImportController extends Controller
             ]);
 
             $spots->push(Spot::create($spotData));
-
         }
 
         return $spots;
@@ -71,13 +69,11 @@ class ImportController extends Controller
         $descriptorsCsv = $this->initReader($csvPath);
 
         foreach ($descriptorsCsv as $index => $csvLine) {
-
             $spot = $spots->get($index);
             $descriptors = [];
             $requiredDescriptors = $spot->category->descriptors;
 
             foreach ($csvLine as $descriptorName => $value) {
-
                 $descriptor = $requiredDescriptors->filter(function (Descriptors $descriptor) use ($descriptorName) {
                     return $descriptor->name == $descriptorName;
                 })->first();
@@ -87,11 +83,9 @@ class ImportController extends Controller
                 }
 
                 $descriptors[$descriptor->id] = ['value' => $value];
-
             }
 
             $spot->descriptors()->attach($descriptors);
-
         }
 
         return $spots;
@@ -115,7 +109,7 @@ class ImportController extends Controller
         $category = Category::where('name', $request->input('category'))->first();
 
         if ($category === null) {
-            return response("Category not found", 400);
+            return response('Category not found', 400);
         }
 
         $commonData = [
@@ -126,11 +120,8 @@ class ImportController extends Controller
         ];
 
         if ($spots = $this->importSpotsFromCsv($request->input('spotsCsvPath'), $commonData)) {
-
             if ($this->importDescriptorsFromCsv($request->input('descriptorsCsvPath'), $spots)) {
-
                 return response('Spots Import Success', 200);
-
             }
 
             return response('Failed To Import Descriptors', 400);
@@ -138,5 +129,4 @@ class ImportController extends Controller
 
         return response('Failed To Import Spots', 400);
     }
-
 }
