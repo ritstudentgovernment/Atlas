@@ -160,11 +160,12 @@
                         Author: <em>{{ author.first_name }} {{ author.last_name }}</em><br />
                         Icon Preview: <img :src="icon" class="spot-icon" />
                     </el-card>
+                </el-row>
+                <el-row>
                     <el-button
                             @click="runImport"
                             :loading="loading"
-                            type="primary"
-                            class="margin-top">
+                            type="primary">
                         Run Import
                     </el-button>
                 </el-row>

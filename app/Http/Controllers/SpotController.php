@@ -303,4 +303,9 @@ class SpotController extends Controller
             return response('Error deleting spot', 500);
         }
     }
+
+    public function unapprovedCount(Request $request)
+    {
+        return Spot::where('approved', false)->count();
+    }
 }

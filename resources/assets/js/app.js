@@ -28,6 +28,7 @@ Vue.prototype.$http = window.axios;
 Vue.component('new-spot', require('./components/pages/home/NewSpot.vue').default);
 Vue.component('filter-spots', require('./components/pages/home/FilterSpots.vue').default);
 Vue.component('admin-nav', require('./components/pages/admin/Nav.vue').default);
+Vue.component('admin-dashboard', require('./components/pages/admin/dashboard/Dashboard.vue').default);
 Vue.component('admin-category-cards', require('./components/pages/admin/categories/CategoryCards.vue').default);
 Vue.component('admin-category-editor', require('./components/pages/admin/categories/editor/CategoryEditor.vue').default);
 Vue.component('admin-user-manager', require('./components/pages/admin/users/UserManager.vue').default);

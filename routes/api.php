@@ -30,6 +30,7 @@
 
 Route::prefix('admin')->middleware(['permission:administer'])->group(function () {
     Route::prefix('spots')->group(function () {
+        Route::get('unapproved', 'SpotController@unapprovedCount');
         Route::prefix('category')->group(function () {
             Route::post('create', 'CategoryController@store');
             Route::prefix('{category}')->group(function () {

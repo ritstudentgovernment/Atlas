@@ -53,6 +53,15 @@ class UserController extends Controller
         return $user;
     }
 
+    public function getLast10(Request $request)
+    {
+        $count = 0;
+        User::orderBy('')->filter(function (User $user) use ($count) {
+            $count++;
+
+        });
+    }
+
     /**
      * Function to promote a user to a reviewer role.
      *
