@@ -59,9 +59,9 @@ Route::prefix('admin')->middleware(['permission:administer'])->group(function ()
             });
         });
         Route::prefix('upload')->group(function () {
-            Route::post('/', 'SpotController@uploadSpotCSV');
-            Route::post('descriptors', 'SpotController@uploadDescriptorCSV');
-            Route::post('run', 'SpotController@runImport');
+            Route::post('/', 'ImportController@uploadSpotsCSV');
+            Route::post('descriptors', 'ImportController@uploadDescriptorsCSV');
+            Route::post('run', 'ImportController@runImport');
         });
     });
     Route::prefix('users')->group(function () {

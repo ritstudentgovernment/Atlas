@@ -74,6 +74,7 @@
                     <el-upload
                             drag
                             key="spots"
+                            name="spotsCsv"
                             :headers="headers"
                             :file-list="fileList"
                             :on-error="handleUploadFailure"
@@ -127,7 +128,8 @@
                 <el-col>
                     <el-upload
                             drag
-                            key="spots"
+                            key="descriptors"
+                            name="descriptorsCsv"
                             :headers="headers"
                             :file-list="fileList"
                             :on-error="handleUploadFailure"
@@ -207,7 +209,8 @@
                 descriptorsCsvPath: null,
                 fileList: [],
                 icon: null,
-                loading: false
+                loading: false,
+                exportData: null
             };
         },
         computed: {
@@ -275,10 +278,16 @@
             handleUserSelected (userSelected) {
                 this.author = userSelected.user;
             },
-            handleUploadSuccess (response, file, fileList) {
-                console.log(response);
+            handleUploadSuccess (url) {
+                if (url.indexOf('spots') > 0) {
+                    this.spotsCsvPath = url;
+                } else if (url.indexOf('descriptors') > 0) {
+                    this.descriptorsCsvPath = url;
+                } else {
+                    console.log(url);
+                }
             },
-            handleUploadFailure (error, file, fileList) {
+            handleUploadFailure (error) {
                 console.log(error);
                 this.$notify.error({
                     title: "Error Uploading File",
@@ -286,16 +295,18 @@
                 });
             },
             runImport () {
-                let data = {
+                this.exportData = {
+                    type: this.type.name,
                     author: this.author.id,
                     category: this.category.name,
                     classification: this.classification.id,
-                    descriptorCsvPath: this.descriptorsCsvPath,
+                    descriptorsCsvPath: this.descriptorsCsvPath,
                     spotsCsvPath: this.spotsCsvPath
                 };
                 this.loading = true;
-                window.adminApi.post("spots/upload/run", data)
-                    .then(() => {
+                window.adminApi.post("spots/upload/run", this.exportData)
+                    .then((response) => {
+                        console.log(response);
                         this.loading = false;
                         this.$notify.success({
                             title: "Import Completed Successfully",
@@ -306,7 +317,7 @@
                         this.loading = false;
                         this.$notify.error({
                             title: "Error Running Import",
-                            message: error.data
+                            message: error.response.data
                         });
                     });
             }

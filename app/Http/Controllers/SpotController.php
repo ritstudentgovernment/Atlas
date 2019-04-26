@@ -12,8 +12,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\MessageBag;
 use Illuminate\Validation\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SpotController extends Controller
 {
@@ -303,4 +305,5 @@ class SpotController extends Controller
             return response('Error deleting spot', 500);
         }
     }
+
 }
