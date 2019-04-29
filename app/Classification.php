@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Classification extends Model
 {
     protected $fillable = ['name', 'type', 'color', 'category_id', 'view_permission', 'create_permission'];
+    protected $appends = ['numSpots'];
 
     public function category()
     {
@@ -17,6 +18,11 @@ class Classification extends Model
     public function spots()
     {
         return $this->hasMany(Spot::class);
+    }
+
+    public function getNumSpotsAttribute()
+    {
+        return $this->spots()->count();
     }
 
     /**
