@@ -4,10 +4,32 @@
             <el-table-column type="expand">
                 <template slot-scope="scope">
                     <el-form-item label="View Permission" label-width="140px">
-                        <el-input v-model="scope.row.view_permission" @change="handleUpdateClassification(scope.row)"></el-input>
+                        <el-select
+                                v-model="scope.row.view_permission"
+                                @change="handleUpdateClassification(scope.row)"
+                                placeholder="Select">
+                            <el-option :value="null" label="No Required Permission"></el-option>
+                            <el-option
+                                    v-for="permission in scope.row.availablePermissions"
+                                    :key="permission.name"
+                                    :label="permission.name"
+                                    :value="permission.name">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="Create Permission" label-width="140px" class="margin-top">
-                        <el-input v-model="scope.row.create_permission" @change="handleUpdateClassification(scope.row)"></el-input>
+                        <el-select
+                                v-model="scope.row.create_permission"
+                                @change="handleUpdateClassification(scope.row)"
+                                placeholder="Select">
+                            <el-option :value="null" label="No Required Permission"></el-option>
+                            <el-option
+                                    v-for="permission in scope.row.availablePermissions"
+                                    :key="permission.name"
+                                    :label="permission.name"
+                                    :value="permission.name">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                 </template>
             </el-table-column>
@@ -64,7 +86,7 @@
 <script>
     export default {
         name: "classifications",
-        props: ["rawClassifications", "categoryId"],
+        props: ["rawClassifications", "categoryId", "permissions"],
         data () {
             return {
                 classifications: []

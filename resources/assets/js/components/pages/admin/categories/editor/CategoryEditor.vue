@@ -57,6 +57,7 @@
                     classifications: [],
                     descriptors: [],
                     description: '',
+                    permissions: [],
                 }
             }
         },
@@ -95,17 +96,31 @@
                         });
                     });
             },
-
+            setup () {
+                window.adminApi.get('users/permissions')
+                    .then((response) => {
+                        this.permissions = response.data;
+                        this.category.classifications.map((classification)=>{
+                            classification.availablePermissions = this.permissions;
+                            return classification;
+                        });
+                        console.log(this.category.classifications);
+                    })
+                    .catch(() => {
+                        //
+                    });
+            }
         },
         created () {
             let category = JSON.parse(this.rawCategory);
-            console.log(category);
             this.category = Object.assign({}, this.category, category);
             this.category.classifications.map((classification)=>{
                 classification.color = `#${classification.color}`;
                 return classification;
             });
             window.ace = this;
+            window.onLoadedQueue = window.onLoadedQueue ? window.onLoadedQueue : [];
+            window.onLoadedQueue.push(this.setup);
         },
     }
 </script>

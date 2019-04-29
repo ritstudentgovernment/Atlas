@@ -67,7 +67,8 @@ Route::prefix('admin')->middleware(['permission:administer'])->group(function ()
     });
     Route::prefix('users')->group(function () {
         Route::get('/', 'UserController@all');
-        Route::get('/staff', 'UserController@staff');
+        Route::get('staff', 'UserController@staff');
+        Route::get('permissions', 'PermissionController@all');
         Route::prefix('{user}')->group(function () {
             Route::get('/', 'UserController@get');
             Route::prefix('promote')->group(function () {
