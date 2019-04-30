@@ -15,12 +15,13 @@ body, html {
 
 }
 
-a, a:hover {
+a {
 
   color: $highlight;
 
   &:hover {
 
+    color: $highlight;
     border-bottom-color: $highlight;
 
   }

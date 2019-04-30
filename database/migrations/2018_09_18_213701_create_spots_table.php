@@ -31,6 +31,9 @@ class CreateSpotsTable extends Migration
             $table->integer('classification_id')->unsigned();
             $table->foreign('classification_id')->references('id')->on('classifications');
 
+            $table->integer('approved_classification_id')->nullable()->unsigned();
+            $table->foreign('approved_classification_id')->references('id')->on('classifications');
+
             $table->timestamps();
         });
     }

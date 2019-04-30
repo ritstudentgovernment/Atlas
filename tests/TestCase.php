@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +20,48 @@ abstract class TestCase extends BaseTestCase
      * visibility of protected or public. It is assumed that these variables are Eloquent models.
      */
     protected $deletes = [];
+
+    /**
+     * @var User
+     *
+     * The $user variable is a user that has no permissions
+     */
+    protected $user;
+
+    /**
+     * @var User
+     *
+     * The $adminUser variable is a user that has all permissions
+     */
+    protected $adminUser;
+
+    /**
+     * Initial implementation of the setup method calls its parent on base test case and initializes the users.
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->user = factory(User::class)->create();
+        $this->adminUser = factory(User::class)->create()->assignRole(['admin', 'reviewer']);
+        array_push($this->deletes, 'user');
+        array_push($this->deletes, 'adminUser');
+    }
+
+    /**
+     * Helper function to act as the admin user and use the api driver.
+     */
+    protected function adminApi()
+    {
+        return $this->actingAs($this->adminUser, 'api');
+    }
+
+    /**
+     * Helper function to act as the normal user and use the api driver.
+     */
+    protected function userApi()
+    {
+        return $this->actingAs($this->user, 'api');
+    }
 
     /**
      * Delete the Eloquent Models defined in $deletes.

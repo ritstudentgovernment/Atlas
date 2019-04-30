@@ -7,6 +7,12 @@ window.markers = [];
 window.icons = {};
 window.openInfoWindow = false;
 
+window.coreApiLoaded = (api) => {
+
+    window.spotsApi.setApi(api);
+
+};
+
 /**
  * Function google calls when the maps API is finally loaded.
  *

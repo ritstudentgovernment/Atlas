@@ -1,6 +1,6 @@
 export default class API {
 
-    constructor(axios) {
+    constructor (axios) {
         this.url = '';
         this.errors = [];
         this.method = '';
@@ -8,30 +8,35 @@ export default class API {
         this.parameters = {};
     }
 
-    makeRequest() {
+    handleError (error) {
+        console.error(error);
+        this.errors.push(error);
+    }
+
+    makeRequest () {
         let self = this;
         return new Promise((resolve, reject) => {
             self.axios[self.method](self.url, self.parameters)
                 .then((response) => resolve(response))
                 .catch((error) => {
-                    self.errors.push(error);
+                    this.handleError(error);
                     reject(error);
                 });
             });
     }
 
-    setState(url, parameters, method){
-        this.url = `api/${url}`;
+    setState (url, parameters, method) {
+        this.url = `/api/${url}`;
         this.method = method;
         this.parameters = parameters;
     }
 
-    get(url, parameters = {}) {
+    get (url, parameters = {}) {
         this.setState(url, parameters, 'get');
         return this.makeRequest();
     }
 
-    post(url, parameters = {}) {
+    post (url, parameters = {}) {
         this.setState(url, parameters, 'post');
         return this.makeRequest();
     }

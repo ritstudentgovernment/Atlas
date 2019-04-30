@@ -3,16 +3,16 @@ import SpotsAPI from "./api/SpotsAPI";
 
 export default class Spot {
 
-    constructor(data, tempSpot = false){
+    constructor(data, tempSpot = false) {
         this.data = data;
         this.icon = null;
-        this.api = new SpotsAPI(window.api);
+        this.api = window.spotsApi instanceof SpotsAPI ? window.spotsApi : new SpotsAPI(window.api);
         this.tempSpot = tempSpot;
         this.marker = null;
         this.infowindow = null;
     }
 
-    approve(callback = false){
+    approve(callback = false) {
         if (!this.data.approved) {
             this.api.approve(this.data.id).then(() => {
                 window.vue.$notify({
@@ -30,6 +30,18 @@ export default class Spot {
         }
     }
 
+    delete() {
+        return new Promise((resolve) => {
+            this.api.delete(this.data.id).then(() => {
+                resolve();
+            }).catch((error) => {
+                window.vue.$notify.error({
+                    title: 'Error',
+                    message: error.response.data.message
+                });
+            });
+        });
+    }
 
     buildIcon(canvasBuilder) {
 
@@ -60,7 +72,7 @@ export default class Spot {
 
     };
 
-    openTooltip(){
+    openTooltip() {
         if(window.openInfoWindow)window.openInfoWindow.close();
 
         window.map.setZoom(16);
@@ -70,10 +82,11 @@ export default class Spot {
         window.openInfoWindow = this.infowindow;
     }
 
-    getDescriptorString(){
+    getDescriptorString() {
 
         let spot = this.data,
             string = '';
+
         if (spot.hasOwnProperty('descriptors')) {
 
             for(let i = 0; i < spot.descriptors.length; i++){
@@ -97,25 +110,31 @@ export default class Spot {
 
         let user,
             string = '',
-            display = false,
             spot = this.data;
 
         if ((user = getMeta('user')) && !self.tempSpot) {
             if (user.roles.length > 0) { // User is a member of at least one role (reviewer or admin currently)
                 if (user.roles.some(role => (role.name === 'admin' || role.name === 'reviewer'))) {
-                    string += '<div class="infoWindowAdministrative"><hr />';
+                    string +=
+                    `<div class="infoWindowAdministrative">
+                        <hr />
+                        <div class="center">`;
                     if (!spot.approved) {
-                        display = true;
-                        string += `
-                                <button class="material-hover material-button transition center approve-spot" onclick="window.builder.approveSpot(${spot.id})">
-                                    Approve Spot
-                                </button>`;
+                        string +=
+                            `<button class="material-hover material-button transition approve-spot" onclick="window.builder.approveSpot(${spot.id})">
+                                Approve Spot
+                            </button>`;
                     }
-                    string += '<div/>';
+                    string +=
+                            `<button class="material-hover el-button--danger material-button transition approve-spot" onclick="window.builder.deleteSpot(${spot.id})">
+                                    Delete Spot
+                            </button>
+                        </div>
+                    <div/>`;
                 }
             }
         }
-        return display ? string : '';
+        return string;
 
     }
 
@@ -124,7 +143,7 @@ export default class Spot {
      *
      * @return google.maps.InfoWindow
      */
-    addClickHandler(){
+    addClickHandler() {
 
         let spot = this.data,
             contentString =

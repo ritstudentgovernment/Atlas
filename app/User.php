@@ -18,17 +18,41 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = ['first_name', 'last_name', 'email', 'password'];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
+    protected $appends = ['numSpotsCreated', 'isAdmin', 'isReviewer'];
     protected $hidden = ['password', 'remember_token'];
 
-    public function createdSpots()
+    public function spots()
     {
         return $this->hasMany(Spot::class);
+    }
+
+    public static function allUsers()
+    {
+        return self::select(['id', 'first_name', 'last_name', 'email']);
+    }
+
+    public static function staff()
+    {
+        $users = self::allUsers()->get();
+
+        return $users->filter(function (User $user) {
+            return $user->hasAnyRole(['admin', 'reviewer']);
+        })->values()->all();
+    }
+
+    public function getNumSpotsCreatedAttribute()
+    {
+        return $this->spots->count();
+    }
+
+    public function getIsAdminAttribute()
+    {
+        return $this->hasRole('admin');
+    }
+
+    public function getIsReviewerAttribute()
+    {
+        return $this->hasRole('reviewer');
     }
 
     /**

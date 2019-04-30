@@ -23,14 +23,19 @@ class PermissionsSeeder extends Seeder
         $approve_spots = Permission::create(['name' => 'approve spots']);
         $make_designated_spots = Permission::create(['name' => 'make designated spots']);
         $view_unapproved_spots = Permission::create(['name' => 'view unapproved spots']);
+        $view_inactive_spots = Permission::create(['name' => 'view inactive spots']);
         $mass_upload_spots = Permission::create(['name' => 'mass upload spots']);
         $edit_categories = Permission::create(['name' => 'edit categories']);
         $administer = Permission::create(['name' => 'administer']);
 
         // Relate permissions to roles
         $admin->syncPermissions([
+            $make_designated_spots,
+            $view_unapproved_spots,
+            $view_inactive_spots,
             $mass_upload_spots,
             $edit_categories,
+            $approve_spots,
             $administer,
         ]);
         $reviewer->syncPermissions([
@@ -41,9 +46,9 @@ class PermissionsSeeder extends Seeder
 
         // If the seeds were run in a dev environment, the test admin user will exist. Give them admin rights.
         if ($tempAdminUser = User::where('email', 'scooper@samltest.id')->first()) {
-            $tempAdminUser->assignRole(['admin', 'reviewer']);
+            $tempAdminUser->assignRole('admin');
 
-            // For seeding purposes some users able to create designated spots
+            // For seeding purposes make some users able to make designated spots
             User::all()->each(function (User $user) {
                 if (mt_rand(0, 2) == 0) {
                     $user->givePermissionTo('make designated spots');

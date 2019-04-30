@@ -67,10 +67,10 @@
                         <h4>Pioneering Advanced Technologies</h4>
                         <p>Naps relies on the following advanced technologies to deliver a cutting-edge high performance experience to students. See below for a partial list:</p>
                         <ul>
-                            <li>Laravel</li>
-                            <li>Google Maps</li>
-                            <li>UIKit</li>
                             <li>Vue JS</li>
+                            <li>Laravel</li>
+                            <li>ElementUI</li>
+                            <li>Google Maps</li>
                         </ul>
                     </li>
                 </ul>
@@ -83,41 +83,6 @@
 
 @section("scripts")
 
-    <script>
-
-        function addEventListeners() {
-
-            var tabNav = $('#about-tab-nav');
-            tabNav.find('li a').click(function(){
-
-                var tab = $(this).html();
-                var link = tab.replace(' ', '-').toLowerCase();
-                $.urlParam('tab', link);
-
-            });
-
-        }
-
-        function determineTab() {
-
-            let tab = $.urlParam('tab');
-
-            if (tab) {
-
-                $('#about-tab-nav').find('.uk-active').removeClass('uk-active');
-                $('.tab-' + tab).addClass('uk-active');
-
-            }
-
-        }
-
-        $(window).ready(function(){
-
-            determineTab();
-            addEventListeners();
-
-        });
-
-    </script>
+    <script src="{{ mix('/js/about.js') }}" async defer></script>
 
 @endsection

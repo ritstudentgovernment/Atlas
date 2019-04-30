@@ -9,7 +9,7 @@ class Spot extends Model
 {
     protected $appends = ['type', 'classification', 'descriptors', 'authored'];
     protected $hidden = ['user_id', 'author', 'created_at', 'updated_at', 'type_id'];
-    protected $fillable = ['notes', 'classification_id', 'approved', 'user_id', 'type_id', 'lat', 'lng'];
+    protected $fillable = ['notes', 'classification_id', 'approved_classification_id', 'approved', 'user_id', 'type_id', 'lat', 'lng'];
 
     public function getAuthoredAttribute()
     {
@@ -58,6 +58,11 @@ class Spot extends Model
         return $this->belongsTo(Classification::class);
     }
 
+    public function approvedClassification()
+    {
+        return $this->belongsTo(Classification::class, 'approved_classification_id');
+    }
+
     public function descriptors()
     {
         return $this->belongsToMany(Descriptors::class, 'descriptors_spot', 'spot_id', 'descriptor_id', 'id', 'id')->withPivot('value');
@@ -66,5 +71,16 @@ class Spot extends Model
     public function type()
     {
         return $this->belongsTo(Type::class);
+    }
+
+    public function approve()
+    {
+        $this->approved = true;
+        if ($this->approvedClassification) {
+            $this->classification_id = $this->approvedClassification->id;
+        }
+        $this->save();
+
+        return $this;
     }
 }

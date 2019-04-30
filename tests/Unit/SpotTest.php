@@ -30,4 +30,11 @@ class SpotTest extends TestCase
         // Make sure there are at least one unapproved spot in the database
         $this->assertTrue($spots->count() > 0);
     }
+
+    public function testApproveSpot()
+    {
+        $spot = Spot::where('approved', 0)->first()->approve();
+        $this->assertEquals(1, $spot->approved);
+        $this->assertEquals($spot->approvedClassification->id, $spot->classification_id);
+    }
 }

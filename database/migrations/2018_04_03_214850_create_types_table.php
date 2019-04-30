@@ -18,16 +18,9 @@ class CreateTypesTable extends Migration
             $table->string('name');
             $table->integer('category_id')->unsigned();
             $table->foreign('category_id')->references('id')->on('categories');
+            $table->boolean('deleted')->default(false);
             $table->timestamps();
         });
-
-//        Schema::create('spot_types', function (Blueprint $table) {
-//            $table->increments('id');
-//            $table->string('name');
-//            $table->integer('category_id')->unsigned()->index();
-//            $table->foreign('category_id')->references('id')->on('spot_categories');
-//            $table->timestamps();
-//        });
     }
 
     /**

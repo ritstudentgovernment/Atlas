@@ -8,15 +8,16 @@
 import API from "./classes/api/API"
 import Vue from 'vue';
 import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
+import locale from 'element-ui/lib/locale/lang/en'
 
 require('./bootstrap');
 
 window.api = new API(window.axios);
 
+Vue.use(ElementUI, { locale });
+
 Vue.prototype.$http = window.axios;
 
-Vue.use(ElementUI);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -24,33 +25,26 @@ Vue.use(ElementUI);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('new-spot', require('./components/NewSpotComponent.vue').default);
-Vue.component('filter-spots', require('./components/FilterSpotsComponent.vue').default);
+Vue.component('new-spot', require('./components/pages/home/NewSpot.vue').default);
+Vue.component('filter-spots', require('./components/pages/home/FilterSpots.vue').default);
+Vue.component('admin-nav', require('./components/pages/admin/Nav.vue').default);
+Vue.component('admin-dashboard', require('./components/pages/admin/dashboard/Dashboard.vue').default);
+Vue.component('admin-category-cards', require('./components/pages/admin/categories/CategoryCards.vue').default);
+Vue.component('admin-category-editor', require('./components/pages/admin/categories/editor/CategoryEditor.vue').default);
+Vue.component('admin-user-manager', require('./components/pages/admin/users/UserManager.vue').default);
+Vue.component('admin-staff-manager', require('./components/pages/admin/users/StaffManager.vue').default);
+Vue.component('admin-settings-bulk-spots', require('./components/pages/admin/settings/BulkSpotUpload').default);
+
+export const EventBus = new Vue();
 
 window.vue = new Vue({
-    el: '#app'
+    el: '#app',
+    components: {
+        ElementUI
+    }
 });
 
-/**
- * In order to deal with axios headers not being initialized properly (auth and csrf headers missing)
- * early on in the execution trace of the app, specifically in the mounted or created methods of Vue
- * components, use this queue to defer processing until the app.js script is finished loading.
- * Each component should (if calling the API, and does so in its created method) implement API calls
- * in a 'setup' method, and add that method to the onLoadedQueue for deferred processing.
- */
-if (window.onLoadedQueue) {
-    if (window.spotsApi) {
-        let axiosHeaders = window.spotsApi.api.axios.defaults.headers;
-        if (!axiosHeaders.common.hasOwnProperty('Authorization')) {
-            window.spotsApi.api = window.api;
-        }
-    }
-    window.onLoadedQueue.forEach(methodToCall => {
-       methodToCall();
-    });
-}
-
-const capitalize = (s) => {
+window.capitalize = (s) => {
     if (typeof s !== 'string') return '';
     return s.charAt(0).toUpperCase() + s.slice(1);
 };
@@ -98,3 +92,18 @@ $.urlParam = (name, value = false) => {
     return getValue(name);
 
 };
+
+/**
+ * In order to deal with axios headers not being initialized properly (auth and csrf headers missing)
+ * early on in the execution trace of the app, specifically in the mounted or created methods of Vue
+ * components, use this queue to defer processing until the app.js script is finished loading.
+ * Each component should (if calling the API, and does so in its created method) implement API calls
+ * in a 'setup' method, and add that method to the onLoadedQueue for deferred processing.
+ */
+if (window.coreApiLoaded) { window.coreApiLoaded(window.api); }
+
+if (window.onLoadedQueue) {
+    window.onLoadedQueue.forEach(methodToCall => {
+        methodToCall();
+    });
+}

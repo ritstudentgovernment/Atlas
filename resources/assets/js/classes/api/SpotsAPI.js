@@ -1,29 +1,26 @@
-import API from './API'
+import APIHelper from "./APIHelper";
 
-export default class SpotsAPI{
+export default class SpotsAPI extends APIHelper {
 
-    constructor(api = false) {
-        this.api = api;
-        if (!(api instanceof API)) {
-            this.api = new API(window.axios);
-        }
+    constructor (api) {
+        super(api);
+        this.prefix = "spots";
     }
 
-
-    list(){
-        return this.api.get('spots');
+    categories () {
+        return this.get('categories');
     }
 
-    approve(spotId){
-        return this.api.post(`spots/approve/${spotId}`);
+    list () {
+        return this.get('');
     }
 
-    get(url, parameters = {}){
-        return this.api.get(`spots/${url}`, parameters);
+    approve(spotId) {
+        return this.post(`${spotId}/approve`);
     }
 
-    post(url, parameters = {}){
-        return this.api.post(`spots/${url}`, parameters);
+    delete(spotId) {
+        return this.post(`${spotId}/delete`);
     }
 
 }

@@ -72,7 +72,7 @@
             <div class="content">
                 <div class="title m-b-md">
                     <img src="https://naps.rit.edu/logo.svg" alt="naps logo"><br/>
-                    Naps is resting it's eyes.<br/>
+                    Naps is resting its eyes.<br/>
                     <span class="sub">Check back for updates.</span>
                 </div>
             </div>

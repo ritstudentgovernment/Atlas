@@ -4,6 +4,7 @@
             trigger="manual"
             :visible="visible"
             v-model="visible"
+            v-if="availableCategories.length > 0"
     >
         <button
                 slot="reference"
@@ -55,23 +56,38 @@
             </div>
             <div>
                 <h5>Descriptors</h5>
-                <el-select
-                        value=""
-                        size="small"
-                        v-for="(descriptor, index) in requiredDescriptors"
-                        v-model="spotDescriptors[descriptor.name]"
-                        :key="index"
-                        :placeholder="descriptor.name"
-                        @change="updatePloppedSpot"
-                >
-                    <el-option
-                            v-for="(item, index) in descriptor.allowed_values.split('|')"
-                            :key="index"
-                            :label="item"
-                            :value="item"
+                <div v-for="(descriptor, index) in requiredDescriptors">
+                    <el-select
+                            value=""
+                            size="small"
+                            class="full-width"
+                            v-if="descriptor.value_type === 'select'"
+                            v-model="spotDescriptors[descriptor.name]"
+                            :placeholder="descriptor.name"
+                            @change="updatePloppedSpot"
                     >
-                    </el-option>
-                </el-select>
+                        <el-option
+                                v-for="(item, index) in descriptor.allowed_values.split('|')"
+                                :key="index"
+                                :label="item"
+                                :value="item"
+                        >
+                        </el-option>
+                    </el-select>
+                    <!--<div v-if="descriptor.value_type === 'number'" class="overflow-hidden">
+                        <el-input-number
+                                size="small"
+                                class="right"
+                                controls-position="right"
+                                :value="Number(descriptor.default_value)"
+                                :min="Number(descriptor.allowed_values.split('|')[0].split(':')[1])"
+                                :max="Number(descriptor.allowed_values.split('|')[1].split(':')[1])"
+                                v-model="spotDescriptors[descriptor.name]"
+                                @change="updatePloppedSpot"
+                        ></el-input-number>
+                        <span class="right">{{ descriptor.name }}:</span>
+                    </div>-->
+                </div>
             </div>
             <div>
                 <h5>Notes</h5>
@@ -160,7 +176,7 @@
             loadData(data) {
                 this.availableClassifications = data.availableClassifications;
                 this.activeClassification = this.availableClassifications.filter((classification) => {
-                    return classification.name === "Public";
+                    return classification.type === "public";
                 })[0];
                 this.spotClassification = this.activeClassification.name;
                 this.availableTypes = data.availableTypes;
@@ -176,10 +192,12 @@
                 window.spotsApi.get('create/').then((response) => {
                     let data = response.data;
                     self.availableCategories = data.availableCategories;
-                    self.activeCategory = self.availableCategories[0];
-                    self.spotCategory = self.activeCategory.name;
-                    self.availableClassifications = data.availableClassifications;
-                    self.loadData(data);
+                    if (self.availableCategories.length > 0) {
+                        self.activeCategory = self.availableCategories[0];
+                        self.spotCategory = self.activeCategory.name;
+                        self.availableClassifications = data.availableClassifications;
+                        self.loadData(data);
+                    }
                 }).catch((error) => {
                     console.error(error);
                 });
@@ -261,7 +279,8 @@
                         descriptors: this.formattedDescriptors,
                         draggable: true,
                         lat: this.location.lat,
-                        lng: this.location.lng
+                        lng: this.location.lng,
+                        approved: true,
                     };
                 return window.builder.newSpot(spotData, true);
             },
@@ -345,7 +364,7 @@
                 });
             },
         },
-        mounted() {
+        created() {
             window.nsp = this;
             window.onLoadedQueue = window.onLoadedQueue ? window.onLoadedQueue : [];
             window.onLoadedQueue.push(this.setup);
@@ -353,20 +372,35 @@
     }
 </script>
 
-<style scoped>
-    #new-spot-popup *{
-        color: inherit;
-    }
-    #new-spot-popup div:not(:last-of-type){
-        padding-bottom: 10px;
-    }
-    #new-spot-popup h4{
-        border-bottom: 1px solid #ccc;
-        text-align: center;
-        margin-bottom: 10px;
-        padding-bottom: .5em;
-    }
-    #new-spot-popup h5{
-        margin-bottom: 5px;
+<style scoped lang="scss">
+    #new-spot-popup {
+
+        * {
+
+            color: inherit;
+
+        }
+
+        div:not(:last-of-type) {
+
+            padding-bottom: 10px;
+
+        }
+
+        h4 {
+
+            text-align: center;
+            margin-bottom: 10px;
+            padding-bottom: .5em;
+            border-bottom: 1px solid #ccc;
+
+        }
+
+        h5 {
+
+            margin-bottom: 5px;
+
+        }
+
     }
 </style>
