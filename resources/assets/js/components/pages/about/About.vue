@@ -60,7 +60,7 @@
         name: "About",
         data () {
             return {
-                activeName: 'first'
+                activeName: 'about'
             };
         },
         methods: {
