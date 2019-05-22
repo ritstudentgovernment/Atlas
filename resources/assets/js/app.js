@@ -25,6 +25,7 @@ Vue.prototype.$http = window.axios;
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.component('about', require('./components/pages/about/About.vue').default);
 Vue.component('new-spot', require('./components/pages/home/NewSpot.vue').default);
 Vue.component('filter-spots', require('./components/pages/home/FilterSpots.vue').default);
 Vue.component('admin-nav', require('./components/pages/admin/Nav.vue').default);
