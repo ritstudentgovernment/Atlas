@@ -19,6 +19,23 @@ Administrators can add and modify **Categories** of spots with their own Icons, 
 
 This guide will help you configure your own instance of Naps.
 
+#### Prerequisites
+* PHP 7.1+
+* Composer
+* npm
+* MySQL / Postgres
+
+
+#### Installation:
+1. Clone this repo
+2. Configure the **.env** file to match your system's configuration
+3. Run **composer install**, **php artisan migrate**, and **php artisan db:seed**
+4. Run **php artisan jwt:secret**
+5. Run **npm install** and **npm run dev**
+6. Run **php artisan serve** to spin up the web server
+7. Visit 127.0.0.1:8000 in your browser to verify everything is working properly
+8. Configure authentication as outlined below
+
 #### Authentication (SAML2)
 
 The default application is setup to support [https://samltest.id](https://samltest.id) out of the box for local development testing.
