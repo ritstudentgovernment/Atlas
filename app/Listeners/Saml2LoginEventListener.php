@@ -24,13 +24,13 @@ class Saml2LoginEventListener
     {
         $user->parseAttributes($attributeMap);
 
-        if (env('APP_DEBUG')) {
-            \Log::debug($user);
-        }
-
         $attributes = [];
         foreach ($attributeMap as $attribute => $samlKey) {
             $attributes[$attribute] = $user->{$attribute}[0];
+        }
+
+        if (env('APP_DEBUG')) {
+            \Log::debug($attributes);
         }
 
         return $attributes;
