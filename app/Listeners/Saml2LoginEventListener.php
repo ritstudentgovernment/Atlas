@@ -26,7 +26,11 @@ class Saml2LoginEventListener
 
         $attributes = [];
         foreach ($attributeMap as $attribute => $samlKey) {
-            $attributes[$attribute] = $user->{$attribute}[0];
+            if ($user->{$attribute}) {
+                $attributes[$attribute] = $user->{$attribute}[0];
+            } else {
+                \Log::debug("Attribute $attribute not found in user object.");
+            }
         }
 
         if (env('APP_DEBUG')) {
