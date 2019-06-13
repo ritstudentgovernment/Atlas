@@ -17,89 +17,96 @@
 
         <div id="new-spot-popup" class="dim-text">
             <h4>New Spot</h4>
-            <div>
-                <h5>Category</h5>
-                <el-radio-group
-                        size="mini"
-                        :fill="fillColor"
-                        v-model="spotCategory"
-                        @change="changeCategory"
-                >
-                    <el-radio-button v-for="(category, index) in availableCategories" :key="index" :label="category.name"></el-radio-button>
-                </el-radio-group>
-            </div>
-            <div>
-                <h5>Type</h5>
-                <el-radio-group
-                        size="mini"
-                        :fill="fillColor"
-                        v-model="spotType"
-                        @change="updatePloppedSpot"
-                >
-                    <el-radio-button v-for="(type, index) in availableTypes" :key="index" :label="type.name"></el-radio-button>
-                </el-radio-group>
-            </div>
-            <div v-if="availableClassifications.length > 1">
-                <h5>Classification</h5>
-                <el-radio-group
-                        size="mini"
-                        :fill="fillColor"
-                        v-model="spotClassification"
-                        @change="changeClassification"
-                >
-                    <el-radio-button
-                            v-for="(classification, index) in availableClassifications"
-                            :key="index"
-                            :label="classification.name"
-                    ></el-radio-button>
-                </el-radio-group>
-            </div>
-            <div>
-                <h5>Descriptors</h5>
-                <div v-for="(descriptor, index) in requiredDescriptors">
-                    <el-select
-                            value=""
-                            size="small"
-                            class="full-width"
-                            v-if="descriptor.value_type === 'select'"
-                            v-model="spotDescriptors[descriptor.name]"
-                            :placeholder="descriptor.name"
+            <div id="new-spot-data">
+                <div>
+                    <h5>Category</h5>
+                    <el-radio-group
+                            size="mini"
+                            :fill="fillColor"
+                            v-model="spotCategory"
+                            @change="changeCategory"
+                    >
+                        <el-radio-button v-for="(category, index) in availableCategories" :key="index" :label="category.name"></el-radio-button>
+                    </el-radio-group>
+                </div>
+                <div>
+                    <h5>Type</h5>
+                    <el-radio-group
+                            size="mini"
+                            :fill="fillColor"
+                            v-model="spotType"
                             @change="updatePloppedSpot"
                     >
-                        <el-option
-                                v-for="(item, index) in descriptor.allowed_values.split('|')"
+                        <el-radio-button v-for="(type, index) in availableTypes" :key="index" :label="type.name"></el-radio-button>
+                    </el-radio-group>
+                </div>
+                <div v-if="availableClassifications.length > 1">
+                    <h5>Classification</h5>
+                    <el-radio-group
+                            size="mini"
+                            :fill="fillColor"
+                            v-model="spotClassification"
+                            @change="changeClassification"
+                    >
+                        <el-radio-button
+                                v-for="(classification, index) in availableClassifications"
                                 :key="index"
-                                :label="item"
-                                :value="item"
-                        >
-                        </el-option>
-                    </el-select>
-                    <!--<div v-if="descriptor.value_type === 'number'" class="overflow-hidden">
-                        <el-input-number
+                                :label="classification.name"
+                        ></el-radio-button>
+                    </el-radio-group>
+                </div>
+                <div>
+                    <h5>Descriptors</h5>
+                    <div v-for="(descriptor, index) in requiredDescriptors">
+                        <el-select
+                                value=""
                                 size="small"
-                                class="right"
-                                controls-position="right"
-                                :value="Number(descriptor.default_value)"
-                                :min="Number(descriptor.allowed_values.split('|')[0].split(':')[1])"
-                                :max="Number(descriptor.allowed_values.split('|')[1].split(':')[1])"
+                                class="full-width"
+                                v-if="descriptor.value_type === 'select'"
                                 v-model="spotDescriptors[descriptor.name]"
+                                :placeholder="descriptor.name"
                                 @change="updatePloppedSpot"
-                        ></el-input-number>
-                        <span class="right">{{ descriptor.name }}:</span>
-                    </div>-->
+                        >
+                            <el-option
+                                    v-for="(item, index) in descriptor.allowed_values.split('|')"
+                                    :key="index"
+                                    :label="item"
+                                    :value="item"
+                            >
+                            </el-option>
+                        </el-select>
+                        <div v-if="descriptor.value_type === 'number'" class="overflow-hidden numeric-descriptor">
+                            <el-row>
+                                <el-col :span="6">
+                                    <span class="left">{{ descriptor.name }}:</span>
+                                </el-col>
+                                <el-col :span="18">
+                                    <el-input-number
+                                            class="left"
+                                            size="small"
+                                            :value="Number(descriptor.default_value)"
+                                            :min="Number(descriptor.allowed_values.split('|')[0].split(':')[1])"
+                                            :max="Number(descriptor.allowed_values.split('|')[1].split(':')[1])"
+                                            v-model="spotDescriptors[descriptor.name]"
+                                            @change="updatePloppedSpot"
+                                    ></el-input-number>
+                                </el-col>
+                            </el-row>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h5>Notes</h5>
+                    <el-input
+                            type="textarea"
+                            placeholder="Notes (optional)"
+                            v-model="spotNotes"
+                            :rows="3"
+                            @change="updatePloppedSpot"
+                    ></el-input>
                 </div>
             </div>
-            <div>
-                <h5>Notes</h5>
-                <el-input
-                        type="textarea"
-                        placeholder="Notes (optional)"
-                        v-model="spotNotes"
-                        :rows="3"
-                        @change="updatePloppedSpot"
-                ></el-input>
-            </div>
-            <div>
+            <div id="new-spot-buttons">
                 <el-button
                         size="medium"
                         :style="'color: #fff;background-color:'+fillColor"
@@ -373,7 +380,18 @@
 </script>
 
 <style scoped lang="scss">
+    @import '../../../../sass/variables';
+
     #new-spot-popup {
+
+        #new-spot-data {
+
+            overflow-y: auto;
+            margin-bottom: 10px;
+            max-height: calc(55vh - 10px);
+            border-bottom: 1px dotted #d0d0d0;
+
+        }
 
         * {
 
@@ -399,6 +417,30 @@
         h5 {
 
             margin-bottom: 5px;
+
+        }
+
+        .numeric-descriptor {
+
+            div {
+
+                padding-bottom: 0;
+
+            }
+
+            .el-input-number--small {
+
+                width: 100%;
+
+            }
+
+            span {
+
+                line-height: 32px;
+                display: block;
+                height: 32px;
+
+            }
 
         }
 
