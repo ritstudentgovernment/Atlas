@@ -34,7 +34,7 @@ class Classification extends Model
      */
     public static function forUser(User $user = null)
     {
-        return self::all()->filter(function (Classification $classification) use ($user) {
+        return self::all()->filter(function (self $classification) use ($user) {
             $requiredCreatePermission = $classification->create_permission;
             if ($user == null || $requiredCreatePermission == null) {
                 return $requiredCreatePermission ? false : true;
@@ -70,7 +70,7 @@ class Classification extends Model
             $data = array_merge($data, [
                'category_id' => $category->id,
             ]);
-            Classification::create($data);
+            self::create($data);
         });
     }
 }
