@@ -41,6 +41,8 @@ This guide will help you configure your own instance of Naps.
 The default application is setup to support [https://samltest.id](https://samltest.id) out of the box for local development testing.
 In order to use this service you just have to upload the metadata for this application from your installation.
 
+The default admin user when seeded in development is **Sheldon Cooper** from samltest.
+
 The metadata is found at the '/saml2/metadata' route.
 
 Save that file as XML and name it something unique, then [upload it](https://samltest.id/upload.php) to the samltest service.

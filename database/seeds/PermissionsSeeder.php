@@ -44,8 +44,8 @@ class PermissionsSeeder extends Seeder
             $approve_spots,
         ]);
 
-        // If the seeds were run in a dev environment, the test admin user will exist. Give them admin rights.
         if ($tempAdminUser = User::where('email', 'scooper@samltest.id')->first()) {
+            // If the seeds were run in a dev environment, the test admin user will exist. Give them admin rights.
             $tempAdminUser->assignRole('admin');
 
             // For seeding purposes make some users able to make designated spots
@@ -54,6 +54,9 @@ class PermissionsSeeder extends Seeder
                     $user->givePermissionTo('make designated spots');
                 }
             });
+        } elseif ($defaultAdmin = User::where('email', env('DEFAULT_ADMIN_EM'))->first()) {
+            // If there was a default administrator created give them access rights
+            $defaultAdmin->assignRole('admin');
         }
     }
 }
