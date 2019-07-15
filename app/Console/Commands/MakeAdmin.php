@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class MakeAdmin extends Command
 {
@@ -33,7 +32,8 @@ class MakeAdmin extends Command
         parent::__construct();
     }
 
-    private function makeAdmin(User $user) {
+    private function makeAdmin(User $user)
+    {
         $user->assignRole('admin');
         $this->info("Successfully made $user->first_name $user->last_name ($user->email) an admin!");
     }
@@ -70,6 +70,7 @@ class MakeAdmin extends Command
                 $this->line('Goodbye!');
             }
         }
+
         return 0;
     }
 }
