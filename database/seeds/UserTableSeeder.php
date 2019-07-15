@@ -35,7 +35,6 @@ class UserTableSeeder extends Seeder
                 ]);
             }
         } elseif (env('DEFAULT_ADMIN_FN') && env('DEFAULT_ADMIN_LN') && env('DEFAULT_ADMIN_EM')) {
-
             DB::table('users')->insert([
 
                 'first_name' => env('DEFAULT_ADMIN_FN'),

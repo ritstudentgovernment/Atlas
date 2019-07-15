@@ -48,6 +48,7 @@ class RemoveSpots extends Command
             $spot->delete();
         });
         $this->info('Spots deleted successfully');
+
         return 0;
     }
 }
