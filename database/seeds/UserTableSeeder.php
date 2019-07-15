@@ -19,9 +19,9 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
-        // Do not seed the users table if the App is set to production mode.
+        $now = Carbon::now('America/New_York')->toDateTimeString();
         if (env('APP_ENV') == 'local' || env('APP_ENV') == 'testing') {
-            $now = Carbon::now('America/New_York')->toDateTimeString();
+            // Do not seed the users table if the App is set to production mode.
             foreach ($this->users as $last => $first) {
                 DB::table('users')->insert([
 
@@ -34,6 +34,18 @@ class UserTableSeeder extends Seeder
 
                 ]);
             }
+        } elseif (env('DEFAULT_ADMIN_FN') && env('DEFAULT_ADMIN_LN') && env('DEFAULT_ADMIN_EM')) {
+
+            DB::table('users')->insert([
+
+                'first_name' => env('DEFAULT_ADMIN_FN'),
+                'last_name'  => env('DEFAULT_ADMIN_LN'),
+                'email'      => env('DEFAULT_ADMIN_EM'),
+                'password'   => bcrypt(str_random(8)),
+                'created_at' => $now,
+                'updated_at' => $now,
+
+            ]);
         }
     }
 }

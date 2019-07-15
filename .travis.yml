@@ -23,6 +23,12 @@ script:
 after_script:
 - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
+after_success:
+- |
+  if [ $TRAVIS_BRANCH == "develop" ]; then
+    curl https://forge.laravel.com/servers/282833/sites/757902/deploy/http?token=3UE5ZN2j2MkHNk4qvqwBlYvnDbX9Da2rl8az1wwG
+  fi
+
 cache:
   directories:
   - node_modules

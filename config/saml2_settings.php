@@ -55,7 +55,7 @@ return $settings = [
     // or unencrypted messages if it expects them signed or encrypted
     // Also will reject the messages if not strictly follow the SAML
     // standard: Destination, NameId, Conditions ... are validated too.
-    'strict' => true,
+    'strict' => false,
 
     // Enable debug mode (to print errors)
     'debug' => env('APP_DEBUG', false),
@@ -72,7 +72,7 @@ return $settings = [
         // Specifies constraints on the name identifier to be used to
         // represent the requested subject.
         // Take a look on lib/Saml2/Constants.php to see the NameIdFormat supported
-        'NameIDFormat' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+        'NameIDFormat' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
 
         // Usually x509cert and privateKey of the SP are provided by files placed at
         // the certs folder. But we can also provide them with the following parameters
@@ -105,7 +105,7 @@ return $settings = [
     // Identity Provider Data that we want connect with our SP
     'idp' => [
         // Identifier of the IdP entity  (must be a URI)
-        'entityId' => env('SAML2_IDP_ENTITYID', $idp_host.'/saml/idp'),
+        'entityId' => $idp_host.env('SAML2_IDP_ENTITYID', '/saml/idp'),
         // SSO endpoint info of the IdP. (Authentication Request protocol)
         'singleSignOnService' => [
             // URL Target of the IdP where the SP will send the Authentication Request Message,
@@ -176,11 +176,13 @@ return $settings = [
         // this SP to be encrypted.
         'wantNameIdEncrypted' => false,
 
+        'wantNameId' => false,
+
         // Authentication context.
         // Set to false and no AuthContext will be sent in the AuthNRequest,
         // Set true or don't present thi parameter and you will get an AuthContext 'exact' 'urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport'
         // Set an array with the possible auth context values: array ('urn:oasis:names:tc:SAML:2.0:ac:classes:Password', 'urn:oasis:names:tc:SAML:2.0:ac:classes:X509'),
-        'requestedAuthnContext' => true,
+        'requestedAuthnContext' => false,
     ],
 
     // Contact information template, it is recommended to supply a technical and support contacts
