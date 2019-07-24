@@ -6,6 +6,7 @@ use App\Category;
 use App\Descriptors;
 use App\Spot;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 use League\Csv\Reader;
@@ -64,12 +65,14 @@ class ImportController extends Controller
         return $spots;
     }
 
-    private function importDescriptorsFromCsv($csvPath, $spots)
+    private function importDescriptorsFromCsv($csvPath, Collection $spots)
     {
+        \Log::debug($spots);
         $descriptorsCsv = $this->initReader($csvPath);
 
         foreach ($descriptorsCsv as $index => $csvLine) {
             $spot = $spots->get($index);
+            \Log::debug($spot);
             $descriptors = [];
             $requiredDescriptors = $spot->category->descriptors;
 
