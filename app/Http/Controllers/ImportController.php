@@ -71,7 +71,7 @@ class ImportController extends Controller
         $descriptorsCsv = $this->initReader($csvPath);
 
         foreach ($descriptorsCsv as $index => $csvLine) {
-            $spot = $spots->get($index);
+            $spot = $spots->get($index - 1);
             \Log::debug($spot);
             $descriptors = [];
             $requiredDescriptors = $spot->category->descriptors;
