@@ -67,12 +67,10 @@ class ImportController extends Controller
 
     private function importDescriptorsFromCsv($csvPath, Collection $spots)
     {
-        \Log::debug($spots);
         $descriptorsCsv = $this->initReader($csvPath);
 
         foreach ($descriptorsCsv as $index => $csvLine) {
             $spot = $spots->get($index - 1);
-            \Log::debug($spot);
             $descriptors = [];
             $requiredDescriptors = $spot->category->descriptors;
 
@@ -123,7 +121,8 @@ class ImportController extends Controller
         ];
 
         if ($spots = $this->importSpotsFromCsv($request->input('spotsCsvPath'), $commonData)) {
-            if ($this->importDescriptorsFromCsv($request->input('descriptorsCsvPath'), $spots)) {
+            if ($spots = $this->importDescriptorsFromCsv($request->input('descriptorsCsvPath'), $spots)) {
+                \Log::debug($spots);
                 return response('Spots Import Success', 200);
             }
 
