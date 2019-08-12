@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use League\Csv\Reader;
 
 class ImportController extends Controller
@@ -54,10 +55,12 @@ class ImportController extends Controller
 
         foreach ($spotsCsv as $csvLine) {
             $spotData = array_merge($commonData, [
-                'lat'   => $csvLine['lat'],
-                'lng'   => $csvLine['lng'],
-                'notes' => $csvLine['notes'],
+                'lat'   => floatval($csvLine['lat']),
+                'lng'   => floatval($csvLine['lng']),
+                'notes' => floatval($csvLine['notes']),
             ]);
+
+            \Log::debug($spotData);
 
             $spots->push(Spot::create($spotData));
         }
@@ -102,7 +105,7 @@ class ImportController extends Controller
             'classification'        => 'required|integer',
             'descriptorsCsvPath'    => 'required|string',
         ];
-        $validator = \Illuminate\Support\Facades\Validator::make(Input::all(), $rules);
+        $validator = Validator::make(Input::all(), $rules);
         if ($validator->fails()) {
             return response($validator->errors(), 400);
         }

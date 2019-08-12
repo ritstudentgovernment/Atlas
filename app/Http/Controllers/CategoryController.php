@@ -68,8 +68,7 @@ class CategoryController extends Controller
         foreach ($rules as $property => $rule) {
             if (Input::has($property)) {
                 $category->$property = $request->input($property);
-                $category->save();
-                $updatedOne = true;
+                $updatedOne = $category->save();
             }
         }
         if (!$updatedOne) {
