@@ -38,7 +38,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Initial implementation of the setup method calls its parent on base test case and initializes the users.
      */
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
         $this->user = factory(User::class)->create();
