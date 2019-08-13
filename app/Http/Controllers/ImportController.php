@@ -55,9 +55,9 @@ class ImportController extends Controller
 
         foreach ($spotsCsv as $csvLine) {
             $spotData = array_merge($commonData, [
-                'lat'   => floatval($csvLine['lat']),
-                'lng'   => floatval($csvLine['lng']),
-                'notes' => floatval($csvLine['notes']),
+                'lat'   => "".$csvLine['lat'],
+                'lng'   => "".$csvLine['lng'],
+                'notes' => "".$csvLine['notes'],
             ]);
 
             \Log::debug($spotData);
