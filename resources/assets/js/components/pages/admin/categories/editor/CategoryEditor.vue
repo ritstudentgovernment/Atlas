@@ -114,6 +114,11 @@
         created () {
             let category = JSON.parse(this.rawCategory);
             this.category = Object.assign({}, this.category, category);
+            if (this.category.active !== false && this.category.active !== true) {
+                // Ensure active and crowdsource are booleans, not 1 or 0
+                this.category.active = this.category.active === 1;
+                this.category.crowdsource = this.category.crowdsource === 1;
+            }
             this.category.classifications.map((classification)=>{
                 classification.color = `#${classification.color}`;
                 return classification;

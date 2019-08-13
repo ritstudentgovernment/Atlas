@@ -55,12 +55,10 @@ class ImportController extends Controller
 
         foreach ($spotsCsv as $csvLine) {
             $spotData = array_merge($commonData, [
-                'lat'   => "".$csvLine['lat'],
-                'lng'   => "".$csvLine['lng'],
-                'notes' => "".$csvLine['notes'],
+                'lat'   => $csvLine['lat'],
+                'lng'   => $csvLine['lng'],
+                'notes' => $csvLine['notes'],
             ]);
-
-            \Log::debug($spotData);
 
             $spots->push(Spot::create($spotData));
         }
@@ -125,7 +123,6 @@ class ImportController extends Controller
 
         if ($spots = $this->importSpotsFromCsv($request->input('spotsCsvPath'), $commonData)) {
             if ($spots = $this->importDescriptorsFromCsv($request->input('descriptorsCsvPath'), $spots)) {
-                \Log::debug($spots);
                 return response('Spots Import Success', 200);
             }
 
