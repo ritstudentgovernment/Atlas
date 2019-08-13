@@ -64,14 +64,14 @@ class CategoryController extends Controller
             return response($validator->errors(), 400);
         }
 
-        $updatedOne = false;
+        $updateSuccess = false;
         foreach ($rules as $property => $rule) {
             if (Input::has($property)) {
                 $category->$property = $request->input($property);
-                $updatedOne = $category->save();
+                $updateSuccess = $category->save();
             }
         }
-        if (!$updatedOne) {
+        if (!$updateSuccess) {
             return response('User did not supply any parameters that can be updated.', 400);
         }
 
