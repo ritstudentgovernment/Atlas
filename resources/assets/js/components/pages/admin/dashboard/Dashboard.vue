@@ -1,9 +1,9 @@
 <template>
     <el-row :gutter="20">
-        <el-col :md="8" :sm="12" class="margin-bottom">
+        <el-col :md="6" :sm="12" class="margin-bottom">
             <number-unapproved-spots></number-unapproved-spots>
         </el-col>
-        <el-col :md="16" :sm="24">
+        <el-col :md="18" :sm="24">
             <category-graphs></category-graphs>
         </el-col>
     </el-row>
