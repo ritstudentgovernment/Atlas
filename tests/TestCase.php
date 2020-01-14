@@ -38,7 +38,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Initial implementation of the setup method calls its parent on base test case and initializes the users.
      */
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
         $this->user = factory(User::class)->create();
@@ -92,7 +92,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Upon the destruction of a test, delete the models created in it.
      */
-    public function tearDown() : void
+    public function tearDown(): void
     {
         $this->deleteVariables();
     }
