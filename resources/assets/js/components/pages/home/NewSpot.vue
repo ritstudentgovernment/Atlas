@@ -85,8 +85,8 @@
                                             class="left"
                                             size="small"
                                             :value="Number(descriptor.default_value)"
-                                            :min="Number(descriptor.allowed_values.split('|')[0].split(':')[1])"
-                                            :max="Number(descriptor.allowed_values.split('|')[1].split(':')[1])"
+                                            :min="Number(descriptor.allowed_values.split('-')[0])"
+                                            :max="Number(descriptor.allowed_values.split('-')[1])"
                                             v-model="spotDescriptors[descriptor.name]"
                                             @change="updatePloppedSpot"
                                     ></el-input-number>
@@ -325,7 +325,7 @@
                 let allDescriptorsCompleted = true;
                 this.requiredDescriptors.forEach((descriptor)=>{
                     let value = this.spotDescriptors[descriptor.name];
-                    if (value === '' || !(descriptor.allowed_values.includes(value))) {
+                    if (value === '') {
                         allDescriptorsCompleted = false;
                     }
                 });

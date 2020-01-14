@@ -90,12 +90,12 @@ class SpotController extends Controller
         $categoryRequiredDescriptors = $type->category->descriptors;
         // Loop through all of the sent descriptors to verify they are required by the spots category
         foreach ($requestDescriptors as $descriptorId => $value) {
+            // Make sure the descriptor exists
             if ($descriptor = Descriptors::find($descriptorId)) {
-                // Make sure the descriptor exists
+                // Ensure the descriptor is required by the category
                 if ($categoryRequiredDescriptors->pluck('id')->contains($descriptorId)) {
                     // Verify the value is one of the allowed values
-                    $allowedValues = collect(explode('|', $descriptor->allowed_values));
-                    if ($allowedValues->contains($value)) {
+                    if ($descriptor->validate($value)) {
                         $sentDescriptors->push($descriptor);
                         $validatedDescriptors[$descriptorId] = ['value' => $value];
                     } else {
@@ -304,8 +304,11 @@ class SpotController extends Controller
         }
     }
 
-    public function unapprovedCount(Request $request)
+    public function stats(Request $request)
     {
-        return Spot::where('approved', false)->count();
+        return collect([
+            'totalNumberSpots'      => Spot::all()->count(),
+            'numberUnapprovedSpots' => Spot::where('approved', false)->count(),
+        ]);
     }
 }
