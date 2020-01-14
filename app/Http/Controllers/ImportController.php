@@ -6,10 +6,8 @@ use App\Category;
 use App\Descriptors;
 use App\Spot;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use League\Csv\Reader;
 
 class ImportController extends Controller
@@ -66,12 +64,12 @@ class ImportController extends Controller
         return $spots;
     }
 
-    private function importDescriptorsFromCsv($csvPath, Collection $spots)
+    private function importDescriptorsFromCsv($csvPath, $spots)
     {
         $descriptorsCsv = $this->initReader($csvPath);
 
         foreach ($descriptorsCsv as $index => $csvLine) {
-            $spot = $spots->get($index - 1);
+            $spot = $spots->get($index);
             $descriptors = [];
             $requiredDescriptors = $spot->category->descriptors;
 
@@ -103,7 +101,7 @@ class ImportController extends Controller
             'classification'        => 'required|integer',
             'descriptorsCsvPath'    => 'required|string',
         ];
-        $validator = Validator::make(Input::all(), $rules);
+        $validator = \Illuminate\Support\Facades\Validator::make(Input::all(), $rules);
         if ($validator->fails()) {
             return response($validator->errors(), 400);
         }
@@ -122,7 +120,7 @@ class ImportController extends Controller
         ];
 
         if ($spots = $this->importSpotsFromCsv($request->input('spotsCsvPath'), $commonData)) {
-            if ($spots = $this->importDescriptorsFromCsv($request->input('descriptorsCsvPath'), $spots)) {
+            if ($this->importDescriptorsFromCsv($request->input('descriptorsCsvPath'), $spots)) {
                 return response('Spots Import Success', 200);
             }
 
