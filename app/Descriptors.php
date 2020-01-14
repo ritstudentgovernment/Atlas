@@ -22,7 +22,7 @@ class Descriptors extends Model
     /**
      * This is the validator for the Select value type.
      */
-    private function validateSelectType($value) : bool
+    private function validateSelectType($value): bool
     {
         $allowedValues = collect(explode('|', $this->allowed_values));
 
@@ -32,7 +32,7 @@ class Descriptors extends Model
     /**
      * This is the validator for the Number value type.
      */
-    private function validateNumberType($value) : bool
+    private function validateNumberType($value): bool
     {
         $range = explode('-', $this->allowed_values);
         $min = trim($range[0]);
@@ -49,9 +49,9 @@ class Descriptors extends Model
      * Proxy method that passes a validation request to the descriptors specified
      * validator.
      */
-    public function validate($value) : bool
+    public function validate($value): bool
     {
-        $validator = 'validate' . ucfirst($this->value_type) . 'Type';
+        $validator = 'validate'.ucfirst($this->value_type).'Type';
         if (method_exists($this, $validator)) {
             return $this->$validator($value);
         }
