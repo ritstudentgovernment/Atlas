@@ -4,23 +4,29 @@
         <el-row :gutter="20">
             <el-col v-for="(category, index) in categories"
                     :key="category.name"
-                    :lg="12" :md="24">
+                    :lg="12" :md="24"
+                    class="margin-bottom">
                 <br v-if="index > 0" class="hidden-md-and-up" />
-                <el-card shadow="never">
-                    <div slot="header">{{ category.name }}</div>
-                    <div>
-                        <el-progress
-                                v-for="classification in category.classifications"
-                                :percentage="classificationPercentage(classification, category)"
-                                :color="`#${classification.color}`"
-                                :key="classification.name"
-                                class="margin-right"
-                                status="text"
-                                type="circle">
-                            <br />{{ classification.name }}<br />
-                            <br />({{ classification.numSpots }} spot<span v-if="classification.numSpots > 1">s</span>)
-                        </el-progress>
-                    </div>
+                <el-card shadow="hover" class="material-hover cursor" @click.native="view(category.name)">
+                    <div slot="header">{{ category.name }} Spots</div>
+                    <el-row :gutter="0">
+                        <el-col v-for="classification in category.classifications"
+                                :key="category.name + '-' + classification.name"
+                                :span="Math.ceil(24 / category.classifications.length)"
+                                class="text-center">
+                            <el-progress
+                                    :percentage="classificationPercentage(classification, category)"
+                                    :color="`#${classification.color}`"
+                                    :key="classification.name"
+                                    :width="95"
+                                    type="circle">
+                            </el-progress>
+                            <p class="center margin-top">
+                                {{ classification.name }} <br>
+                                <el-badge class="mark" :value="classification.numSpots + ' Spots'" />
+                            </p>
+                        </el-col>
+                    </el-row>
                 </el-card>
             </el-col>
         </el-row>
@@ -43,12 +49,14 @@
             setup () {
                 window.adminApi.api.get('spots/categories')
                     .then((response) => {
-                        console.log(response);
                         this.categories = response.data;
                     })
                     .catch(() => {
                         //
                     });
+            },
+            view (category) {
+                window.location.href = 'admin/spots/categories/' + category;
             }
         },
         created () {
