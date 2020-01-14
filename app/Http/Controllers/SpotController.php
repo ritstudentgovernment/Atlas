@@ -304,8 +304,12 @@ class SpotController extends Controller
         }
     }
 
-    public function unapprovedCount(Request $request)
+    public function stats(Request $request)
     {
-        return Spot::where('approved', false)->count();
+
+        return collect([
+            "totalNumberSpots"      => Spot::all()->count(),
+            "numberUnapprovedSpots" => Spot::where('approved', false)->count()
+        ]);
     }
 }

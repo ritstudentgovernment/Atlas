@@ -157,7 +157,7 @@ export default class Spot {
                             ${this.getDescriptorString()}
                         </div>
                         <p>${spot.type.category.description}</p>
-                        <p>${spot.notes}</p>
+                        <p>${spot.notes ? spot.notes : ''}</p>
                         ${this.getAdministrativeString()}
                     </div>
                 </div>`;
