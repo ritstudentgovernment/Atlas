@@ -1,33 +1,38 @@
 language: php
 
 php:
-- 7.1
+  - 7.1
+
+addons:
+  postgresql: "9.6"
 
 before_install:
-- psql -c 'create database travis_ci_test;' -U postgres
+  - composer self-update
+  - cp .env.travis .env
+  - psql -c 'create database travis_ci_test;' -U postgres
+
+install:
+  - composer install --no-interaction
 
 before_script:
-- cp .env.travis .env
-- composer self-update
-- composer install --no-interaction
-- php artisan key:generate
-- php artisan migrate
-- php artisan db:seed
-- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-- chmod +x ./cc-test-reporter
-- ./cc-test-reporter before-build
+  - php artisan key:generate
+  - php artisan migrate
+  - php artisan db:seed
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 
 script:
-- phpdbg -qrr vendor/bin/phpunit -v
+  - phpdbg -qrr vendor/bin/phpunit -v
 
 after_script:
-- ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 after_success:
-- |
-  if [ $TRAVIS_BRANCH == "develop" ]; then
-    curl https://forge.laravel.com/servers/282833/sites/757902/deploy/http?token=3UE5ZN2j2MkHNk4qvqwBlYvnDbX9Da2rl8az1wwG
-  fi
+  - |
+    if [ $TRAVIS_BRANCH == "develop" ]; then
+      curl https://forge.laravel.com/servers/282833/sites/757902/deploy/http?token=3UE5ZN2j2MkHNk4qvqwBlYvnDbX9Da2rl8az1wwG
+    fi
 
 cache:
   directories:
@@ -36,4 +41,7 @@ cache:
 
 env:
   global:
-  - CC_TEST_REPORTER_ID=97fb196380b79afb82b2829216eb0b7afc246aa5aca6191ff2a3e0c36eb352e9
+    - CC_TEST_REPORTER_ID=97fb196380b79afb82b2829216eb0b7afc246aa5aca6191ff2a3e0c36eb352e9
+
+services:
+  - postgresql
