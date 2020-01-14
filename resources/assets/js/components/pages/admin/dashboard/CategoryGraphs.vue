@@ -18,7 +18,7 @@
                                     :percentage="classificationPercentage(classification, category)"
                                     :color="`#${classification.color}`"
                                     :key="classification.name"
-                                    width="95"
+                                    :width="95"
                                     type="circle">
                             </el-progress>
                             <p class="center margin-top">
