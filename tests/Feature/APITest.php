@@ -19,7 +19,7 @@ class APITest extends TestCase
      *
      * @return void
      */
-    public function setUp(): void
+    public function setUp()
     {
         parent::setUp();
         $this->spot = (factory(Spot::class))->create(['approved' => false]);
