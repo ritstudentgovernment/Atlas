@@ -19,7 +19,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = ['first_name', 'last_name', 'email', 'password'];
     protected $appends = ['numSpotsCreated', 'isAdmin', 'isReviewer'];
-    protected $hidden = ['password', 'remember_token', 'spots'];
+    protected $hidden = ['password', 'remember_token'];
 
     public function spots()
     {

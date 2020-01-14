@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Category;
 use App\Http\Controllers\Controller;
 use App\User;
-use Illuminate\Support\Facades\Route;
 
 class DashboardController extends Controller
 {
@@ -17,7 +16,7 @@ class DashboardController extends Controller
         $this->middleware('role_or_permission:admin|administer');
 
         // Compute an array of all of the links to sub pages in the admin panel.
-        $allRoutes = collect(Route::getroutes()->get());
+        $allRoutes = collect(\Illuminate\Support\Facades\Route::getroutes()->get());
         $allRoutes->filter(function (\Illuminate\Routing\Route $route) {
             return strpos($route->uri, 'admin') === 0;
         })->each(function (\Illuminate\Routing\Route $route) {

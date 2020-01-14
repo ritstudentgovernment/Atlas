@@ -68,7 +68,7 @@ class Classification extends Model
         ]);
         $defaults->each(function ($data) use ($category) {
             $data = array_merge($data, [
-                'category_id' => $category->id,
+               'category_id' => $category->id,
             ]);
             self::create($data);
         });
