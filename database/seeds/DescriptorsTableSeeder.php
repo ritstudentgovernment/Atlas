@@ -62,7 +62,7 @@ class DescriptorsTableSeeder extends BaseSeeder
                 'icon'              => 'info',
                 'value_type'        => 'number',
                 'default_value'     => '1',
-                'allowed_values'    => 'min:0|max:10',
+                'allowed_values'    => '0-10',
             ],
         ];
 
