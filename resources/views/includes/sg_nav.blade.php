@@ -17,7 +17,7 @@
                     <a href="https://sg.rit.edu/about/">Structure</a>
                     <a href="https://sg.rit.edu/about/mission-and-vision/">Mission and Vision</a>
                     <a href="https://sg.rit.edu/about/committees/">Committees</a>
-                    <a href="https://sg.rit.edu/about/rsos/">RSO's</a>
+                    <a href="https://sg.rit.edu/about/msos/">RSO's</a>
                 </div>
             </button>
             <button id="2" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn">
@@ -51,7 +51,7 @@
                     <a href="https://sg.rit.edu/about/">Structure</a>
                     <a href="https://sg.rit.edu/about/mission-and-vision/">Mission and Vision</a>
                     <a href="https://sg.rit.edu/about/committees/">Committees</a>
-                    <a href="https://sg.rit.edu/about/rsos/">RSO's</a>
+                    <a href="https://sg.rit.edu/about/msos/">RSO's</a>
 
                     <p>Services</p>
                     <a href="https://sg.rit.edu/services/">Overview</a>
