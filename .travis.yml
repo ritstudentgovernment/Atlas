@@ -31,7 +31,7 @@ after_script:
 after_success:
   - |
     if [ $TRAVIS_BRANCH == "develop" ]; then
-      curl https://forge.laravel.com/servers/282833/sites/757902/deploy/http?token=3UE5ZN2j2MkHNk4qvqwBlYvnDbX9Da2rl8az1wwG
+      curl https://forge.laravel.com/servers/343819/sites/938627/deploy/http?token=xPvh7GV9cMUn5WDt7n2RoF9XheKb7eMqRkaOeVHr
     fi
 
 cache:
