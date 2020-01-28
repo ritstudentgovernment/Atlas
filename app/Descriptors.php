@@ -30,6 +30,21 @@ class Descriptors extends Model
     }
 
     /**
+     * This is the validator for the Multi-Select value type.
+     */
+    private function validateMultiSelectType($values): bool
+    {
+        $isValid = true;
+        $values = explode(', ', $values);
+        foreach ($values as $selectedValue) {
+            if (!$this->validateSelectType(trim($selectedValue))) {
+                $isValid = false;
+            }
+        }
+        return $isValid;
+    }
+
+    /**
      * This is the validator for the Number value type.
      */
     private function validateNumberType($value): bool

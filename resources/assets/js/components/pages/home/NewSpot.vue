@@ -62,8 +62,9 @@
                                 value=""
                                 size="small"
                                 class="full-width"
-                                v-if="descriptor.value_type === 'select'"
+                                v-if="descriptor.value_type.toLowerCase().includes('select')"
                                 v-model="spotDescriptors[descriptor.name]"
+                                :multiple="descriptor.value_type === 'multiSelect'"
                                 :placeholder="descriptor.name"
                                 @change="updatePloppedSpot"
                         >
@@ -161,6 +162,9 @@
                     let value = descriptor.default_value;
                     if (this.spotDescriptors[descriptor.name]) {
                         value = this.spotDescriptors[descriptor.name];
+                        if (typeof value === 'object') {
+                            value = value.join(', ');
+                        }
                     }
                     descriptor.pivot.value = value;
                     return descriptor;
@@ -337,7 +341,11 @@
             parseDescriptors() {
                 let descriptorIDtoValue = {};
                 this.requiredDescriptors.forEach((descriptor)=>{
-                    descriptorIDtoValue[descriptor.id] = this.spotDescriptors[descriptor.name];
+                    let descriptorValue = this.spotDescriptors[descriptor.name];
+                    descriptorIDtoValue[descriptor.id] =
+                        typeof descriptorValue === 'object' ?
+                            descriptorValue.join(', ') :
+                            descriptorValue;
                 });
                 return descriptorIDtoValue;
             },
