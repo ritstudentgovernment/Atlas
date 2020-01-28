@@ -56,6 +56,9 @@
                 Add New Descriptor
             </el-button>
         </div>
+        <div class="dim-text text-center">
+            A list of icons to choose from can be found <a href="https://getuikit.com/docs/icon#library" target="_blank" class="el-button--text">here</a>.
+        </div>
     </el-card>
 </template>
 
