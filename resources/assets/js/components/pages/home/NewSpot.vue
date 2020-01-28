@@ -180,7 +180,7 @@
         },
         methods: {
             setupDescriptors() {
-                this.requiredDescriptors.forEach((descriptor)=>{
+                this.requiredDescriptors.forEach((descriptor) => {
                     this.$set(this.spotDescriptors, descriptor.name, '');
                 });
             },
@@ -256,7 +256,7 @@
                 if (!this.isPlopped) {
                     this.location = getMeta('googleMapsCenter');
                     if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition((position)=>{
+                        navigator.geolocation.getCurrentPosition((position) => {
                             self.location = {
                                 lat: position.coords.latitude,
                                 lng: position.coords.longitude,
@@ -327,7 +327,7 @@
             },
             verifyDescriptors() {
                 let allDescriptorsCompleted = true;
-                this.requiredDescriptors.forEach((descriptor)=>{
+                this.requiredDescriptors.forEach((descriptor) => {
                     let value = this.spotDescriptors[descriptor.name];
                     if (value === '') {
                         allDescriptorsCompleted = false;
@@ -340,7 +340,7 @@
             },
             parseDescriptors() {
                 let descriptorIDtoValue = {};
-                this.requiredDescriptors.forEach((descriptor)=>{
+                this.requiredDescriptors.forEach((descriptor) => {
                     let descriptorValue = this.spotDescriptors[descriptor.name];
                     descriptorIDtoValue[descriptor.id] =
                         typeof descriptorValue === 'object' ?
