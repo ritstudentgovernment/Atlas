@@ -41,6 +41,7 @@ class Descriptors extends Model
                 $isValid = false;
             }
         }
+
         return $isValid;
     }
 
