@@ -51,7 +51,7 @@
                             type="danger"
                             :disabled="scope.row.temp && descriptors.length === 1"
                             @click="handleDelete(scope.$index, scope.row)">
-                        Delete
+                        Remove
                     </el-button>
                 </template>
             </el-table-column>
@@ -205,17 +205,18 @@
                 if (descriptor.temp) {
                     this.descriptors.splice(index, 1);
                 } else {
-                    this.$confirm(`Delete Descriptor: ${descriptor.name}`, 'Warning: This action is irreversible!', {
-                        confirmButtonText: 'Delete',
+                    this.$confirm(`Remove the '${descriptor.name}' descriptor?`, '', {
+                        confirmButtonText: 'Remove it!',
                         confirmButtonClass: 'el-button--danger margin-top-important',
-                        cancelButtonText: 'Cancel',
+                        cancelButtonText: 'Nope, keep it.',
                         center: true
                     })
                         .then(() => {
-                            window.adminApi.post(`spots/descriptor/${descriptor.id}/delete`)
-                                .then(() => {
+                            let params = { category_id: this.categoryId };
+                            window.adminApi.post(`spots/descriptor/${descriptor.id}/delete`, params)
+                                .then((response) => {
                                     this.$notify.success({
-                                        title: "Deleted Descriptor Successfully",
+                                        title: response.data,
                                         message: ""
                                     });
                                     this.descriptors.splice(index, 1);

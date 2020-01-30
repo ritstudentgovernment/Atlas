@@ -105,7 +105,9 @@ export default class Builder{
     buildLegend() {
 
         let legend = document.getElementById('legend');
-        let keys = Object.keys(this.legend).sort((a, b) => b > a);
+        let keys = Object.keys(this.legend).sort((a, b) => {
+            return Object.keys(this.legend[a]).length < Object.keys(this.legend[b]).length;
+        });
 
         keys.forEach((categoryKey) => {
 
