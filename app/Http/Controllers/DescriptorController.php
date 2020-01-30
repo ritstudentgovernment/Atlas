@@ -30,14 +30,14 @@ class DescriptorController extends Controller
 
     public function delete(Request $request, Descriptors $descriptor)
     {
-        try {
+        if ($request->has('category_id')) {
+            $descriptor->categories()->detach($request->input('category_id'));
+
+            return response('Removed Descriptor Successfully', 200);
+        } else {
             $descriptor->delete();
 
-            return response('Deletion successful', 200);
-        } catch (\Exception $e) {
-            Log::error($e);
-
-            return response('Error deleting Descriptor', 500);
+            return response('Deleted Descriptor Successful', 200);
         }
     }
 
