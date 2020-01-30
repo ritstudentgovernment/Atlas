@@ -62,8 +62,9 @@
                                 value=""
                                 size="small"
                                 class="full-width"
-                                v-if="descriptor.value_type === 'select'"
+                                v-if="descriptor.value_type.toLowerCase().includes('select')"
                                 v-model="spotDescriptors[descriptor.name]"
+                                :multiple="descriptor.value_type === 'multiSelect'"
                                 :placeholder="descriptor.name"
                                 @change="updatePloppedSpot"
                         >
@@ -161,6 +162,9 @@
                     let value = descriptor.default_value;
                     if (this.spotDescriptors[descriptor.name]) {
                         value = this.spotDescriptors[descriptor.name];
+                        if (Array.isArray(value)) {
+                            value = value.join(', ');
+                        }
                     }
                     descriptor.pivot.value = value;
                     return descriptor;
@@ -176,7 +180,7 @@
         },
         methods: {
             setupDescriptors() {
-                this.requiredDescriptors.forEach((descriptor)=>{
+                this.requiredDescriptors.forEach((descriptor) => {
                     this.$set(this.spotDescriptors, descriptor.name, '');
                 });
             },
@@ -252,7 +256,7 @@
                 if (!this.isPlopped) {
                     this.location = getMeta('googleMapsCenter');
                     if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition((position)=>{
+                        navigator.geolocation.getCurrentPosition((position) => {
                             self.location = {
                                 lat: position.coords.latitude,
                                 lng: position.coords.longitude,
@@ -323,7 +327,7 @@
             },
             verifyDescriptors() {
                 let allDescriptorsCompleted = true;
-                this.requiredDescriptors.forEach((descriptor)=>{
+                this.requiredDescriptors.forEach((descriptor) => {
                     let value = this.spotDescriptors[descriptor.name];
                     if (value === '') {
                         allDescriptorsCompleted = false;
@@ -336,8 +340,12 @@
             },
             parseDescriptors() {
                 let descriptorIDtoValue = {};
-                this.requiredDescriptors.forEach((descriptor)=>{
-                    descriptorIDtoValue[descriptor.id] = this.spotDescriptors[descriptor.name];
+                this.requiredDescriptors.forEach((descriptor) => {
+                    let descriptorValue = this.spotDescriptors[descriptor.name];
+                    descriptorIDtoValue[descriptor.id] =
+                        Array.isArray(descriptorValue) ?
+                            descriptorValue.join(', ') :
+                            descriptorValue;
                 });
                 return descriptorIDtoValue;
             },

@@ -25,6 +25,7 @@
                 <template slot-scope="scope">
                     <el-select v-model="scope.row.value_type" @change="handleUpdate(scope.row)">
                         <el-option label="Select" value="select"></el-option>
+                        <el-option label="Multi-Select" value="multiSelect"></el-option>
                         <el-option label="Number" value="number"></el-option>
                     </el-select>
                 </template>
@@ -103,10 +104,24 @@
                     icon: ""
                 });
             },
-            parseAllowedValues (descriptor) {
-                return descriptor.allowed_values.split(",").map((value) => {
+            splitTrimJoin (string, splitOn, joinWith) {
+                return string.split(splitOn).map((value) => {
                     return value.trim();
-                }).join("|");
+                }).join(joinWith);
+            },
+            // method called by parseAllowedValues when parsing a "select" descriptor
+            parseAllowedSelectValues (descriptor) {
+                return this.splitTrimJoin(descriptor.allowed_values, ",", "|");
+            },
+            parseAllowedMultiSelectValues (descriptor) {
+                return this.parseAllowedSelectValues(descriptor);
+            },
+            parseAllowedNumberValues (descriptor) {
+                return this.splitTrimJoin(descriptor.allowed_values, "-", "-");
+            },
+            parseAllowedValues (descriptor) {
+                let parser = 'parseAllowed' + window.capitalize(descriptor.value_type) + 'Values';
+                return this[parser] ? this[parser](descriptor) : descriptor.allowed_values;
             },
             handleNewDescriptor (index, descriptor) {
                 let newDescriptor = {
