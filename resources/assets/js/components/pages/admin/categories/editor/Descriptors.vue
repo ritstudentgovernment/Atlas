@@ -115,12 +115,9 @@
             handleSelect (index, descriptor) {
                 window.adminApi.get('spots/descriptor/' + descriptor.name)
                     .then((response) => {
+                        response.data.allowed_values.split("|").join(", ");
                         this.$set(this.descriptors, index, response.data);
-                        if (descriptor.temp) {
-                            this.handleNewDescriptor(index, this.descriptors[index]);
-                        } else {
-                            this.handleUpdate(this.descriptors[index]);
-                        }
+                        this.handleUpdate(this.descriptors[index], true);
                     });
             },
             insertTempDescriptor () {
@@ -164,14 +161,15 @@
                         });
                     });
             },
-            handleUpdate (descriptor) {
+            handleUpdate (descriptor, reuseDescriptor = false) {
                 if (!descriptor.temp) {
                     let updatedDescriptor = {
                         name: descriptor.name,
                         value_type: descriptor.value_type,
                         default_value: descriptor.default_value,
                         allowed_values: this.parseAllowedValues(descriptor),
-                        icon: descriptor.icon
+                        icon: descriptor.icon,
+                        category_id: reuseDescriptor ? this.categoryId : null
                     };
                     window.adminApi.post(`spots/descriptor/${descriptor.id}/update`, updatedDescriptor)
                         .then(() => {
@@ -223,7 +221,7 @@
                 window.adminApi.get('spots/descriptor/list')
                     .then((response) => {
                         this.allDescriptors = response.data.map((descriptor) => {
-                            return { 'value' : descriptor.name };
+                             return { 'value' : descriptor.name };
                         });
                     });
             }

@@ -74,6 +74,7 @@ class DescriptorController extends Controller
     public function update(Request $request, Descriptors $descriptor)
     {
         $rules = [
+            'category_id'       => 'sometimes|required|integer',
             'name'              => 'sometimes|required|string',
             'value_type'        => 'sometimes|required|string',
             'default_value'     => 'sometimes|required|string',
@@ -88,8 +89,12 @@ class DescriptorController extends Controller
         $updatedOne = false;
         foreach ($rules as $property => $rule) {
             if (Input::has($property)) {
-                $descriptor->$property = $request->input($property);
-                $descriptor->save();
+                if ($property == 'category_id') {
+                    $descriptor->categories()->attach($request->input('category_id'));
+                } else {
+                    $descriptor->$property = $request->input($property);
+                    $descriptor->save();
+                }
                 $updatedOne = true;
             }
         }
