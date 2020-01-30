@@ -104,10 +104,6 @@
                             classification.availablePermissions = this.permissions;
                             return classification;
                         });
-                        console.log(this.category.classifications);
-                    })
-                    .catch(() => {
-                        //
                     });
             }
         },
