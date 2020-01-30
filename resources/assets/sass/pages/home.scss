@@ -59,8 +59,11 @@
 
   .legendSection{
 
-    overflow: hidden;
     float: left;
+    overflow: hidden;
+    padding-left:10px;
+    margin-left: 10px;
+    border-left: 1px solid $light;
 
     h3{
 
@@ -77,11 +80,11 @@
 
   }
 
-  .legendSection:nth-child(2){
+  .legendSection:first-child{
 
-    padding-left:10px;
-    margin-left: 10px;
-    border-left: 1px solid $light;
+    padding-left: 0;
+    margin-left: 0;
+    border: none;
 
   }
 
