@@ -162,7 +162,7 @@
                     let value = descriptor.default_value;
                     if (this.spotDescriptors[descriptor.name]) {
                         value = this.spotDescriptors[descriptor.name];
-                        if (typeof value === 'object') {
+                        if (Array.isArray(value)) {
                             value = value.join(', ');
                         }
                     }
@@ -343,7 +343,7 @@
                 this.requiredDescriptors.forEach((descriptor) => {
                     let descriptorValue = this.spotDescriptors[descriptor.name];
                     descriptorIDtoValue[descriptor.id] =
-                        typeof descriptorValue === 'object' ?
+                        Array.isArray(descriptorValue) ?
                             descriptorValue.join(', ') :
                             descriptorValue;
                 });
