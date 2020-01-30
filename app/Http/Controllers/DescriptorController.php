@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Descriptors;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class DescriptorController extends Controller
