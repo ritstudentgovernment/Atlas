@@ -13,7 +13,14 @@
             </el-table-column>
             <el-table-column label="Name">
                 <template slot-scope="scope">
-                    <el-input v-model="scope.row.name" @change="handleUpdate(scope.row)"></el-input>
+                    <el-autocomplete
+                            class="inline-input"
+                            v-model="scope.row.name"
+                            :fetch-suggestions="suggestions"
+                            :trigger-on-focus="false"
+                            @select="handleSelect(scope.$index, scope.row)"
+                            @change="handleUpdate(scope.row)"
+                    ></el-autocomplete>
                 </template>
             </el-table-column>
             <el-table-column label="Icon" prop="icon">
@@ -25,6 +32,7 @@
                 <template slot-scope="scope">
                     <el-select v-model="scope.row.value_type" @change="handleUpdate(scope.row)">
                         <el-option label="Select" value="select"></el-option>
+                        <el-option label="Multi-Select" value="multiSelect"></el-option>
                         <el-option label="Number" value="number"></el-option>
                     </el-select>
                 </template>
@@ -56,6 +64,9 @@
                 Add New Descriptor
             </el-button>
         </div>
+        <div class="dim-text text-center">
+            A list of icons to choose from can be found <a href="https://getuikit.com/docs/icon#library" target="_blank" class="el-button--text">here</a>.
+        </div>
     </el-card>
 </template>
 
@@ -65,7 +76,8 @@
         props: ["rawDescriptors", "categoryId"],
         data () {
             return {
-                descriptors: []
+                descriptors: [],
+                allDescriptors: []
             };
         },
         computed: {
@@ -75,6 +87,7 @@
             },
             newDescriptorIsValid () {
                 let descriptor = this.hasTempDescriptor;
+                let existingDescriptors = this.allDescriptors;
 
                 if (descriptor) {
                     return !(
@@ -82,13 +95,32 @@
                         descriptor.icon.trim() === "" ||
                         descriptor.value_type.trim() === "" ||
                         descriptor.default_value.trim() === "" ||
-                        descriptor.allowed_values.trim() === ""
+                        descriptor.allowed_values.trim() === "" ||
+                        existingDescriptors.includes(descriptor.name)
                     );
                 }
+
                 return true;
             },
         },
         methods: {
+            searchFilter (queryString) {
+                return (descriptor) => {
+                    return (descriptor.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                };
+            },
+            suggestions (queryString, cb) {
+                let results = queryString ? this.allDescriptors.filter(this.searchFilter(queryString)) : this.allDescriptors;
+                cb(results);
+            },
+            handleSelect (index, descriptor) {
+                window.adminApi.get('spots/descriptor/' + descriptor.name)
+                    .then((response) => {
+                        response.data.allowed_values.split("|").join(", ");
+                        this.$set(this.descriptors, index, response.data);
+                        this.handleUpdate(this.descriptors[index], true);
+                    });
+            },
             insertTempDescriptor () {
                 this.descriptors.push({
                     id: (new Date()).getTime(),
@@ -100,10 +132,24 @@
                     icon: ""
                 });
             },
-            parseAllowedValues (descriptor) {
-                return descriptor.allowed_values.split(",").map((value) => {
+            splitTrimJoin (string, splitOn, joinWith) {
+                return string.split(splitOn).map((value) => {
                     return value.trim();
-                }).join("|");
+                }).join(joinWith);
+            },
+            // method called by parseAllowedValues when parsing a "select" descriptor
+            parseAllowedSelectValues (descriptor) {
+                return this.splitTrimJoin(descriptor.allowed_values, ",", "|");
+            },
+            parseAllowedMultiSelectValues (descriptor) {
+                return this.parseAllowedSelectValues(descriptor);
+            },
+            parseAllowedNumberValues (descriptor) {
+                return this.splitTrimJoin(descriptor.allowed_values, "-", "-");
+            },
+            parseAllowedValues (descriptor) {
+                let parser = 'parseAllowed' + window.capitalize(descriptor.value_type) + 'Values';
+                return this[parser] ? this[parser](descriptor) : descriptor.allowed_values;
             },
             handleNewDescriptor (index, descriptor) {
                 let newDescriptor = {
@@ -130,14 +176,15 @@
                         });
                     });
             },
-            handleUpdate (descriptor) {
+            handleUpdate (descriptor, reuseDescriptor = false) {
                 if (!descriptor.temp) {
                     let updatedDescriptor = {
                         name: descriptor.name,
                         value_type: descriptor.value_type,
                         default_value: descriptor.default_value,
                         allowed_values: this.parseAllowedValues(descriptor),
-                        icon: descriptor.icon
+                        icon: descriptor.icon,
+                        category_id: reuseDescriptor ? this.categoryId : null
                     };
                     window.adminApi.post(`spots/descriptor/${descriptor.id}/update`, updatedDescriptor)
                         .then(() => {
@@ -147,7 +194,6 @@
                             });
                         })
                         .catch((error) => {
-                            console.log(error);
                             this.$notify.error({
                                 title: "Error Updating Descriptor",
                                 message: error
@@ -185,6 +231,14 @@
                             this.$notify.info('Delete canceled');
                         });
                 }
+            },
+            setup () {
+                window.adminApi.get('spots/descriptor/list')
+                    .then((response) => {
+                        this.allDescriptors = response.data.map((descriptor) => {
+                             return { 'value' : descriptor.name };
+                        });
+                    });
             }
         },
         created () {
@@ -193,9 +247,14 @@
                 descriptor.allowed_values = descriptor.allowed_values.split("|").join(", ");
                 return descriptor;
             });
+
             if (this.descriptors.length === 0) {
                 this.insertTempDescriptor();
             }
+
+            window.dsc = this;
+            window.onLoadedQueue = window.onLoadedQueue ? window.onLoadedQueue : [];
+            window.onLoadedQueue.push(this.setup);
         }
     }
 </script>

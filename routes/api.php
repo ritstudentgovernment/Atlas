@@ -53,8 +53,10 @@ Route::prefix('admin')->middleware(['permission:administer'])->group(function ()
             });
         });
         Route::prefix('descriptor')->group(function () {
+            Route::get('list', 'DescriptorController@list');
             Route::post('create', 'DescriptorController@store');
             Route::prefix('{descriptor}')->group(function () {
+                Route::get('/', 'DescriptorController@get');
                 Route::post('update', 'DescriptorController@update');
                 Route::post('delete', 'DescriptorController@delete');
             });
