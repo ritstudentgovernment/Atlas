@@ -18,6 +18,16 @@ class DescriptorController extends Controller
         $this->middleware('role_or_permission:admin|administer');
     }
 
+    public function list()
+    {
+        return Descriptors::all();
+    }
+
+    public function get($name)
+    {
+        return Descriptors::where('name', $name)->first();
+    }
+
     public function delete(Request $request, Descriptors $descriptor)
     {
         try {
