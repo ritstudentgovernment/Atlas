@@ -27,6 +27,14 @@ class TypesTableSeeder extends Seeder
             'name'        => 'Vending Machine',
             'category_id' => 2,
         ],
+        [
+            'name'        => 'Academic',
+            'category_id' => 3,
+        ],
+        [
+            'name'        => 'Major Specific',
+            'category_id' => 3,
+        ],
     ];
 
     /**

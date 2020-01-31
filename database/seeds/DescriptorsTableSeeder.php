@@ -64,11 +64,26 @@ class DescriptorsTableSeeder extends BaseSeeder
                 'default_value'     => '1',
                 'allowed_values'    => '0-10',
             ],
+            [
+                'name'              => 'Size',
+                'icon'              => 'album',
+                'value_type'        => 'number',
+                'default_value'     => '1',
+                'allowed_values'    => '1-20',
+            ],
+            [
+                'name'              => 'Available Computers',
+                'icon'              => 'desktop',
+                'value_type'        => 'multiSelect',
+                'default_value'     => 'iMacs',
+                'allowed_values'    => 'iMacs|PCs|Linux',
+            ],
         ];
 
         $categoryDescriptorsMap = [
             'Energy'    => ['Fuel', 'Building', 'Floor'],
-            'Nap'       => ['Sound Level', 'Comfort Level', 'Building', 'Floor'],
+            'Nap'       => ['Sound Level', 'Comfort Level', 'Building', 'Floor', 'Size'],
+            'Lab'       => ['Available Computers', 'Sound Level', 'Building', 'Floor'],
         ];
 
         $this->seed(Descriptors::class);

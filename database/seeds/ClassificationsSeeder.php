@@ -54,6 +54,27 @@ class ClassificationsSeeder extends BaseSeeder
                 'view_permission'   => 'view unapproved spots',
                 'create_permission' => 'create under review spots',
             ],
+            [
+                'name'              => 'Public',
+                'type'              => 'public',
+                'color'             => '009cbd',
+                'category_id'       => 3,
+            ],
+            [
+                'name'              => 'Designated',
+                'type'              => 'designated',
+                'color'             => '7d55c7',
+                'category_id'       => 3,
+                'create_permission' => 'make designated spots',
+            ],
+            [
+                'name'              => 'Under Review',
+                'type'              => 'under review',
+                'color'             => 'cb0020',
+                'category_id'       => 3,
+                'view_permission'   => 'view unapproved spots',
+                'create_permission' => 'create under review spots',
+            ],
         ];
 
         $this->seed(Classification::class);
