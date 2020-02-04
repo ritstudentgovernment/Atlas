@@ -14,7 +14,7 @@
             <el-table-column label="Name">
                 <template slot-scope="scope">
                     <el-autocomplete
-                            class="inline-input"
+                            class="inline-input full-width"
                             v-model="scope.row.name"
                             :fetch-suggestions="suggestions"
                             :trigger-on-focus="false"
