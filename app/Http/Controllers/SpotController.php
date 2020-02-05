@@ -311,4 +311,13 @@ class SpotController extends Controller
             'numberUnapprovedSpots' => Spot::where('approved', false)->count(),
         ]);
     }
+
+    public function upload(Request $request)
+    {
+        $validatedRequest = $request->validate([
+            'image' => 'image|max:500000'
+        ]);
+
+        return $validatedRequest->file('image')->store('spotImages');
+    }
 }
