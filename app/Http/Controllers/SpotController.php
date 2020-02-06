@@ -212,6 +212,7 @@ class SpotController extends Controller
 
         $user = $validatedData['user'];
         $type = $validatedData['type'];
+        $image_url = $validatedData['image_url'];
         $descriptors = $validatedData['descriptors'];
         $classification = $validatedData['classification'];
         $approvedClassification = $validatedData['approvedClassification'];
@@ -226,6 +227,7 @@ class SpotController extends Controller
             'classification_id'             => $classification->id,
             'approved_classification_id'    => $approvedClassification->id,
             'approved'                      => $canApproveSpots ? 1 : 0,
+            'image_url'                     => $image_url,
         ]);
 
         if ($spot instanceof Spot) {
@@ -314,10 +316,10 @@ class SpotController extends Controller
 
     public function upload(Request $request)
     {
-        $validatedRequest = $request->validate([
+        $request->validate([
             'image' => 'image|max:500000'
         ]);
 
-        return $validatedRequest->file('image')->store('spotImages');
+        return $request->file->store('spotImages', ['disk' => 'public']);
     }
 }

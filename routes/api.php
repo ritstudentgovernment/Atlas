@@ -20,7 +20,7 @@
          Route::prefix('/create')->group(function () {
              Route::get('/', 'SpotController@getDefaults');
              Route::post('/', 'SpotController@store');
-             Route::post('upload', 'SpotController@uploadImage');
+             Route::post('upload', 'SpotController@upload');
          });
          Route::prefix('{spot}')->middleware(['permission:approve spots'])->group(function () {
              Route::post('approve', 'SpotController@approve');
