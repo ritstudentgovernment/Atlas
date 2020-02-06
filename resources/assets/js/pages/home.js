@@ -19,6 +19,11 @@ window.coreApiLoaded = (api) => {
  * @return void.
  */
 window.initMap = () => {
+    function verifyPageLoadedProperly(){
+        if (typeof getMeta === 'undefined') {
+            window.location.reload();
+        }
+    }
     /**
      * Function to show the google map at the appropriate location
      *
@@ -61,6 +66,8 @@ window.initMap = () => {
         map.setOptions({ minZoom: 15, maxZoom: 20 });
 
     }
+
+    verifyPageLoadedProperly();
 
     let center = instantiateMap();
     restrictMapMovement(center);
