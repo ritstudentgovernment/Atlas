@@ -131,6 +131,7 @@ class SpotController extends Controller
     {
         $rules = [
             'notes'             => 'sometimes|string|nullable',
+            'image_url'         => 'sometimes|string|nullable',
             'descriptors'       => 'required',
             'type_name'         => 'required',
             'lat'               => 'required|numeric',
@@ -212,7 +213,6 @@ class SpotController extends Controller
 
         $user = $validatedData['user'];
         $type = $validatedData['type'];
-        $image_url = $validatedData['image_url'];
         $descriptors = $validatedData['descriptors'];
         $classification = $validatedData['classification'];
         $approvedClassification = $validatedData['approvedClassification'];
@@ -227,7 +227,7 @@ class SpotController extends Controller
             'classification_id'             => $classification->id,
             'approved_classification_id'    => $approvedClassification->id,
             'approved'                      => $canApproveSpots ? 1 : 0,
-            'image_url'                     => $image_url,
+            'image_url'                     => $request->input('image_url'),
         ]);
 
         if ($spot instanceof Spot) {
