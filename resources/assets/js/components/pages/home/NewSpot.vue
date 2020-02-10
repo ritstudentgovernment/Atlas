@@ -318,7 +318,7 @@
                         lat: this.location.lat,
                         lng: this.location.lng,
                         approved: true,
-                        imageUrl: this.imageUrl,
+                        image_url: this.imageUrl,
                     };
                 return window.builder.newSpot(spotData, true);
             },
