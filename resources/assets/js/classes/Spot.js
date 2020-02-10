@@ -196,25 +196,23 @@ export default class Spot {
      *
      * @return google.maps.Marker
      */
-    drop(autoOpen = false, animate = true, spotNumber = 0) {
+    drop(autoOpen = false, animate = true) {
 
         let self = this;
 
-        setTimeout(() => {
-            self.marker = new google.maps.Marker({
+        this.marker = new google.maps.Marker({
 
-                position: {lat: Number(self.data.lat), lng: Number(self.data.lng)},
-                animation: animate ? google.maps.Animation.DROP : null,
-                map: window.map,
-                icon: self.icon,
-                title: self.data.type.name,
-                draggable: self.data.hasOwnProperty('draggable') ? self.data.draggable : false
+            position: {lat: Number(this.data.lat), lng: Number(this.data.lng)},
+            animation: animate ? google.maps.Animation.DROP : null,
+            map: window.map,
+            icon: this.icon,
+            title: this.data.type.name,
+            draggable: this.data.hasOwnProperty('draggable') ? this.data.draggable : false
 
-            });
+        });
 
-            self.marker.infoWindow = self.addClickHandler();
-            window.markers.push(self.marker);
-        }, 12 * spotNumber);
+        this.marker.infoWindow = this.addClickHandler();
+        window.markers.push(this.marker);
 
         if (autoOpen) {
 

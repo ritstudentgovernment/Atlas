@@ -77,10 +77,11 @@ export default class Builder{
 
         this.canvasBuilder = canvasBuilder;
 
-        json.forEach(function(spotData, i){
+        json.forEach(function(spotData){
+
             let spot = new Spot(spotData),
                 icon = spot.buildIcon(canvasBuilder),
-                marker = spot.drop(false, animateDrop, i);
+                marker = spot.drop(false, animateDrop);
 
             // Add the spot to the list of spots in the builder instance
             reference.spots.push(spot);
