@@ -317,7 +317,7 @@ class SpotController extends Controller
     public function upload(Request $request)
     {
         $request->validate([
-            'image' => 'image|max:500000'
+            'image' => 'image|max:500000',
         ]);
 
         return $request->file->store('spotImages', ['disk' => 'public']);
