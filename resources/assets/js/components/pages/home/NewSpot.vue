@@ -123,7 +123,6 @@
                             @change="updatePloppedSpot"
                     ></el-input>
                 </div>
-
             </div>
             <div id="new-spot-buttons">
                 <el-button
@@ -336,8 +335,6 @@
                 this.getDefaultLocation(()=>{
                     let spot = self.makeSpot(),
                         builder = window.builder;
-
-                    console.log(spot);
 
                     spot.buildIcon(builder.canvasBuilder);
 
