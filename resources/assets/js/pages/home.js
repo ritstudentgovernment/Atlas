@@ -75,17 +75,4 @@ window.initMap = () => {
     window.builder = new Builder();
     builder.build();
 
-    // Sometimes the map will fail to display, so if the tiles are not loaded after a second try it again.
-    setTimeout(() => {
-
-        if (window.map.tilesloading) {
-
-            instantiateMap();
-            restrictMapMovement(center);
-            builder.instantiateSpots(window.spotData);
-
-        }
-
-    }, 2000);
-
 };
