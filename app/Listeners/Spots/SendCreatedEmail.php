@@ -4,8 +4,6 @@ namespace App\Listeners\Spots;
 
 use App\Events\Spots\Created;
 use App\Mail\SpotCreated;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 
@@ -24,7 +22,8 @@ class SendCreatedEmail
     /**
      * Handle the event.
      *
-     * @param  Created  $event
+     * @param Created $event
+     *
      * @return void
      */
     public function handle(Created $event)

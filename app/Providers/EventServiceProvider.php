@@ -18,13 +18,13 @@ class EventServiceProvider extends ServiceProvider
             Saml2LoginEventListener::class,
         ],
         'App\Events\Spots\Created' => [
-            'App\Listeners\Spots\SendCreatedEmail'
+            'App\Listeners\Spots\SendCreatedEmail',
         ],
         'App\Events\Spots\Approved' => [
-            'App\Listeners\Spots\SendApprovedEmail'
+            'App\Listeners\Spots\SendApprovedEmail',
         ],
         'App\Events\Spots\Rejected' => [
-            'App\Listeners\Spots\SendRejectedEmail'
+            'App\Listeners\Spots\SendRejectedEmail',
         ],
     ];
 
