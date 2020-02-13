@@ -97,6 +97,23 @@
                     </div>
                 </div>
                 <div>
+                    <h5>Image</h5>
+                    <el-upload
+                            class="full-width"
+                            drag
+                            action="/api/spots/create/upload"
+                            :on-success="handleImageUploadSuccess"
+                            :headers="apiHeaders"
+                            :show-file-list="false">
+                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                        <div v-else>
+                            <i class="el-icon-upload"></i>
+                            <div class="el-upload__text">Drop file here or click to upload<br />(optional)</div>
+                        </div>
+                        <div v-if="!imageUrl" class="el-upload__tip text-center" slot="tip">jpg/png files, less than 500kb</div>
+                    </el-upload>
+                </div>
+                <div>
                     <h5>Notes</h5>
                     <el-input
                             type="textarea"
@@ -151,6 +168,8 @@
                 isPlopped: false,
                 ploppedMarker: null,
                 location: null,
+                apiHeaders: null,
+                imageUrl: '',
             };
         },
         computed: {
@@ -198,8 +217,12 @@
                 this.requiredData = data.requiredData;
                 this.updatePloppedSpot();
             },
+            handleImageUploadSuccess(response) {
+                this.imageUrl = response;
+            },
             setup() {
                 let self = this;
+
                 window.spotsApi.get('create/').then((response) => {
                     let data = response.data;
                     self.availableCategories = data.availableCategories;
@@ -212,6 +235,8 @@
                 }).catch((error) => {
                     console.error(error);
                 });
+
+                this.apiHeaders = window.axios.defaults.headers.common;
             },
             changeCategory(categoryName) {
                 let self = this;
@@ -292,6 +317,7 @@
                         lat: this.location.lat,
                         lng: this.location.lng,
                         approved: true,
+                        image_url: this.imageUrl,
                     };
                 return window.builder.newSpot(spotData, true);
             },
@@ -309,8 +335,6 @@
                 this.getDefaultLocation(()=>{
                     let spot = self.makeSpot(),
                         builder = window.builder;
-
-                    console.log(spot);
 
                     spot.buildIcon(builder.canvasBuilder);
 
@@ -357,6 +381,7 @@
                     'descriptors': self.parseDescriptors(),
                     'lat': self.location.lat,
                     'lng': self.location.lng,
+                    'image_url': self.imageUrl,
                     'classification_id': self.activeClassification.id,
                 };
                 window.spotsApi.post('create/', data).then((response) => {
@@ -387,7 +412,7 @@
     }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
     @import '../../../../sass/variables';
 
     #new-spot-popup {
@@ -399,9 +424,28 @@
             max-height: calc(55vh - 10px);
             border-bottom: 1px dotted #d0d0d0;
 
+            .el-upload, .el-upload-dragger {
+
+                width: 100%;
+                height: 120px;
+
+                .el-icon-upload {
+
+                    margin: 6px 0 16px;
+
+                }
+
+            }
+
+            .el-upload__tip {
+
+                margin: 0;
+
+            }
+
         }
 
-        * {
+        .el-button--text, h5 {
 
             color: inherit;
 

@@ -14,16 +14,17 @@
  Route::prefix('/spots')->group(function () {
      // Publicly accessible routes
      Route::get('/', 'SpotController@get');
-     Route::get('/categories', 'CategoryController@get');
+     Route::get('categories', 'CategoryController@get');
      // Routes protected by authentication
      Route::middleware(['auth:api'])->group(function () {
          Route::prefix('/create')->group(function () {
              Route::get('/', 'SpotController@getDefaults');
              Route::post('/', 'SpotController@store');
+             Route::post('upload', 'SpotController@upload');
          });
          Route::prefix('{spot}')->middleware(['permission:approve spots'])->group(function () {
-             Route::post('/approve', 'SpotController@approve');
-             Route::post('/delete', 'SpotController@delete');
+             Route::post('approve', 'SpotController@approve');
+             Route::post('delete', 'SpotController@delete');
          });
      });
  });

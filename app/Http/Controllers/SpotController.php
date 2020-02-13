@@ -131,6 +131,7 @@ class SpotController extends Controller
     {
         $rules = [
             'notes'             => 'sometimes|string|nullable',
+            'image_url'         => 'sometimes|string|nullable',
             'descriptors'       => 'required',
             'type_name'         => 'required',
             'lat'               => 'required|numeric',
@@ -226,6 +227,7 @@ class SpotController extends Controller
             'classification_id'             => $classification->id,
             'approved_classification_id'    => $approvedClassification->id,
             'approved'                      => $canApproveSpots ? 1 : 0,
+            'image_url'                     => $request->input('image_url'),
         ]);
 
         if ($spot instanceof Spot) {
@@ -310,5 +312,14 @@ class SpotController extends Controller
             'totalNumberSpots'      => Spot::all()->count(),
             'numberUnapprovedSpots' => Spot::where('approved', false)->count(),
         ]);
+    }
+
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'image' => 'image|max:500000',
+        ]);
+
+        return $request->file->store('spotImages', ['disk' => 'public']);
     }
 }

@@ -19,6 +19,11 @@ window.coreApiLoaded = (api) => {
  * @return void.
  */
 window.initMap = () => {
+    function verifyPageLoadedProperly(){
+        if (typeof getMeta === 'undefined') {
+            window.location.reload();
+        }
+    }
     /**
      * Function to show the google map at the appropriate location
      *
@@ -62,23 +67,12 @@ window.initMap = () => {
 
     }
 
+    verifyPageLoadedProperly();
+
     let center = instantiateMap();
     restrictMapMovement(center);
 
     window.builder = new Builder();
     builder.build();
-
-    // Sometimes the map will fail to display, so if the tiles are not loaded after a second try it again.
-    setTimeout(() => {
-
-        if (window.map.tilesloading) {
-
-            instantiateMap();
-            restrictMapMovement(center);
-            builder.instantiateSpots(window.spotData);
-
-        }
-
-    }, 2000);
 
 };
