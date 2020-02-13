@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Category;
 use App\Classification;
 use App\Descriptors;
+use App\Events\Spots\Created;
 use App\Spot;
 use App\Type;
 use App\User;
@@ -240,6 +241,8 @@ class SpotController extends Controller
         } else {
             $response->add('message', "The spot you created will be reviewed and published once approved! Until then hang tight, you'll get an email when your spot has been reviewed.");
         }
+
+        Created::dispatch($spot); // dispatch the Events.Spots.Created event
 
         return response($response, 201);
     }
