@@ -304,6 +304,7 @@ class SpotController extends Controller
         try {
             Rejected::dispatch($spot);
             $spot->delete();
+
             return response('Deletion successful', 200);
         } catch (\Exception $e) {
             Log::error($e);
