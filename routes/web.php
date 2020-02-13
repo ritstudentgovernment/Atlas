@@ -11,7 +11,6 @@
 |
 */
 
-use App\Spot;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'Pages\HomeController@index')->name('home');
@@ -42,13 +41,4 @@ Route::prefix('admin')->name('admin.')->namespace('Admin')->group(function () {
         Route::get('staff', 'DashboardController@staff')->name('staff');
     });
     Route::get('settings', 'DashboardController@settings')->name('settings');
-    Route::prefix('mailables')->name('mailables.')->group(function () {
-        Route::get('spots/{template}', function ($template) {
-            $className = 'App\Mail\Spot'.ucfirst($template);
-            if (class_exists($className)){
-                $spot = Spot::where('approved', 0)->first();
-                return new $className($spot);
-            }
-        });
-    });
 });

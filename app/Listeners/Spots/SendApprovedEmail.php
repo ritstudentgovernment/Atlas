@@ -31,7 +31,7 @@ class SendApprovedEmail
     {
         if (!App::runningUnitTests()) {
             $spot = $event->spot;
-            Mail::to($spot->author)->send(new SpotApproved($spot));
+            Mail::to($spot->author)->queue(new SpotApproved($spot));
         }
     }
 }
