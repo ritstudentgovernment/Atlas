@@ -4,8 +4,6 @@ namespace App\Listeners\Spots;
 
 use App\Events\Spots\Rejected;
 use App\Mail\SpotRejected;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 
@@ -24,7 +22,8 @@ class SendRejectedEmail
     /**
      * Handle the event.
      *
-     * @param  Rejected  $event
+     * @param Rejected $event
+     *
      * @return void
      */
     public function handle(Rejected $event)

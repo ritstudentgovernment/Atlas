@@ -45,8 +45,9 @@ Route::prefix('admin')->name('admin.')->namespace('Admin')->group(function () {
     Route::prefix('mailables')->name('mailables.')->group(function () {
         Route::get('spots/{template}', function ($template) {
             $className = 'App\Mail\Spot'.ucfirst($template);
-            if (class_exists($className)){
+            if (class_exists($className)) {
                 $spot = Spot::where('approved', 0)->first();
+
                 return new $className($spot);
             }
         });

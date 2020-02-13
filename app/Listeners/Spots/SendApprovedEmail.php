@@ -4,8 +4,6 @@ namespace App\Listeners\Spots;
 
 use App\Events\Spots\Approved;
 use App\Mail\SpotApproved;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 
@@ -24,7 +22,8 @@ class SendApprovedEmail
     /**
      * Handle the event.
      *
-     * @param  Approved  $event
+     * @param Approved $event
+     *
      * @return void
      */
     public function handle(Approved $event)
