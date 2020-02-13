@@ -4,9 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Spot extends Model
 {
+    use SoftDeletes;
+
     protected $appends = ['type', 'classification', 'descriptors', 'authored'];
     protected $hidden = ['user_id', 'author', 'created_at', 'updated_at', 'type_id'];
     protected $fillable = ['notes', 'classification_id', 'approved_classification_id', 'approved', 'user_id', 'type_id', 'lat', 'lng', 'image_url'];

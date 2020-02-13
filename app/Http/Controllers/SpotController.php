@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Category;
 use App\Classification;
 use App\Descriptors;
+use App\Events\Spots\Approved;
 use App\Events\Spots\Created;
+use App\Events\Spots\Rejected;
 use App\Spot;
 use App\Type;
 use App\User;
@@ -294,13 +296,14 @@ class SpotController extends Controller
     public function approve(Request $request, Spot $spot)
     {
         $spot->approve();
+        Approved::dispatch($spot);
     }
 
     public function delete(Request $request, Spot $spot)
     {
         try {
+            Rejected::dispatch($spot);
             $spot->delete();
-
             return response('Deletion successful', 200);
         } catch (\Exception $e) {
             Log::error($e);
