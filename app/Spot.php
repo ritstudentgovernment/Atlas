@@ -83,4 +83,12 @@ class Spot extends Model
 
         return $this;
     }
+
+    public function getNameAttribute()
+    {
+        if ($this->approvedClassification) {
+            return $this->approvedClassification->name . ' ' . $this->type->name . ' ' . $this->category->name;
+        }
+        return $this->classification->name . ' ' . $this->type->name . ' ' . $this->category->name;
+    }
 }
