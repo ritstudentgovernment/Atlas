@@ -2,7 +2,7 @@
     <el-card>
         <el-table
                 :default-sort="{prop: 'id', order: 'ascending'}"
-                :data="users.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+                :data="users.filter(data => !search || data.first_name.toLowerCase().includes(search.toLowerCase()))"
                 style="width: 100%">
             <el-table-column
                     label="User ID"
@@ -30,11 +30,12 @@
                     sortable>
             </el-table-column>
             <el-table-column align="right">
-                <template slot="header">
+                <template slot="header" slot-scope="scope">
                     <el-input
-                            v-model="search"
                             size="mini"
-                            placeholder="Type to search"/>
+                            v-model="search"
+                            placeholder="Type to search"
+                            clearable/>
                 </template>
             </el-table-column>
         </el-table>
