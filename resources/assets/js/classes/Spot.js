@@ -143,7 +143,7 @@ export default class Spot {
 
         if (spot.image_url) {
             return `<div class="infoWindowImageContainer">
-                        <img src="${spot.image_url}" alt="${spot.classification.name} ${spot.type.category.name} ${spot.type.name} Spot" />
+                        <img src="storage/${spot.image_url}" alt="${spot.classification.name} ${spot.type.category.name} ${spot.type.name} Spot" />
                     </div>`;
         }
 

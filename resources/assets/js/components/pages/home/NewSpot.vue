@@ -218,7 +218,7 @@
                 this.updatePloppedSpot();
             },
             handleImageUploadSuccess(response) {
-                this.imageUrl = response;
+                this.imageUrl = 'storage/' + response;
             },
             setup() {
                 let self = this;
