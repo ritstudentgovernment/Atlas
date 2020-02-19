@@ -3,10 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
 class Spot extends Model
 {
+    use SoftDeletes;
+
     protected $appends = ['type', 'classification', 'descriptors', 'authored'];
     protected $hidden = ['user_id', 'author', 'created_at', 'updated_at', 'type_id'];
     protected $fillable = ['notes', 'classification_id', 'approved_classification_id', 'approved', 'user_id', 'type_id', 'lat', 'lng', 'image_url'];
@@ -82,5 +85,14 @@ class Spot extends Model
         $this->save();
 
         return $this;
+    }
+
+    public function getNameAttribute()
+    {
+        if ($this->approvedClassification) {
+            return $this->approvedClassification->name.' '.$this->type->name.' '.$this->category->name;
+        }
+
+        return $this->classification->name.' '.$this->type->name.' '.$this->category->name;
     }
 }
