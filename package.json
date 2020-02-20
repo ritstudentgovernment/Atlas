@@ -20,9 +20,11 @@
     },
     "dependencies": {
         "ajv": "^6.10.2",
-        "element-ui": "^2.10.1",
+        "element-ui": "^2.13.0",
         "imagemin": "^5.3.1",
+        "laravel-echo": "^1.6.1",
         "npm": "^6.13.6",
+        "pusher-js": "^5.1.1",
         "vue": "^2.6.10",
         "vue-loader": "^14.2.3",
         "vue-template-compiler": "^2.6.10"
