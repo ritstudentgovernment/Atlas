@@ -31,7 +31,11 @@ after_script:
 after_success:
   - |
     if [ $TRAVIS_BRANCH == "develop" ]; then
-      curl https://forge.laravel.com/servers/343819/sites/938627/deploy/http?token=xPvh7GV9cMUn5WDt7n2RoF9XheKb7eMqRkaOeVHr
+      curl https://forge.laravel.com/servers/343819/sites/966102/deploy/http?token=JvFzYpVoncyRGCORtg7HDldIZBkgvNQeLPkGxmac
+    fi
+  - |
+    if [ $TRAVIS_BRANCH == "master" ]; then
+      curl https://forge.laravel.com/servers/343819/sites/966101/deploy/http?token=5zSEouOlPfuN3Q6LJgJKCWVKj9xNTgB6919kWWZw
     fi
 
 cache:
