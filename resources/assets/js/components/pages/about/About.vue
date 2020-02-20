@@ -24,30 +24,35 @@
                 <p>Please exercise good judgment when using this service.</p>
             </el-tab-pane>
             <el-tab-pane label="Privacy" name="privacy">
-                <p>RIT Student Government takes your privacy seriously.</p>
-                <h4>Access to Naps Data</h4>
-                <p>In order to provide a great nap mapping experience, while respecting the needs of RIT's nap spots, the following protections are in place for nap spot data:</p>
+                <h4>RIT Student Government takes your privacy seriously.</h4>
+                <p>In order to provide a great mapping experience, while respecting the needs of RITs students, the following protections are in place for Atlas's data:</p>
                 <ul>
-                    <li>Nap spots may not access any nap spot data.</li>
-                    <li>The names of the nap spot mappers are kept anonymous.</li>
+                    <li>The names of spot mappers are kept anonymous from the public.</li>
+                    <li>Moderators will be able to see your name and email, which is the only identifying information we store.</li>
+                    <li>Shibboleth authentication is used to verify all of our users are who they say they are.</li>
+                    <li>Only approved spots are visible to the public.</li>
                 </ul>
                 <h4>Automated Emails</h4>
-                <p>For the purposes of reminding students to map nap spots, Naps automatically retrieves a list of all University-affiliated nap spots and their location. Naps does not take advantage of any privileged information sources. All of the information used by Naps is available to any member of the RIT community.</p>
-                <h4>Nap Spot Verification</h4>
-                <p>In order to protect the integrity of our data, the status of each nap spot is automatically verified by the system. Our system is only accessing publicly available nap spot information. Information automatically collected through this system is only used for the purposes of verifying nap spots, sending reminders and development of the system.</p>
+                <p>For the purposes of reminding students to map nap spots, Atlas automatically retrieves a list of all University-affiliated nap spots and their location. Atlas does not take advantage of any privileged information sources. All of the information used by Atlas is available to any member of the RIT community.</p>
+                <h4>Spot Verification</h4>
+                <p>In order to protect the integrity of our data, the status of each spot is verified by our moderators. Information collected through this application is only used for the purposes of verifying nap spots and sending updates to the spot's author.</p>
             </el-tab-pane>
             <el-tab-pane label="Technology" name="technology">
                 <h4>Innovative Open Technology</h4>
                 <p>Innovative technology is at the heart of Student Government's Services offerings. By using the newest and most effective technologies, we save time and money, while delivering world-class software.</p>
                 <h4>Commitment to Open Source</h4>
-                <p>Like PawPrints, the RIT Bikeshare website, RITPedia and SG Sites, Naps relies on Open Source Software to deliver the high-quality experience Tigers have come to expect. Student Government has made a commitment to give back by contributing all of our software to the FOSS community. Find us on <a href="https://github.com/ritstudentgovernment/laravel-naps">GitHub</a>.</p>
+                <p>Like PawPrints, the RIT Bikeshare website, RITPedia and SG Sites, Atlas relies on Open Source Software to deliver the high-quality experience Tigers have come to expect. Student Government has made a commitment to give back by contributing all of our software to the FOSS community. Find us on <a href="https://github.com/ritstudentgovernment/Atlas">GitHub</a>.</p>
                 <h4>Pioneering Advanced Technologies</h4>
                 <p>Naps relies on the following advanced technologies to deliver a cutting-edge high performance experience to students. See below for a partial list:</p>
                 <ul>
-                    <li>Vue JS</li>
-                    <li>Laravel</li>
-                    <li>ElementUI</li>
-                    <li>Google Maps</li>
+                    <li><a href="https://vuejs.org">Vue JS</a></li>
+                    <li><a href="https://laravel.com">Laravel</a></li>
+                    <li><a href="https://laravel.com/docs/6.x/broadcasting#installing-laravel-echo">Laravel Echo</a></li>
+                    <li><a href="https://forge.laravel.com">Laravel Forge</a></li>
+                    <li><a href="https://laravel.com/docs/6.x/horizon">Laravel Horizon</a></li>
+                    <li><a href="https://developers.google.com/maps/documentation/javascript/tutorial">Google Maps</a></li>
+                    <li><a href="https://element.eleme.io/#/en-US">ElementUI</a></li>
+                    <li><a href="https://pusher.com">Pusher</a></li>
                 </ul>
             </el-tab-pane>
         </el-tabs>
