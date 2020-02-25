@@ -4,10 +4,10 @@
 
 ![Logo][logo]
 
-[![Build Status](https://travis-ci.org/ritstudentgovernment/laravel-naps.svg?branch=master)](https://travis-ci.org/ritstudentgovernment/laravel-naps)
+[![Build Status](https://travis-ci.org/ritstudentgovernment/atlas.svg?branch=master)](https://travis-ci.org/ritstudentgovernment/atlas)
 [![StyleCI](https://github.styleci.io/repos/127938992/shield)](https://github.styleci.io/repos/127938992)
-[![Maintainability](https://api.codeclimate.com/v1/badges/161a8ae6b28d5aa0ee91/maintainability)](https://codeclimate.com/github/ritstudentgovernment/laravel-naps/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/161a8ae6b28d5aa0ee91/test_coverage)](https://codeclimate.com/github/ritstudentgovernment/laravel-naps/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/8c51b9c33513e17d478c/maintainability)](https://codeclimate.com/github/ritstudentgovernment/Atlas/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/8c51b9c33513e17d478c/test_coverage)](https://codeclimate.com/github/ritstudentgovernment/Atlas/test_coverage)
 
 Atlas is a service that allows students to post locations around campus they like to rest! 
 

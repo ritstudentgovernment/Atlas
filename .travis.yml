@@ -45,7 +45,7 @@ cache:
 
 env:
   global:
-    - CC_TEST_REPORTER_ID=97fb196380b79afb82b2829216eb0b7afc246aa5aca6191ff2a3e0c36eb352e9
+    - CC_TEST_REPORTER_ID=01e9960f57bbd8ab3a96b160b75e141e4a515deb7dd02e037ff6a07439d5676f
 
 services:
   - postgresql
