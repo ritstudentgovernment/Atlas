@@ -15,7 +15,7 @@
         "folklore/image": "0.3.*",
         "guzzlehttp/guzzle": "^6.5",
         "laravel/framework": "^5.8.0",
-        "laravel/horizon": "^3.6",
+        "laravel/horizon": "^3.7",
         "laravel/tinker": "^1.0",
         "league/csv": "^9.0",
         "predis/predis": "^1.1",
