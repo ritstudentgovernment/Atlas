@@ -4,12 +4,12 @@
             <el-tab-pane label="About" name="about">
                 <h4>What is Atlas?</h4>
                 <p>
-                    Atlas is a mapping tool used for the RIT community to mark places of interest around campus. The content of this application is provided by RIT students and moderated by Student Government.
+                    Atlas is a mapping tool created for the RIT community to mark places of interest around campus. The content of this application is provided by RIT students and moderated by Student Government.
                 </p>
 
                 <h4>How can I contribute?</h4>
                 <p>
-                    The goal of Atlas was to allow everyone to contribute to the community! To contribute, click on the 'plus' icon in the bottom-right-hand side of the homepage, fill in information about your spot in the dialog to the right, click 'place' to use your location to mark a point of interest on the map, and then click 'create' to submit your spot for review.
+                    The goal of Atlas was to allow everyone to contribute to the community! To contribute, log into the application and click on the 'plus' icon in the bottom-right-hand side of the homepage. Fill in information about your spot in the dialog to the right, click 'place' to use your location to mark a point of interest on the map, and then click 'create' to submit your spot for review.
                     <br />
                     Once you add a new Spot, you will see it represented by a red marker, this means that your spot is waiting to be reviewed by one of our moderators and will only be visible to you. Once your spot gets reviewed, you will receive an email and your spot will turn into an brown marker, meaning that its public and visible to the entire Atlas community.
                 </p>
