@@ -2,7 +2,7 @@
     <el-card>
         <el-table
                 :default-sort="{prop: 'id', order: 'ascending'}"
-                :data="users.filter(data => !search || data.first_name.toLowerCase().includes(search.toLowerCase()))"
+                :data="users.filter(data => !search || (data.first_name + data.last_name + data.email).toLowerCase().includes(search.toLowerCase()))"
                 style="width: 100%">
             <el-table-column
                     label="User ID"
