@@ -1,29 +1,29 @@
 [logo]:https://naps.rit.edu/logo.svg
 
-# Laravel-Naps
+# Atlas
 
-![Naps Logo][logo]
+![Logo][logo]
 
-[![Build Status](https://travis-ci.org/ritstudentgovernment/laravel-naps.svg?branch=master)](https://travis-ci.org/ritstudentgovernment/laravel-naps)
+[![Build Status](https://travis-ci.org/ritstudentgovernment/atlas.svg?branch=master)](https://travis-ci.org/ritstudentgovernment/atlas)
 [![StyleCI](https://github.styleci.io/repos/127938992/shield)](https://github.styleci.io/repos/127938992)
-[![Maintainability](https://api.codeclimate.com/v1/badges/161a8ae6b28d5aa0ee91/maintainability)](https://codeclimate.com/github/ritstudentgovernment/laravel-naps/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/161a8ae6b28d5aa0ee91/test_coverage)](https://codeclimate.com/github/ritstudentgovernment/laravel-naps/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/8c51b9c33513e17d478c/maintainability)](https://codeclimate.com/github/ritstudentgovernment/Atlas/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/8c51b9c33513e17d478c/test_coverage)](https://codeclimate.com/github/ritstudentgovernment/Atlas/test_coverage)
 
-Naps is a service that allows students to post locations around campus they like to rest! 
+Atlas is a service that allows students to post locations around campus they like to rest! 
 
-Now featuring more than just napping locations, students may find spots to recharge with food, coffee, or energy drinks. 
+Now featuring more than just napping locations, students may find spots to recharge with food, coffee, or energy drinks.
 
 Administrators can add and modify **Categories** of spots with their own Icons, configure them with different **Descriptors**, add quantifying **Types**, and set colors with different **Classification** levels.
 
 ## Configuration
 
-This guide will help you configure your own instance of Naps.
+This guide will help you configure your own instance of Atlas.
 
 #### Prerequisites
 * PHP 7.1+
 * Composer
 * npm
-* MySQL / Postgres
+* Postgres
 
 
 #### Installation:
@@ -33,8 +33,9 @@ This guide will help you configure your own instance of Naps.
 4. Run **php artisan jwt:secret**
 5. Run **npm install** and **npm run dev**
 6. Run **php artisan serve** to spin up the web server
-7. Visit 127.0.0.1:8000 in your browser to verify everything is working properly
-8. Configure authentication as outlined below
+7. Run **php artisan horizon &** in a new terminal tab to run the queue worker
+8. Visit 127.0.0.1:8000 in your browser to verify everything is working properly
+9. Configure authentication as outlined below
 
 #### Authentication (SAML2)
 

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Category;
 use App\Classification;
 use App\Descriptors;
+use App\Events\Spots\Approved;
+use App\Events\Spots\Created;
+use App\Events\Spots\Rejected;
 use App\Spot;
 use App\Type;
 use App\User;
@@ -131,6 +134,7 @@ class SpotController extends Controller
     {
         $rules = [
             'notes'             => 'sometimes|string|nullable',
+            'image_url'         => 'sometimes|string|nullable',
             'descriptors'       => 'required',
             'type_name'         => 'required',
             'lat'               => 'required|numeric',
@@ -226,6 +230,7 @@ class SpotController extends Controller
             'classification_id'             => $classification->id,
             'approved_classification_id'    => $approvedClassification->id,
             'approved'                      => $canApproveSpots ? 1 : 0,
+            'image_url'                     => $request->input('image_url'),
         ]);
 
         if ($spot instanceof Spot) {
@@ -238,6 +243,8 @@ class SpotController extends Controller
         } else {
             $response->add('message', "The spot you created will be reviewed and published once approved! Until then hang tight, you'll get an email when your spot has been reviewed.");
         }
+
+        Created::dispatch($spot); // dispatch the Events.Spots.Created event
 
         return response($response, 201);
     }
@@ -289,11 +296,13 @@ class SpotController extends Controller
     public function approve(Request $request, Spot $spot)
     {
         $spot->approve();
+        Approved::dispatch($spot);
     }
 
     public function delete(Request $request, Spot $spot)
     {
         try {
+            Rejected::dispatch($spot);
             $spot->delete();
 
             return response('Deletion successful', 200);
@@ -310,5 +319,14 @@ class SpotController extends Controller
             'totalNumberSpots'      => Spot::all()->count(),
             'numberUnapprovedSpots' => Spot::where('approved', false)->count(),
         ]);
+    }
+
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'image' => 'image|max:500000',
+        ]);
+
+        return $request->file->store('spotImages', ['disk' => 'public']);
     }
 }

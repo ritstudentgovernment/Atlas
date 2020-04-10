@@ -38,6 +38,22 @@ class MakeAdmin extends Command
         $this->info("Successfully made $user->first_name $user->last_name ($user->email) an admin!");
     }
 
+    private function makeUser($first, $last, $email)
+    {
+        $now = Carbon::now('America/New_York')->toDateTimeString();
+
+        return User::create([
+
+            'first_name' => $first,
+            'last_name'  => $last,
+            'email'      => $email,
+            'password'   => bcrypt(str_random(8)),
+            'created_at' => $now,
+            'updated_at' => $now,
+
+        ]);
+    }
+
     /**
      * Execute the console command.
      *
@@ -49,22 +65,19 @@ class MakeAdmin extends Command
         if ($user = User::where('email', $email)->first()) {
             $this->makeAdmin($user);
         } else {
-            $this->info('No user with that email was found.');
-            $makeUser = $this->choice('Would you like to make an account with that email now?', ['Yes', 'No'], 0);
-            if ($makeUser == 'Yes') {
-                $first = $this->ask('Enter the desired first name: ');
-                $last = $this->ask('Enter the desired last name: ');
-                $now = Carbon::now('America/New_York')->toDateTimeString();
-                $user = User::create([
+            $first = $this->argument('first');
+            $last = $this->argument('last');
+            if (!($first || $last)) {
+                $this->alert("No user with the email '$email' exists.");
+                $makeUser = $this->choice('Would you like to make an account with that email now?', ['Yes', 'No'], 0);
+                if ($makeUser == 'Yes') {
+                    $first = $this->ask('Enter the desired first name: ');
+                    $last = $this->ask('Enter the desired last name: ');
+                }
+            }
 
-                    'first_name' => $first,
-                    'last_name'  => $last,
-                    'email'      => $email,
-                    'password'   => bcrypt(str_random(8)),
-                    'created_at' => $now,
-                    'updated_at' => $now,
-
-                ]);
+            if ($first && $last) {
+                $user = $this->makeUser($first, $last, $email);
                 $this->makeAdmin($user);
             } else {
                 $this->line('Goodbye!');

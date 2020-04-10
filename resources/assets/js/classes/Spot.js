@@ -138,6 +138,18 @@ export default class Spot {
 
     }
 
+    getImageString() {
+        let spot = this.data;
+
+        if (spot.image_url) {
+            return `<div class="infoWindowImageContainer">
+                        <img src="${spot.image_url}" alt="${spot.classification.name} ${spot.type.category.name} ${spot.type.name} Spot" />
+                    </div>`;
+        }
+
+        return '';
+    }
+
     /**
      * Function to handle clicking on a particular spot and bringing up its infowindow.
      *
@@ -158,6 +170,7 @@ export default class Spot {
                         </div>
                         <p>${spot.type.category.description}</p>
                         <p>${spot.notes ? spot.notes : ''}</p>
+                        ${this.getImageString()}
                         ${this.getAdministrativeString()}
                     </div>
                 </div>`;

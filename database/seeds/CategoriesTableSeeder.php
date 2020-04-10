@@ -18,6 +18,12 @@ class CategoriesTableSeeder extends Seeder
             'description' => 'Energy spots are places on campus where you can gain sustenance to fuel your day.',
             'crowdsource' => false,
         ],
+        [
+            'name'        => 'Lab',
+            'icon'        => 'L',
+            'description' => 'Lab spots indicate the different labs found around campus and what they can be used for.',
+            'crowdsource' => false,
+        ],
     ];
 
     /**

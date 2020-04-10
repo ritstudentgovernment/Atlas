@@ -204,7 +204,8 @@
                     create_permission: classification.create_permission,
                     view_permission: classification.view_permission,
                     color: classification.color.replace('#', ''),
-                    name: classification.name
+                    name: classification.name,
+                    type: classification.type
                 };
                 window.adminApi.post('spots/classification/create', newClassification)
                     .then((response) => {

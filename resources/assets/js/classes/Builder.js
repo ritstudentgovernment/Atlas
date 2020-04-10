@@ -106,7 +106,18 @@ export default class Builder{
 
         let legend = document.getElementById('legend');
         let keys = Object.keys(this.legend).sort((a, b) => {
-            return Object.keys(this.legend[a]).length < Object.keys(this.legend[b]).length;
+            let numKeysA = Object.keys(this.legend[a]).length;
+            let numKeysB = Object.keys(this.legend[b]).length;
+            if (numKeysA === numKeysB) {
+                if (a > b) {
+                    return -1;
+                } else if (a < b) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+            return numKeysA < numKeysB;
         });
 
         keys.forEach((categoryKey) => {

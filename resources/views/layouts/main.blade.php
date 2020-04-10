@@ -8,7 +8,7 @@
 
     @yield("page_head")
 
-    <title>@yield("title") | Naps - RIT Student Government</title>
+    <title>@yield("title") | {{ env('APP_NAME') }} - {{ env('ORG_NAME') }}</title>
 
 </head>
 <body>
