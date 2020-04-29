@@ -7,13 +7,13 @@
         <div class="uk-navbar-left">
             <a href="{{ route('about') }}" class="desktop uk-icon-link padding-left"><span uk-icon="icon: info" class="padding-right"></span>About</a>
             <a href="{{ route('home') }}" class="mobile logo" title="Home | {{ env('APP_NAME') }}">
-                <img src="https://naps.rit.edu/logo.svg" alt="logo">
+                <img src="/logo.svg" alt="logo">
             </a>
         </div>
 
         <div class="uk-navbar-center">
             <a id="logo" class="desktop logo" href="/" title="Home | {{ env('APP_NAME') }}">
-                <img src="https://naps.rit.edu/logo.svg" alt="logo">
+                <img src="/logo.svg" alt="logo">
             </a>
         </div>
 

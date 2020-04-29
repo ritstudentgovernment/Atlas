@@ -1,4 +1,4 @@
-[logo]:https://naps.rit.edu/logo.svg
+[logo]:https://atlas.rit.edu/logo.svg
 
 # Atlas
 
