@@ -154,6 +154,25 @@ export default class Builder{
 
     };
 
+    openQueriedSpot(){
+
+        let spotId = $.urlParam('spot');
+        if (spotId) {
+            spotId = parseInt(spotId);
+
+            let spot = window.builder.spots.filter((spot) => {
+                return spot.data.id === spotId;
+            });
+
+            spot = spot.length === 1 ? spot[0] : undefined;
+
+            if (spot instanceof Spot) {
+                spot.openTooltip();
+            }
+        }
+
+    }
+
     build(buildLegend = true, spots = false) {
 
         let reference = this;
@@ -169,6 +188,8 @@ export default class Builder{
                     reference.removeAllSpots();
                     reference.instantiateSpots(json, false);
                 }
+
+                reference.openQueriedSpot();
 
             }).catch(error => {
 
