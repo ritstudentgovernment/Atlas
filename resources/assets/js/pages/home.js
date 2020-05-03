@@ -20,11 +20,9 @@ window.coreApiLoaded = (api) => {
  */
 window.initMap = () => {
     function verifyPageLoadedProperly(){
-        $(document).ready(() => {
-            if (typeof getMeta === 'undefined') {
-                window.location.reload();
-            }
-        });
+        if (typeof getMeta === 'undefined') {
+            window.location.reload();
+        }
     }
     /**
      * Function to show the google map at the appropriate location
@@ -69,12 +67,16 @@ window.initMap = () => {
 
     }
 
-    verifyPageLoadedProperly();
+    $(document).ready(() => {
 
-    let center = instantiateMap();
-    restrictMapMovement(center);
+        verifyPageLoadedProperly();
 
-    window.builder = new Builder();
-    builder.build();
+        let center = instantiateMap();
+        restrictMapMovement(center);
+
+        window.builder = new Builder();
+        builder.build();
+
+    });
 
 };
