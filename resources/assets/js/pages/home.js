@@ -20,9 +20,11 @@ window.coreApiLoaded = (api) => {
  */
 window.initMap = () => {
     function verifyPageLoadedProperly(){
-        if (typeof getMeta === 'undefined') {
-            window.location.reload();
-        }
+        $(document).ready(() => {
+            if (typeof getMeta === 'undefined') {
+                window.location.reload();
+            }
+        });
     }
     /**
      * Function to show the google map at the appropriate location
