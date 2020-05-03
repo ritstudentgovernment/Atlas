@@ -71,7 +71,7 @@
         <div class="flex-center position-ref full-height">
             <div class="content">
                 <div class="title m-b-md">
-                    <img src="https://naps.rit.edu/logo.jpg" alt="naps logo"><br/>
+                    <img src="https://naps.rit.edu/storage/logo.jpg" alt="naps logo"><br/>
                     Naps is resting its eyes.<br/>
                     <span class="sub">Check back for updates.</span>
                 </div>

@@ -1,4 +1,4 @@
-[logo]:https://atlas.rit.edu/logo.jpg
+[logo]:https://atlas.rit.edu/storage/logo.jpg
 
 # Atlas
 
