@@ -204,7 +204,7 @@ class SpotController extends Controller
     {
         $errorString = '';
         foreach ($this->validator->errors()->toArray() as $key => $message) {
-            $errorString .= "$key: ".implode(', ', $message).' ';
+            $errorString .= implode(', ', $message).' ';
         }
         $response->add('message', trim($errorString));
 
