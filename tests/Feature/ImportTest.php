@@ -16,11 +16,11 @@ class ImportTest extends TestCase
 
     private $data = [
         'good' => [
-            'spots' => 'testData/spots.csv',
+            'spots'       => 'testData/spots.csv',
             'descriptors' => 'testData/descriptors.csv',
         ],
         'bad' => [
-            'spots' => 'testData/spots-bad.csv',
+            'spots'       => 'testData/spots-bad.csv',
             'descriptors' => 'testData/descriptors-bad.csv',
         ],
         'common' => [
@@ -119,5 +119,4 @@ class ImportTest extends TestCase
             return Spot::where('id', $spotId)->first();
         });
     }
-
 }
