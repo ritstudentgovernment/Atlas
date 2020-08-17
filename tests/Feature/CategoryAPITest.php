@@ -11,7 +11,7 @@ class CategoryAPITest extends TestCase
 
     protected $deletes = ['category'];
 
-    private $uriPrefix = '/api/admin/spots';
+    protected $uriPrefix = '/api/admin/spots';
 
     private $newCategoryData = [
         'name'          => 'Test',

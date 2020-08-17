@@ -14,6 +14,8 @@ use League\Csv\Reader;
 
 class ImportController extends Controller
 {
+    private $createdSpots;
+
     /**
      * Constructor to prevent unauthenticated access to sensitive routes.
      */
@@ -35,9 +37,14 @@ class ImportController extends Controller
 
     private function uploadCsv(Request $request, $spotsOrDescriptors)
     {
-        $path = $request->file($spotsOrDescriptors.'Csv')->store("public/csvUploads/$spotsOrDescriptors");
+        $file = $request->file($spotsOrDescriptors.'Csv');
+        if ($file) {
+            $path = $file->store("public/csvUploads/$spotsOrDescriptors");
 
-        return $path;
+            return $path;
+        } else {
+            return response("$spotsOrDescriptors CSV file not sent.", 400);
+        }
     }
 
     private function initReader($path)
@@ -48,52 +55,82 @@ class ImportController extends Controller
         return $reader;
     }
 
+    private function hasRequiredSpotData($data)
+    {
+        $validatedData = [];
+        $requiredKeys = ['lat', 'lng', 'notes'];
+        foreach ($requiredKeys as $requiredKey) {
+            // Make sure the required data is being sent with each spot. Notes can be null.
+            if (array_key_exists($requiredKey, $data) && ($data[$requiredKey] || $requiredKey === 'notes')) {
+                $validatedData[$requiredKey] = $data[$requiredKey];
+            } else {
+                return false;
+            }
+        }
+
+        return $validatedData;
+    }
+
     private function importSpotsFromCsv($csvPath, $commonData)
     {
-        $spots = collect([]);
+        $spots = collect();
         $spotsCsv = $this->initReader($csvPath);
 
         foreach ($spotsCsv as $csvLine) {
-            $spotData = array_merge($commonData, [
-                'lat'   => $csvLine['lat'],
-                'lng'   => $csvLine['lng'],
-                'notes' => $csvLine['notes'],
-            ]);
-
-            $spots->push(Spot::create($spotData));
+            $validatedSpotData = $this->hasRequiredSpotData($csvLine);
+            if ($validatedSpotData) {
+                $spotData = array_merge($commonData, $validatedSpotData);
+                $spots->push(Spot::create($spotData));
+            } else {
+                $this->createdSpots = $spots;
+                return false;
+            }
         }
 
-        return $spots;
+        $this->createdSpots = $spots;
+        return true;
     }
 
-    private function importDescriptorsFromCsv($csvPath, Collection $spots)
+    private function importDescriptorCsvLine($csvLine, $requiredDescriptors)
+    {
+        $descriptors = [];
+
+        foreach ($csvLine as $descriptorName => $value) {
+            // Verify that the descriptor being sent is one of the required descriptors
+            $descriptor = $requiredDescriptors->filter(function (Descriptors $descriptor) use ($descriptorName) {
+                return $descriptor->name == $descriptorName;
+            })->first();
+
+            if ($descriptor === null || $value === null) {
+                return false;
+            }
+
+            $descriptors[$descriptor->id] = ['value' => $value];
+        }
+
+        return $descriptors;
+    }
+
+    private function importDescriptorsFromCsv($csvPath)
     {
         $descriptorsCsv = $this->initReader($csvPath);
 
         foreach ($descriptorsCsv as $index => $csvLine) {
-            $spot = $spots->get($index - 1);
-            $descriptors = [];
+            $spot = $this->createdSpots->get($index - 1);
             $requiredDescriptors = $spot->category->descriptors;
+            $descriptors = $this->importDescriptorCsvLine($csvLine, $requiredDescriptors);
 
-            foreach ($csvLine as $descriptorName => $value) {
-                $descriptor = $requiredDescriptors->filter(function (Descriptors $descriptor) use ($descriptorName) {
-                    return $descriptor->name == $descriptorName;
-                })->first();
-
-                if ($descriptor === null) {
-                    return false;
-                }
-
-                $descriptors[$descriptor->id] = ['value' => $value];
+            if ($descriptors) {
+                $spot->descriptors()->attach($descriptors);
+            } else {
+                return false;
             }
-
-            $spot->descriptors()->attach($descriptors);
         }
 
-        return $spots;
+        return true;
     }
 
-    public function runImport(Request $request)
+    private function importValidator(Request $request)
     {
         $rules = [
             'type'                  => 'required|string',
@@ -103,7 +140,34 @@ class ImportController extends Controller
             'classification'        => 'required|integer',
             'descriptorsCsvPath'    => 'required|string',
         ];
-        $validator = Validator::make(Input::all(), $rules);
+
+        return Validator::make($request->all(), $rules);
+    }
+
+    private function commonData(Request $request, Category $category)
+    {
+        return [
+            'approved'          => true,
+            'user_id'           => $request->input('author'),
+            'classification_id' => $request->input('classification'),
+            'type_id'           => $category->types()->where('name', $request->input('type'))->first()->id,
+        ];
+    }
+
+    private function deleteCreatedSpots()
+    {
+        if ($this->createdSpots && $this->createdSpots instanceof Collection) {
+            $this->createdSpots->each(function (Spot $spot) {
+                $spot->delete();
+                $spot->forceDelete();
+            });
+        }
+    }
+
+    public function runImport(Request $request)
+    {
+        $validator = $this->importValidator($request);
+
         if ($validator->fails()) {
             return response($validator->errors(), 400);
         }
@@ -114,21 +178,21 @@ class ImportController extends Controller
             return response('Category not found', 400);
         }
 
-        $commonData = [
-            'approved'          => true,
-            'user_id'           => $request->input('author'),
-            'classification_id' => $request->input('classification'),
-            'type_id'           => $category->types()->where('name', $request->input('type'))->first()->id,
-        ];
+        $commonData = $this->commonData($request, $category);
 
-        if ($spots = $this->importSpotsFromCsv($request->input('spotsCsvPath'), $commonData)) {
-            if ($spots = $this->importDescriptorsFromCsv($request->input('descriptorsCsvPath'), $spots)) {
-                return response('Spots Import Success', 200);
+        if ($this->importSpotsFromCsv($request->input('spotsCsvPath'), $commonData)) {
+            if ($this->importDescriptorsFromCsv($request->input('descriptorsCsvPath'))) {
+                $spots = $this->createdSpots->map(function (Spot $spot) {
+                    return $spot->id;
+                });
+                return response($spots, 200);
             }
 
+            $this->deleteCreatedSpots();
             return response('Failed To Import Descriptors', 400);
         }
 
+        $this->deleteCreatedSpots();
         return response('Failed To Import Spots', 400);
     }
 }

@@ -153,6 +153,7 @@ class APITest extends TestCase
         $notes = $this->newSpotData['notes'];
         Spot::where('notes', $notes)->get()->each(function (Spot $spot) {
             $spot->delete();
+            $spot->forceDelete();
         });
         $this->assertEmpty(Spot::where('notes', $notes)->get()->toArray());
     }

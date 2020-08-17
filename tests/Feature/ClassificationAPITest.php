@@ -11,7 +11,7 @@ class ClassificationAPITest extends TestCase
 
     protected $deletes = ['classification'];
 
-    private $uriPrefix = '/api/admin/spots/classification';
+    protected $uriPrefix = '/api/admin/spots/classification';
 
     private $newClassificationData = [
         'category_id'       => 1,
