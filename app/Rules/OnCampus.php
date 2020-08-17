@@ -32,14 +32,15 @@ class OnCampus implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed  $value
+     *
      * @return bool
      */
     public function passes($attribute, $value)
     {
-        $latLngMax = 'max' . ucfirst($attribute);
-        $latLngMin = 'min' . ucfirst($attribute);
+        $latLngMax = 'max'.ucfirst($attribute);
+        $latLngMin = 'min'.ucfirst($attribute);
 
         return $value > $this->$latLngMin && $value < $this->$latLngMax;
     }
