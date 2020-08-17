@@ -11,7 +11,7 @@ class TypeAPITest extends TestCase
 
     protected $deletes = ['type'];
 
-    private $uriPrefix = '/api/admin/spots/type';
+    protected $uriPrefix = '/api/admin/spots/type';
 
     private $newTypeData = [
         'name'      => 'Test',

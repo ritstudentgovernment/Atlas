@@ -5,6 +5,7 @@ namespace Tests;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -22,18 +23,33 @@ abstract class TestCase extends BaseTestCase
     protected $deletes = [];
 
     /**
-     * @var User
+     * @var
      *
      * The $user variable is a user that has no permissions
      */
     protected $user;
 
     /**
-     * @var User
+     * @var
      *
      * The $adminUser variable is a user that has all permissions
      */
     protected $adminUser;
+
+    /**
+     * @var
+     *
+     * The URI prefix of the API being hit in these tests
+     */
+    protected $uriPrefix;
+
+    /**
+     * @var
+     *
+     * Routes in this API that are for admin users only. Used to automate base
+     * testing for unauthorized access to the API.
+     */
+    protected $protectedRoutes = [];
 
     /**
      * Initial implementation of the setup method calls its parent on base test case and initializes the users.
@@ -63,6 +79,25 @@ abstract class TestCase extends BaseTestCase
         return $this->actingAs($this->user, 'api');
     }
 
+    private function deleteModel(Model $modelToDelete)
+    {
+        // Get the information about the table we're deleting from so we may reset it to the state it was before
+        // the variable was created
+        $primaryKey = $modelToDelete->getKeyName();
+        $tableName = $modelToDelete->getTable();
+        // Delete the variable
+        try {
+            $modelToDelete->delete();
+            if (method_exists($modelToDelete, 'trashed') && $modelToDelete->trashed()) {
+                $modelToDelete->forceDelete();
+            }
+        } catch (\Exception $exception) {
+            Log::error($exception);
+        }
+        // Bring the database back to the original primary key value
+        $this::refreshDB([$primaryKey=>$tableName]);
+    }
+
     /**
      * Delete the Eloquent Models defined in $deletes.
      *
@@ -73,18 +108,11 @@ abstract class TestCase extends BaseTestCase
         foreach ($this->deletes as $variableToDelete) {
             $variableToDelete = $this->$variableToDelete;
             if ($variableToDelete instanceof Model) {
-                // Get the information about the table we're deleting from so we may reset it to the state it was before
-                // the variable was created
-                $primaryKey = $variableToDelete->getKeyName();
-                $tableName = $variableToDelete->getTable();
-                // Delete the variable
-                try {
-                    $variableToDelete->delete();
-                } catch (\Exception $exception) {
-                    Log::error($exception);
-                }
-                // Bring the database back to the original primary key value
-                $this::refreshDB([$primaryKey=>$tableName]);
+                $this->deleteModel($variableToDelete);
+            } elseif ($variableToDelete instanceof Collection) {
+                $variableToDelete->each(function (Model $model) {
+                    $this->deleteModel($model);
+                });
             }
         }
     }

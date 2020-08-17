@@ -11,7 +11,7 @@ class DescriptorAPITest extends TestCase
 
     protected $deletes = ['descriptor'];
 
-    private $uriPrefix = '/api/admin/spots/descriptor';
+    protected $uriPrefix = '/api/admin/spots/descriptor';
 
     private $newDescriptorData = [
         'name'              => 'Test',
