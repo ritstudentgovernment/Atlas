@@ -7,7 +7,6 @@ use App\Descriptors;
 use App\Spot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use League\Csv\Reader;
@@ -83,11 +82,13 @@ class ImportController extends Controller
                 $spots->push(Spot::create($spotData));
             } else {
                 $this->createdSpots = $spots;
+
                 return false;
             }
         }
 
         $this->createdSpots = $spots;
+
         return true;
     }
 
@@ -185,14 +186,17 @@ class ImportController extends Controller
                 $spots = $this->createdSpots->map(function (Spot $spot) {
                     return $spot->id;
                 });
+
                 return response($spots, 200);
             }
 
             $this->deleteCreatedSpots();
+
             return response('Failed To Import Descriptors', 400);
         }
 
         $this->deleteCreatedSpots();
+
         return response('Failed To Import Spots', 400);
     }
 }
