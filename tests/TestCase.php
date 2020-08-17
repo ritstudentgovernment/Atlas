@@ -23,28 +23,28 @@ abstract class TestCase extends BaseTestCase
     protected $deletes = [];
 
     /**
-     * @var $user
+     * @var
      *
      * The $user variable is a user that has no permissions
      */
     protected $user;
 
     /**
-     * @var $adminUser
+     * @var
      *
      * The $adminUser variable is a user that has all permissions
      */
     protected $adminUser;
 
     /**
-     * @var $uriPrefix
+     * @var
      *
      * The URI prefix of the API being hit in these tests
      */
     protected $uriPrefix;
 
     /**
-     * @var $protectedRoutes
+     * @var
      *
      * Routes in this API that are for admin users only. Used to automate base
      * testing for unauthorized access to the API.
@@ -109,7 +109,7 @@ abstract class TestCase extends BaseTestCase
             $variableToDelete = $this->$variableToDelete;
             if ($variableToDelete instanceof Model) {
                 $this->deleteModel($variableToDelete);
-            } else if ($variableToDelete instanceof Collection) {
+            } elseif ($variableToDelete instanceof Collection) {
                 $variableToDelete->each(function (Model $model) {
                     $this->deleteModel($model);
                 });
