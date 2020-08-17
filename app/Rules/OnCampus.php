@@ -10,13 +10,14 @@ class OnCampus implements Rule
     protected $minLat;
     protected $maxLng;
     protected $minLng;
+    protected $latLng;
 
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($latLng)
     {
         $centerLat = env('GOOGLE_MAPS_CENTER_LAT');
         $centerLng = env('GOOGLE_MAPS_CENTER_LNG');
@@ -27,6 +28,7 @@ class OnCampus implements Rule
         $this->minLat = $centerLat - $latChange;
         $this->maxLng = $centerLng + $lngChange;
         $this->minLng = $centerLng - $lngChange;
+        $this->latLng = $latLng;
     }
 
     /**
@@ -52,6 +54,6 @@ class OnCampus implements Rule
      */
     public function message()
     {
-        return 'The spot must be on campus.';
+        return "The spot's $this->latLng must be on campus.";
     }
 }

@@ -138,8 +138,8 @@ class SpotController extends Controller
             'image_url'         => 'sometimes|string|nullable',
             'descriptors'       => 'required',
             'type_name'         => 'required',
-            'lat'               => ['required', 'numeric', new OnCampus()],
-            'lng'               => ['required', 'numeric', new OnCampus()],
+            'lat'               => ['required', 'numeric', new OnCampus('Latitude')],
+            'lng'               => ['required', 'numeric', new OnCampus('Longitude')],
             'classification_id' => 'required|numeric',
         ];
         $this->validator = \Illuminate\Support\Facades\Validator::make(Input::all(), $rules);
