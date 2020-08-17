@@ -282,17 +282,30 @@
                     this.location = getMeta('googleMapsCenter');
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition((position) => {
-                            self.location = {
-                                lat: position.coords.latitude,
-                                lng: position.coords.longitude,
-                            };
+                            let lat = position.coords.latitude,
+                                lng = position.coords.longitude,
+                                validLat = lat > self.location.min_lat && lat < self.location.max_lat,
+                                validLng = lng > self.location.min_lng && lng < self.location.max_lng;
+
+                            if (validLat && validLng) {
+                                self.location = {
+                                    lat: position.coords.latitude,
+                                    lng: position.coords.longitude,
+                                };
+
+                            }
+
+                            // Place at the user's location if on campus, or in the center of the map
+                            callback();
+                        }, () => {
+                            // Handle geolocation error cases by plopping at the center of the map
                             callback();
                         });
-                        return true;
+                    } else {
+                        // Browser doesn't support geolocation, place at center of map
+                        callback();
                     }
                 }
-                callback();
-                return false;
             },
             makeSpot() {
                 let category = {
@@ -330,6 +343,7 @@
                     window.builder.removeLastSpot();
                     this.ploppedMarker = null;
                     animateDrop = false;
+                    this.isPlopped = false;
                 }
 
                 this.getDefaultLocation(()=>{
