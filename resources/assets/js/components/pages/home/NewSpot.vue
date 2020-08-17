@@ -408,13 +408,13 @@
                             type: 'success',
                             duration: 30000
                         });
-                    } else {
-                        this.$notify.error({
-                            title: 'Error Creating Spot',
-                            message: response.data.message[0],
-                            duration: 30000
-                        });
                     }
+                }).catch((error) => {
+                    this.$notify.error({
+                        title: 'Error Creating Spot',
+                        message: error.response.data.message[0],
+                        duration: 30000
+                    });
                 });
             },
         },

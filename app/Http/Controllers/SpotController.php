@@ -8,6 +8,7 @@ use App\Descriptors;
 use App\Events\Spots\Approved;
 use App\Events\Spots\Created;
 use App\Events\Spots\Rejected;
+use App\Rules\OnCampus;
 use App\Spot;
 use App\Type;
 use App\User;
@@ -137,8 +138,8 @@ class SpotController extends Controller
             'image_url'         => 'sometimes|string|nullable',
             'descriptors'       => 'required',
             'type_name'         => 'required',
-            'lat'               => 'required|numeric',
-            'lng'               => 'required|numeric',
+            'lat'               => [ 'required', 'numeric', new OnCampus ],
+            'lng'               => [ 'required', 'numeric', new OnCampus ],
             'classification_id' => 'required|numeric',
         ];
         $this->validator = \Illuminate\Support\Facades\Validator::make(Input::all(), $rules);
@@ -199,6 +200,16 @@ class SpotController extends Controller
         ];
     }
 
+    private function errorStringResponse(MessageBag $response)
+    {
+        $errorString = '';
+        foreach ($this->validator->errors()->toArray() as $key => $message) {
+            $errorString .= "$key: ".implode(', ', $message).' ';
+        }
+        $response->add('message', trim($errorString));
+        return response($response, 400);
+    }
+
     /**
      * Endpoint hit for creating nap spots.
      *
@@ -210,8 +221,8 @@ class SpotController extends Controller
     {
         $response = new MessageBag();
         $validatedData = $this->validateSentData($request, $response);
-        if (!$validatedData) {
-            return response($this->validator->errors(), 400);
+        if ($this->validator->fails()) {
+            return $this->errorStringResponse($response);
         }
 
         $user = $validatedData['user'];
