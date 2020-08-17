@@ -67,12 +67,16 @@ window.initMap = () => {
 
     }
 
-    verifyPageLoadedProperly();
+    $(document).ready(() => {
 
-    let center = instantiateMap();
-    restrictMapMovement(center);
+        verifyPageLoadedProperly();
 
-    window.builder = new Builder();
-    builder.build();
+        let center = instantiateMap();
+        restrictMapMovement(center);
+
+        window.builder = new Builder();
+        builder.build();
+
+    });
 
 };
