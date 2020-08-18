@@ -76,6 +76,8 @@ This process will help ensure proper version control methods are maintained, and
 
 Laravel provides a utility called [Valet](https://laravel.com/docs/5.8/valet) which automatically runs the development server for you in the background, and forwards it to a url like **https://atlas.test/**.
 
+This allows you to skip step 2.1 every time you go to do development work locally.
+
 Follow the instructions [here](https://laravel.com/docs/5.8/valet#installation) if you would like to install it for yourself, to save yourself some time in the development process.
 
 #### VCS Process (internal SG process)
@@ -83,7 +85,7 @@ Follow the instructions [here](https://laravel.com/docs/5.8/valet#installation) 
 1. Locally checkout the **develop** branch on your machine
 2. Make a new branch for whichever ticket you are working on
     1. An example name is **feature/ATLAS-67/pusher-implementation**
-    2. the format is **\[feature, bug, or refactor\]/\[JIRA-Ticket-ID\]/\[Human Readable Name\]**
+    2. The format is *\[feature, bug, or refactor\]***/***\[JIRA-Ticket-ID\]***/***\[Human Readable Name\]*
 3. Do all work for the ticket in that branch. When you are done developing the feature and associated tests, create a detailed Pull Request into the **Develop** branch
     1. The PR should contain a brief summary of the ticket / issue, how you implemented it, and anything a reviewer should be cognisant of in the review process
     2. Assign three reviewers to the PR; a Senior Dev, and two Junior Devs.
@@ -98,12 +100,12 @@ Follow the instructions [here](https://laravel.com/docs/5.8/valet#installation) 
 1. Fork this repo
 2. Follow steps 1-3 from the internal process from above
     1. *Note:* you do not have to follow branch naming guidelines, or PR guidelines for your local development.
-3. When you get the code into your forked **Develop** branch, and you wish to contribute it to the main repo, make a PR from your **develop** branch to ours.
+3. When you get the code into your forked **Develop** branch, and you wish to contribute it to the main repo, make a PR from your **Develop** branch to ours.
     1. This time, please be sure to follow step 3.1 from above.
 4. Our development team will review your PR and merge it in if:
-    1. New code has been properly tested and documented
+    1. New code has been properly tested, documented, and does not introduce code smells
     2. The code introduces well thought out features or bug fixes
-    3. The build passes and does not lower code coverage or introduce code smells 
+    3. The build passes  
 5. Upon successful testing of the feature or bugfix, the changes will be deployed to the production environment
 
 #### Stopping the development server
