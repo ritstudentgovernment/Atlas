@@ -28,14 +28,15 @@ This guide will help you configure your own instance of Atlas.
 
 #### Installation:
 1. Clone this repo
-2. Configure the **.env** file to match your system's configuration
-3. Run **composer install**, **php artisan migrate**, and **php artisan db:seed**
-4. Run **php artisan jwt:secret**
-5. Run **npm install** and **npm run dev**
-6. Run **php artisan serve** to spin up the web server
-7. Run **php artisan horizon &** in a new terminal tab to run the queue worker
-8. Visit 127.0.0.1:8000 in your browser to verify everything is working properly
-9. Configure authentication as outlined below
+2. Create a new Postgres database table for your local Atlas instance 
+3. Configure the **.env** file to match your system's configuration
+4. Run **composer install**, **php artisan migrate**, and **php artisan db:seed**
+5. Run **php artisan jwt:secret**
+6. Run **npm install** and **npm run dev**
+7. Run **php artisan serve** to spin up the web server
+8. Run **php artisan horizon &** in a new terminal tab to run the queue worker
+9. Visit 127.0.0.1:8000 in your browser to verify everything is working properly
+10. Configure authentication as outlined below
 
 #### Authentication (SAML2)
 
@@ -56,3 +57,58 @@ file attributes beginning with the 'SAML2' prefix and the 'config/saml2_settings
 \****Note***\* The SAMLController is not setup for SLO. If you would like to implement that you must do so yourself. Right now
 the application only logs you out of itself, it does not contact the SAML IdP. (The [library](https://github.com/aacotroneo/laravel-saml2) being used does allow for this however)
 Once you implement the SAMLController SLO code you should be all set, the 'Saml2LogoutEventListener' has already been provided.
+
+## Local Development Process
+
+This process will help ensure proper version control methods are maintained, and help make development go smoothly.
+
+#### Running Atlas Locally
+
+1. First, ensure you've installed the app with the instructions found above
+2. Start the development server and resources with the following commands
+    1. Run the development web server: **php artisan serve &**
+    2. Run the Queue worker: **php artisan horizon &**
+    3. Ensure NPM rebuilds the application with changes to JS files: **npm run watch &**
+    4. In a new tab, run **./vendor/bin/phpunit-watcher watch** to have PHP tests run when changes to PHP files are detected
+3. As in the initial install, Atlas should now be accessible at 127.0.0.1:8000
+
+##### Mac Users:
+
+Laravel provides a utility called [Valet](https://laravel.com/docs/5.8/valet) which automatically runs the development server for you in the background, and forwards it to a url like **https://atlas.test/**.
+
+This allows you to skip step 2.1 every time you go to do development work locally.
+
+Follow the instructions [here](https://laravel.com/docs/5.8/valet#installation) if you would like to install it for yourself, to save yourself some time in the development process.
+
+#### VCS Process (internal SG process)
+
+1. Locally checkout the **develop** branch on your machine
+2. Make a new branch for whichever ticket you are working on
+    1. An example name is **feature/ATLAS-67/pusher-implementation**
+    2. The format is \[**feature**, **bug**, or **refactor**\]**/**\[**JIRA-Ticket-ID**\]**/**\[**Human Readable Name**\]
+3. Do all work for the ticket in that branch. When you are done developing the feature and associated tests, create a detailed Pull Request into the **Develop** branch
+    1. The PR should contain a brief summary of the ticket / issue, how you implemented it, and anything a reviewer should be cognisant of in the review process
+    2. Assign three reviewers to the PR; a Senior Dev, and two Junior Devs.
+    3. The PR can be merged when 2 reviews have been submitted.
+4. Merge the PR. Upon successful test completion, the code will automatically be deployed to the development server for widespread team testing.
+5. Once the change has been thoroughly tested on the development server, create a summary PR to merge the changes into master
+    1. A Senior Dev will then merge the changes into Master
+    2. Upon a successful Travis build, the code will be auto-deployed to the production server.
+    
+#### VCS Process (external contributions)
+
+1. Fork this repo
+2. Follow steps 1-3 from the internal process from above
+    1. *Note:* you do not have to follow branch naming guidelines, or PR guidelines for your local development.
+3. When you get the code into your forked **Develop** branch, and you wish to contribute it to the main repo, make a PR from your **Develop** branch to ours.
+    1. This time, please be sure to follow step 3.1 from above.
+4. Our development team will review your PR and merge it in if:
+    1. New code has been properly tested, documented, and does not introduce code smells
+    2. The code introduces well thought out features or bug fixes
+    3. The build passes  
+5. Upon successful testing of the feature or bugfix, the changes will be deployed to the production environment
+
+#### Stopping the development server
+
+1. Run the command **php artisan horizon:terminate** to stop the queue workers
+2. Close all open terminal tabs, terminating their processes
