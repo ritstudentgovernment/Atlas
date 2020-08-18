@@ -85,7 +85,7 @@ Follow the instructions [here](https://laravel.com/docs/5.8/valet#installation) 
 1. Locally checkout the **develop** branch on your machine
 2. Make a new branch for whichever ticket you are working on
     1. An example name is **feature/ATLAS-67/pusher-implementation**
-    2. The format is *\[feature, bug, or refactor\]***/***\[JIRA-Ticket-ID\]***/***\[Human Readable Name\]*
+    2. The format is \[**feature**, **bug**, or **refactor**\]**/**\[**JIRA-Ticket-ID**\]**/**\[**Human Readable Name**\]
 3. Do all work for the ticket in that branch. When you are done developing the feature and associated tests, create a detailed Pull Request into the **Develop** branch
     1. The PR should contain a brief summary of the ticket / issue, how you implemented it, and anything a reviewer should be cognisant of in the review process
     2. Assign three reviewers to the PR; a Senior Dev, and two Junior Devs.
